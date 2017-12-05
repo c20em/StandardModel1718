@@ -74,11 +74,6 @@ public class Blue2Glyph extends LinearOpMode {
 
     public double increment = .07;
 
-    public placement myPlacement;
-
-    public alliance team;
-
-
     @Override public void runOpMode() {
         rightTop = hardwareMap.get(Servo.class, "right top claw");
         leftTop = hardwareMap.get(Servo.class, "left top claw");
@@ -131,6 +126,7 @@ public class Blue2Glyph extends LinearOpMode {
             blue();
 
             sleep(1500);
+
             FrontLeftDrive.setPower(.6);
             BackLeftDrive.setPower(.6);
             BackRightDrive.setPower(.5);
@@ -259,13 +255,5 @@ public class Blue2Glyph extends LinearOpMode {
     public void lift() {
         LiftDrive.setPower(.5);
         sleep(400);
-    }
-
-    public enum alliance {
-        RED, BLUE;
-    }
-
-    public enum placement {
-        LEFT, RIGHT, NONE;
     }
 }

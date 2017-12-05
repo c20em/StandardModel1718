@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
  * Created by student on 11/22/17.
  */
 
-public class AutoRobot {
+public abstract class AutoRobot extends LinearOpMode {
 
     public ColorSensor colorSensorL;
 
@@ -39,7 +39,6 @@ public class AutoRobot {
     // Telemetry
     public static Telemetry telemetry;
 
-    // The original opmode.
     public static LinearOpMode opMode;
 
     public void init(LinearOpMode om) {
@@ -135,7 +134,7 @@ public class AutoRobot {
                 telemetry.addLine("Moving Right");
             }
 
-            opMode.sleep(1500);
+            sleep(1500);
 
             loweringJewelServo.setPosition(MID_UP_POS);
             turningJewelServo.setPosition(.5);
@@ -145,13 +144,13 @@ public class AutoRobot {
             turningJewelServo.setPosition(.46);
             loweringJewelServo.setPosition(.95);
 
-            opMode.sleep(1000);
+            sleep(1000);
 
             if (colorSensorL.red() < colorSensorL.blue()) {
                 turningJewelServo.setPosition(RIGHT_POS);
                 telemetry.addLine("Moving Right");
 
-                opMode.sleep(1000);
+                sleep(1000);
                 loweringJewelServo.setPosition(0);
                 turningJewelServo.setPosition(.5);
             }
@@ -159,7 +158,7 @@ public class AutoRobot {
                 turningJewelServo.setPosition(LEFT_POS);
                 telemetry.addLine("Hitting Left");
 
-                opMode.sleep(1000);
+                sleep(1000);
                 loweringJewelServo.setPosition(0);
                 turningJewelServo.setPosition(.5);
             }
