@@ -34,15 +34,15 @@ public class SkipperTeleop extends LinearOpMode {
     //static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   75;
 
-    static final double OPEN_BOTTOM_RIGHT =  0.65;
-    static final double OPEN_BOTTOM_LEFT = 0.2;
+    static final double OPEN_BOTTOM_RIGHT =  0.7;
+    static final double OPEN_BOTTOM_LEFT = 0.15;
     static final double CLOSE_BOTTOM_RIGHT     =  0.55;
     static final double CLOSE_BOTTOM_LEFT     =  0.4;
 
     static final double CLOSE_TOP_LEFT = 0.28;
-    static final double CLOSE_TOP_RIGHT = 0.52;
+    static final double CLOSE_TOP_RIGHT = 0.55;
     static final double OPEN_TOP_LEFT     =  0.55;
-    static final double OPEN_TOP_RIGHT     =  0.25;
+    static final double OPEN_TOP_RIGHT     =  0.28;
 
     static final double SEMI_OPEN_BOTTOM_RIGHT = 0.65;
     static final double SEMI_OPEN_BOTTOM_LEFT = 0.3;
@@ -65,6 +65,7 @@ public class SkipperTeleop extends LinearOpMode {
     double leftTopPos =  OPEN_TOP_LEFT;
     double rightBottomPos = OPEN_BOTTOM_RIGHT;
     double leftBottomPos = OPEN_BOTTOM_LEFT;
+    boolean openRelic = false;
 
 
     controllerPos previousDrive = controllerPos.ZERO;
@@ -131,9 +132,9 @@ public class SkipperTeleop extends LinearOpMode {
     }
 
     public void moveJewelArm() {
-        double triggerJewelServo = gamepad2.left_stick_y;
+        double triggerJewelServo = gamepad2.right_stick_y;
 
-        if(triggerJewelServo > -0.2 && triggerJewelServo < 0.2) { //change to right joystick
+        if(triggerJewelServo > -0.2 && triggerJewelServo < 0.2) {
             loweringJewelServo.setPosition(0);
             turningJewelServo.setPosition(TURNING_SERVO_RESET);
         }
@@ -177,6 +178,7 @@ public class SkipperTeleop extends LinearOpMode {
     //DRIVING CONTROL
     public void moveRobot() {
         double drive = gamepad1.left_stick_y;
+        double strafe = gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
         if(drive > 0.3 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
@@ -184,10 +186,10 @@ public class SkipperTeleop extends LinearOpMode {
         } else if(drive < -0.3 && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_BACK;
             Drive(drive);
-        } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
+        } else if(strafe > .3 && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_RIGHT;
             Strafe(1);
-        } else if(gamepad1.dpad_left && (previousDrive == controllerPos.STRAFE_LEFT || previousDrive == controllerPos.ZERO)) {
+        } else if(strafe < -.3 && (previousDrive == controllerPos.STRAFE_LEFT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_LEFT;
             Strafe(-1);
         }  else if(turn > 0.3 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
@@ -288,30 +290,35 @@ public class SkipperTeleop extends LinearOpMode {
     }
 
     public void moveRelic() {
-        double relicPower = 0.6;
+        double relicPower = 0.7;
+        if(openRelic) {
+            if (gamepad2.left_trigger > .1) {
+                arm.setPosition(CLOSE_ARM);
+            } else {
+                arm.setPosition(OPEN_ARM);
+            }
 
-        if(gamepad2.left_trigger > .1) {
-            arm.setPosition(CLOSE_ARM);
-        } else {
-            arm.setPosition(OPEN_ARM);
-        }
+            if (gamepad2.right_trigger > .1) {
+                hand.setPosition(CLOSE_HAND);
+            } else {
+                hand.setPosition(OPEN_HAND);
+            }
 
-        if(gamepad2.right_trigger > .1) {
-            hand.setPosition(CLOSE_HAND);
-        } else {
-            hand.setPosition(OPEN_HAND);
-        }
+            double relicDrive = gamepad2.left_stick_y;
 
-        double relicDrive = gamepad2.right_stick_y;
-
-        if(relicDrive > 0.2) {
-            RelicDrive.setPower(-relicPower);
-        } else if(relicDrive < -0.2) {
+            if (Math.abs(relicDrive) > 0.2) {
+                relicPower = -relicDrive;
+            } else {
+                relicPower = 0;
+            }
             RelicDrive.setPower(relicPower);
         } else {
-            RelicDrive.setPower(0);
+            arm.setPosition(0.05);
+            hand.setPosition(CLOSE_HAND);
+            if(gamepad2.left_trigger > .1) {
+                openRelic = true;
+            }
         }
-
     }
 }
 
