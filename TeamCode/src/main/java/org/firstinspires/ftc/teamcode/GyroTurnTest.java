@@ -84,6 +84,7 @@ public class GyroTurnTest extends LinearOpMode {
 
         while (opModeIsActive()) {
            turnToAngle(90);
+            sleep(5000);
         }
 
         telemetry.addData("Running", "False");

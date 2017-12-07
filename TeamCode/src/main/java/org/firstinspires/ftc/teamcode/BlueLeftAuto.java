@@ -47,7 +47,7 @@ public class BlueLeftAuto extends LinearOpMode {
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
 
-    public double downPos = .9;
+    public double downPos = 1.0;
     public final double UP_POS = 0.3;
 
     public final double LEFT_POS = .30;
@@ -103,6 +103,7 @@ public class BlueLeftAuto extends LinearOpMode {
             blue();
 
             sleep(1500);
+
             FrontLeftDrive.setPower(.5);
             BackLeftDrive.setPower(.5);
             BackRightDrive.setPower(.55);
