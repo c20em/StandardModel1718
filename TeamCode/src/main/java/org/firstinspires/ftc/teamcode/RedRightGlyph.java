@@ -34,9 +34,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
-@Autonomous(name="GLYPH Left Blue", group ="Glyph")
-class BlueLeftGlpyh extends LinearOpMode  {
+@Autonomous(name="GLYPH Right Red", group ="Glyph")
+public class RedRightGlyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
@@ -65,7 +64,7 @@ class BlueLeftGlpyh extends LinearOpMode  {
     static final double SEMI_OPEN_TOP_RIGHT = 0.15;
     static final double SEMI_OPEN_TOP_LEFT = 0.48;
 
-    public double downPos = 1.0;
+    public double downPos = .9;
     public final double UP_POS = 0.3;
 
     public final double LEFT_POS = .30;
@@ -92,7 +91,6 @@ class BlueLeftGlpyh extends LinearOpMode  {
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
         LiftDrive = hardwareMap.get(DcMotor.class, "lift");
 
-
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -116,8 +114,6 @@ class BlueLeftGlpyh extends LinearOpMode  {
         BackRightDrive.setPower(0);
         FrontRightDrive.setPower(0);
 
-
-
         waitForStart();
 
         lower();
@@ -131,12 +127,12 @@ class BlueLeftGlpyh extends LinearOpMode  {
 
             sleep(1500);
 
-            FrontLeftDrive.setPower(.6);
-            BackLeftDrive.setPower(.6);
-            BackRightDrive.setPower(.5);
-            FrontRightDrive.setPower(.5);
+            FrontLeftDrive.setPower(.5);
+            BackLeftDrive.setPower(.5);
+            BackRightDrive.setPower(.6);
+            FrontRightDrive.setPower(.6);
 
-            sleep(700);
+            sleep(900);
 
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);
@@ -258,6 +254,6 @@ class BlueLeftGlpyh extends LinearOpMode  {
 
     public void lift() {
         LiftDrive.setPower(.5);
-        sleep(200);
+        sleep(400);
     }
 }
