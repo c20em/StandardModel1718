@@ -28,11 +28,21 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 @Autonomous(name="GLYPH Right Blue", group ="Glyph")
 public class BlueRightGlyph extends LinearOpMode {
@@ -74,6 +84,13 @@ public class BlueRightGlyph extends LinearOpMode {
 
     public double increment = .07;
 
+    // The IMU sensor object
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
+
     @Override public void runOpMode() {
         rightTop = hardwareMap.get(Servo.class, "right top claw");
         leftTop = hardwareMap.get(Servo.class, "left top claw");
@@ -90,6 +107,20 @@ public class BlueRightGlyph extends LinearOpMode {
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
         LiftDrive = hardwareMap.get(DcMotor.class, "lift");
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -116,9 +147,12 @@ public class BlueRightGlyph extends LinearOpMode {
 
         waitForStart();
 
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+
         lower();
         close();
         lift();
+
 
         while(opModeIsActive()) {
             telemetry.addData("Turing Servo:", turningJewelServo.getPosition());
@@ -255,5 +289,38 @@ public class BlueRightGlyph extends LinearOpMode {
     public void lift() {
         LiftDrive.setPower(.5);
         sleep(400);
+    }
+
+    public void spinClockwise(double power) {
+        FrontLeftDrive.setPower(power);
+        BackLeftDrive.setPower(power);
+        BackRightDrive.setPower(-power);
+        FrontRightDrive.setPower(-power);
+    }
+
+    public void spinCounter(double power) {
+        FrontLeftDrive.setPower(-power);
+        BackLeftDrive.setPower(-power);
+        BackRightDrive.setPower(power);
+        FrontRightDrive.setPower(power);
+    }
+
+    public void turnToAngle(float angle) {
+        float current;
+
+        angles  = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        current = angles.firstAngle;
+
+        if (angle > current) {
+            while (angle >= current + 5 && angle <= current -5) {
+                spinClockwise(.75);
+                current = angles.firstAngle;
+            }
+        } else {
+            while (angle >= current + 5 && angle <= current -5) {
+                spinCounter(.75);
+                current = angles.firstAngle;
+            }
+        }
     }
 }
