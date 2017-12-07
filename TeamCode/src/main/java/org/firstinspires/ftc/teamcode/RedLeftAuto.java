@@ -34,8 +34,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="2 Red Auto ", group ="Jewel")
-public class Red2Auto extends LinearOpMode {
+@Autonomous(name="1 Red Auto ", group ="Jewel")
+public class RedLeftAuto extends LinearOpMode {
 
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
@@ -55,6 +55,11 @@ public class Red2Auto extends LinearOpMode {
     public final double MIDDLE_POS = .5;
 
     public double increment = .07;
+
+    public placement myPlacement;
+
+    public alliance team;
+
 
     @Override public void runOpMode() {
         colorSensorL = hardwareMap.get(ColorSensor.class, "color sensor left");
@@ -96,12 +101,11 @@ public class Red2Auto extends LinearOpMode {
             sleep(1000);
             red();
 
-            sleep(1500);
-
-            FrontLeftDrive.setPower(-.55);
-            BackLeftDrive.setPower(-.55);
-            BackRightDrive.setPower(-.5);
-            FrontRightDrive.setPower(-.5);
+            sleep(1000);
+            FrontLeftDrive.setPower(-.5);
+            BackLeftDrive.setPower(-.5);
+            BackRightDrive.setPower(-.55);
+            FrontRightDrive.setPower(-.55);
 
             sleep(1000);
 
@@ -109,10 +113,12 @@ public class Red2Auto extends LinearOpMode {
             BackLeftDrive.setPower(0);
             BackRightDrive.setPower(0);
             FrontRightDrive.setPower(0);
+            loweringJewelServo.setPosition(0);
 
             sleep(50000);
 
         }
+
         telemetry.addData("Running", "False");
         telemetry.update();
     }
@@ -153,7 +159,7 @@ public class Red2Auto extends LinearOpMode {
             turningJewelServo.setPosition(RIGHT_POS);
             telemetry.addLine("Moving Right");
 
-            sleep(1000);
+            sleep(1500);
 
             loweringJewelServo.setPosition(.4);
             turningJewelServo.setPosition(.5);
@@ -168,8 +174,13 @@ public class Red2Auto extends LinearOpMode {
             loweringJewelServo.setPosition(.4);
             turningJewelServo.setPosition(.5);
             loweringJewelServo.setPosition(0);
-        } else {
-
+        }
+//        else {
+//            loweringJewelServo.setPosition(.4);
+//            turningJewelServo.setPosition(.5);
+//            loweringJewelServo.setPosition(0);
+//        }
+        else {
             turningJewelServo.setPosition(.46);
             loweringJewelServo.setPosition(.95);
 
@@ -197,9 +208,16 @@ public class Red2Auto extends LinearOpMode {
                 loweringJewelServo.setPosition(0);
             }
         }
-
         telemetry.addData("Servo Pos", turningJewelServo.getPosition());
         telemetry.update();
     }
 
+
+    public enum alliance {
+        RED, BLUE;
+    }
+
+    public enum placement {
+        LEFT, RIGHT, NONE;
+    }
 }

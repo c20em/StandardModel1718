@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="2 Blue Auto ", group ="Jewel")
-public class Blue2Auto extends LinearOpMode {
+public class BlueRightAuto extends LinearOpMode {
 
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
