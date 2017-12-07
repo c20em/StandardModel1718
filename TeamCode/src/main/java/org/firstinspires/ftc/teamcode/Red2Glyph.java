@@ -34,8 +34,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="2 GLYPH Blue", group ="Glyph")
-public class Blue2Glyph extends LinearOpMode {
+@Autonomous(name="GLYPH 2 RED", group ="Glyph")
+public class Red2Glyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
@@ -123,7 +123,7 @@ public class Blue2Glyph extends LinearOpMode {
         while(opModeIsActive()) {
             telemetry.addData("Turing Servo:", turningJewelServo.getPosition());
             sleep(1000);
-            blue();
+            red();
 
             sleep(1500);
 
@@ -187,35 +187,34 @@ public class Blue2Glyph extends LinearOpMode {
 
 
 
-    public void blue() {
+    public void red() {
         telemetry.addData("Red:", colorSensorL.red());
         telemetry.addData("Blue:", colorSensorL.blue());
 
         telemetry.update();
 
-        if (colorSensorL.red() < colorSensorL.blue()) {
+        if (colorSensorL.red() > colorSensorL.blue()) {
             turningJewelServo.setPosition(RIGHT_POS);
             telemetry.addLine("Moving Right");
 
             sleep(1000);
+
             loweringJewelServo.setPosition(.4);
             turningJewelServo.setPosition(.5);
             loweringJewelServo.setPosition(0);
         }
-        else if (colorSensorL.red() > colorSensorL.blue()){
+        else if (colorSensorL.red() < colorSensorL.blue()){
             turningJewelServo.setPosition(LEFT_POS);
             telemetry.addLine("Hitting Left");
 
             sleep(1000);
+
             loweringJewelServo.setPosition(.4);
             turningJewelServo.setPosition(.5);
             loweringJewelServo.setPosition(0);
         } else {
-            turningJewelServo.setPosition(.46);
-            loweringJewelServo.setPosition(.95);
-            sleep(1000);
-
-            if (colorSensorL.red() > colorSensorL.blue()) {
+            turningJewelServo.setPosition(.45);
+            if (colorSensorL.red() < colorSensorL.blue()) {
                 turningJewelServo.setPosition(RIGHT_POS);
                 telemetry.addLine("Moving Right");
 
@@ -223,7 +222,7 @@ public class Blue2Glyph extends LinearOpMode {
                 loweringJewelServo.setPosition(0);
                 turningJewelServo.setPosition(.5);
             }
-            else if (colorSensorL.red() < colorSensorL.blue()){
+            else if (colorSensorL.red() > colorSensorL.blue()){
                 turningJewelServo.setPosition(LEFT_POS);
                 telemetry.addLine("Hitting Left");
 
@@ -237,7 +236,6 @@ public class Blue2Glyph extends LinearOpMode {
                 loweringJewelServo.setPosition(0);
             }
         }
-//
         telemetry.addData("Servo Pos", turningJewelServo.getPosition());
         telemetry.update();
     }
@@ -255,5 +253,9 @@ public class Blue2Glyph extends LinearOpMode {
     public void lift() {
         LiftDrive.setPower(.5);
         sleep(400);
+    }
+
+    public void turn() {
+
     }
 }
