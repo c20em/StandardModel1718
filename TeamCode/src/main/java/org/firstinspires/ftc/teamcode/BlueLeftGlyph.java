@@ -65,7 +65,7 @@ class BlueLeftGlpyh extends LinearOpMode  {
     static final double SEMI_OPEN_TOP_RIGHT = 0.15;
     static final double SEMI_OPEN_TOP_LEFT = 0.48;
 
-    public double downPos = 1.0;
+    public double downPos = .85;
     public final double UP_POS = 0.3;
 
     public final double LEFT_POS = .30;

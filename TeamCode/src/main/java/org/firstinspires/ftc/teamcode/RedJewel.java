@@ -46,7 +46,7 @@ public class RedJewel extends LinearOpMode {
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
 
-    public double downPos = 0.65;
+    public double downPos = 0.85;
     public final double UP_POS = 0.3;
 
     public final double LEFT_POS = .30;
@@ -76,6 +76,7 @@ public class RedJewel extends LinearOpMode {
             telemetry.addData("Turing Servo:", turningJewelServo.getPosition());
             sleep(1000);
             red();
+
         }
         telemetry.addData("Running", "False");
         telemetry.update();

@@ -46,7 +46,7 @@ public class BlueRightAuto extends LinearOpMode {
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
 
-    public double downPos = .9;
+    public double downPos = .85;
     public final double UP_POS = 0.3;
 
     public final double LEFT_POS = .30;
