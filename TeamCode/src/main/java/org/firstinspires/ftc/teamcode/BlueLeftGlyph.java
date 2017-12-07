@@ -35,8 +35,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@Autonomous(name="2 GLYPH Blue", group ="Glyph")
-public class BlueLeftGlyph extends LinearOpMode {
+
+
+@Autonomous(name="GLYPH Left Blue", group ="Glyph")
+public class BlueLeftGlpyh extends LinearOpMode  {
 
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
@@ -65,7 +67,7 @@ public class BlueLeftGlyph extends LinearOpMode {
     static final double SEMI_OPEN_TOP_RIGHT = 0.15;
     static final double SEMI_OPEN_TOP_LEFT = 0.48;
 
-    public double downPos = .9;
+    public double downPos = 1.0;
     public final double UP_POS = 0.3;
 
     public final double LEFT_POS = .30;
@@ -92,6 +94,7 @@ public class BlueLeftGlyph extends LinearOpMode {
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
         LiftDrive = hardwareMap.get(DcMotor.class, "lift");
 
+
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -114,6 +117,8 @@ public class BlueLeftGlyph extends LinearOpMode {
         BackLeftDrive.setPower(0);
         BackRightDrive.setPower(0);
         FrontRightDrive.setPower(0);
+
+
 
         waitForStart();
 
@@ -255,6 +260,6 @@ public class BlueLeftGlyph extends LinearOpMode {
 
     public void lift() {
         LiftDrive.setPower(.5);
-        sleep(400);
+        sleep(200);
     }
 }
