@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 @Autonomous(name="2 GLYPH Blue", group ="Glyph")
-public class Blue2Glyph extends LinearOpMode {
+public class BlueLeftGlyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
