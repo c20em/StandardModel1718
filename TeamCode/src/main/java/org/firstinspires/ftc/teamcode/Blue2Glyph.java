@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="2 GLYPH Blue", group ="Glyph")
+@Autonomous(name="Left GLYPH Blue", group ="Glyph")
 public class Blue2Glyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;
@@ -71,6 +71,7 @@ public class Blue2Glyph extends LinearOpMode {
     public final double RIGHT_POS = .70;
 
     public final double MIDDLE_POS = .5;
+    final double SCALE_FACTOR = 255;
 
     public double increment = .07;
 

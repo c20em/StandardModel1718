@@ -52,7 +52,7 @@ public class SkipperTeleop extends LinearOpMode {
     static final double OPEN_ARM = 1;
     static final double CLOSE_ARM = 0.2;
     static final double OPEN_HAND = 1;
-    static final double CLOSE_HAND = 0.3;
+    static final double CLOSE_HAND = 0.5;
 
     static final double TURNING_SERVO_RESET = 0.5;
 
