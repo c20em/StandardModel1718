@@ -66,7 +66,7 @@ class BlueLeftGlpyh extends LinearOpMode  {
     static final double SEMI_OPEN_TOP_LEFT = 0.48;
 
     public double downPos = .85;
-    public final double UP_POS = 0.3;
+    public final double UP_POS = 0.2;
 
     public final double LEFT_POS = .30;
     public final double RIGHT_POS = .70;
@@ -108,7 +108,7 @@ class BlueLeftGlpyh extends LinearOpMode  {
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
-        loweringJewelServo.setPosition(0);
+       // loweringJewelServo.setPosition(0);
         turningJewelServo.setPosition(.5);
 
         FrontLeftDrive.setPower(0);
@@ -137,6 +137,7 @@ class BlueLeftGlpyh extends LinearOpMode  {
             FrontRightDrive.setPower(.5);
 
             sleep(700);
+
 
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);
@@ -258,6 +259,6 @@ class BlueLeftGlpyh extends LinearOpMode  {
 
     public void lift() {
         LiftDrive.setPower(.5);
-        sleep(200);
+        sleep(100);
     }
 }

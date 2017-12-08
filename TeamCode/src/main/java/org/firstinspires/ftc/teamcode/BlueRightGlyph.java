@@ -166,28 +166,23 @@ public class BlueRightGlyph extends LinearOpMode {
             BackRightDrive.setPower(.5);
             FrontRightDrive.setPower(.5);
 
-            sleep(900);
+            sleep(500);
 
-            FrontLeftDrive.setPower(0);
-            BackLeftDrive.setPower(0);
-            BackRightDrive.setPower(0);
-            FrontRightDrive.setPower(0);
+            turnToAngle(90);
 
-            open();
+            sleep(600);
 
             FrontLeftDrive.setPower(.5);
             BackLeftDrive.setPower(.5);
             BackRightDrive.setPower(.5);
             FrontRightDrive.setPower(.5);
 
-            sleep(600);
+            sleep(200);
 
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);
             BackRightDrive.setPower(0);
             FrontRightDrive.setPower(0);
-
-            sleep(50000);
 
         }
         telemetry.addData("Running", "False");
@@ -313,12 +308,12 @@ public class BlueRightGlyph extends LinearOpMode {
 
         if (angle > current) {
             while (angle >= current + 5 && angle <= current -5) {
-                spinClockwise(.75);
+                spinClockwise(.5);
                 current = angles.firstAngle;
             }
         } else {
             while (angle >= current + 5 && angle <= current -5) {
-                spinCounter(.75);
+                spinCounter(.5);
                 current = angles.firstAngle;
             }
         }

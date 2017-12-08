@@ -58,7 +58,7 @@ public class SkipperTeleop extends LinearOpMode {
 
 
     // Define class members
-    double strafepower = 1;
+    double strafepower = 0.8;
 
     //Starting claw positions
     double rightTopPos = OPEN_TOP_RIGHT;
@@ -177,19 +177,17 @@ public class SkipperTeleop extends LinearOpMode {
     }
     //DRIVING CONTROL
     public void moveRobot() {
-        double drive = gamepad1.left_stick_y;
-        double strafe = gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
-        if(drive > 0.3 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
+        if(gamepad1.dpad_up && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
-            Drive(drive);
-        } else if(drive < -0.3 && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
+            Drive(-0.8);
+        } else if(gamepad1.dpad_down && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_BACK;
-            Drive(drive);
-        } else if(strafe > .3 && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
+            Drive(0.8);
+        } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_RIGHT;
             Strafe(1);
-        } else if(strafe < -.3 && (previousDrive == controllerPos.STRAFE_LEFT || previousDrive == controllerPos.ZERO)) {
+        } else if(gamepad1.dpad_left && (previousDrive == controllerPos.STRAFE_LEFT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_LEFT;
             Strafe(-1);
         }  else if(turn > 0.3 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
@@ -214,9 +212,9 @@ public class SkipperTeleop extends LinearOpMode {
     public void moveLift() {
         double LiftPower;
         if(gamepad2.left_bumper) {
-            LiftPower = 0.5;
+            LiftPower = 1;
         } else if (gamepad2.right_bumper) {
-            LiftPower = -0.5;
+            LiftPower = -1;
         } else {
             LiftPower = 0;
         }
@@ -311,6 +309,10 @@ public class SkipperTeleop extends LinearOpMode {
             } else {
                 relicPower = 0;
             }
+
+            relicPower = readjustMotorPower(relicPower);
+            relicPower = Range.clip(relicPower, -1.0, 1.0);
+
             RelicDrive.setPower(relicPower);
         } else {
             arm.setPosition(0.05);
