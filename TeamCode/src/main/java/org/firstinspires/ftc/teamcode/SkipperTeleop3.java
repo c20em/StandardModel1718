@@ -8,9 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Skipper Teleop on DPad" +
-        "", group="Linear Opmode")
-public class SkipperTeleop extends LinearOpMode {
+@TeleOp(name="Skipper Teleop LEFT STICK and DPAD", group="Linear Opmode")
+public class SkipperTeleop3 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -59,7 +58,7 @@ public class SkipperTeleop extends LinearOpMode {
 
 
     // Define class members
-    double strafepower = 0.8;
+    double strafepower = 1;
 
     //Starting claw positions
     double rightTopPos = OPEN_TOP_RIGHT;
@@ -178,13 +177,14 @@ public class SkipperTeleop extends LinearOpMode {
     }
     //DRIVING CONTROL
     public void moveRobot() {
+        double drive = gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
-        if(gamepad1.dpad_up && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
+        if(drive > 0.3 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
-            Drive(-0.8);
-        } else if(gamepad1.dpad_down && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
+            Drive(drive);
+        } else if(drive < -0.3 && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_BACK;
-            Drive(0.8);
+            Drive(drive);
         } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_RIGHT;
             Strafe(1);
@@ -213,9 +213,9 @@ public class SkipperTeleop extends LinearOpMode {
     public void moveLift() {
         double LiftPower;
         if(gamepad2.left_bumper) {
-            LiftPower = 1;
+            LiftPower = 0.5;
         } else if (gamepad2.right_bumper) {
-            LiftPower = -1;
+            LiftPower = -0.5;
         } else {
             LiftPower = 0;
         }
@@ -310,10 +310,6 @@ public class SkipperTeleop extends LinearOpMode {
             } else {
                 relicPower = 0;
             }
-
-            relicPower = readjustMotorPower(relicPower);
-            relicPower = Range.clip(relicPower, -1.0, 1.0);
-
             RelicDrive.setPower(relicPower);
         } else {
             arm.setPosition(0.05);
@@ -324,8 +320,6 @@ public class SkipperTeleop extends LinearOpMode {
         }
     }
 }
-
-
 
 
 
