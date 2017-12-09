@@ -55,6 +55,7 @@ public class SkipperTeleop3 extends LinearOpMode {
     static final double CLOSE_HAND = 0.5;
 
     static final double TURNING_SERVO_RESET = 0.5;
+    static final double SLOWMODE = 0.5;
 
 
     // Define class members
@@ -179,10 +180,14 @@ public class SkipperTeleop3 extends LinearOpMode {
     public void moveRobot() {
         double drive = gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
-        if(drive > 0.3 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
+        if (gamepad1.right_trigger > .2) {
+            drive = drive * SLOWMODE;
+            turn = turn * SLOWMODE;
+        }
+        if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
             Drive(drive);
-        } else if(drive < -0.3 && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
+        } else if(drive < -0.25 && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_BACK;
             Drive(drive);
         } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
@@ -191,10 +196,10 @@ public class SkipperTeleop3 extends LinearOpMode {
         } else if(gamepad1.dpad_left && (previousDrive == controllerPos.STRAFE_LEFT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_LEFT;
             Strafe(-1);
-        }  else if(turn > 0.3 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
+        }  else if(turn > 0.25 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_RIGHT;
             turn(turn);
-        } else if(turn < -0.3 &&(previousDrive == controllerPos.TURN_LEFT || previousDrive == controllerPos.ZERO)){
+        } else if(turn < -0.25 &&(previousDrive == controllerPos.TURN_LEFT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_LEFT;
             turn(turn);
         } else {
