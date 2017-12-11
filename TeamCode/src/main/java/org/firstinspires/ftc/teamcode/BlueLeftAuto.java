@@ -32,15 +32,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="1 Blue Auto ", group ="Jewel")
+@Autonomous(name="Blue Left Auto", group ="Jewel")
 public class BlueLeftAuto extends LinearOpMode {
 
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
     public Servo turningJewelServo;
+
+    public Servo leftTop;
+    public Servo rightTop;
+    public Servo rightBottom;
+    public Servo leftBottom;
 
     private DcMotor FrontLeftDrive = null;
     private DcMotor FrontRightDrive = null;
@@ -53,9 +57,15 @@ public class BlueLeftAuto extends LinearOpMode {
     public final double LEFT_POS = .30;
     public final double RIGHT_POS = .70;
 
+    static final double CLOSE_TOP_LEFT = 0.28;
+    static final double OPEN_TOP_LEFT     =  0.55;
+    static final double OPEN_TOP_RIGHT     =  0.28;
+
+    static final double OPEN_BOTTOM_RIGHT =  0.7;
+    static final double OPEN_BOTTOM_LEFT = 0.15;
+
     public final double MIDDLE_POS = .5;
 
-    public double increment = .07;
 
     public placement myPlacement;
 
@@ -66,6 +76,12 @@ public class BlueLeftAuto extends LinearOpMode {
         colorSensorL = hardwareMap.get(ColorSensor.class, "color sensor left");
         loweringJewelServo = hardwareMap.get(Servo.class, "lowering servo" );
         turningJewelServo = hardwareMap.get(Servo.class, "turning servo");
+
+
+        rightTop = hardwareMap.get(Servo.class, "right top claw");
+        leftTop = hardwareMap.get(Servo.class, "left top claw");
+        leftBottom = hardwareMap.get(Servo.class, "left bottom claw");
+        rightBottom = hardwareMap.get(Servo.class, "right bottom claw");
 
         FrontLeftDrive = hardwareMap.get(DcMotor.class, "front_left");
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
@@ -85,7 +101,6 @@ public class BlueLeftAuto extends LinearOpMode {
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
-        loweringJewelServo.setPosition(0);
         turningJewelServo.setPosition(.5);
 
         FrontLeftDrive.setPower(0);
@@ -103,22 +118,62 @@ public class BlueLeftAuto extends LinearOpMode {
             blue();
 
             sleep(1500);
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(.55);
+            BackRightDrive.setPower(.5);
+            FrontRightDrive.setPower(.5);
 
-            FrontLeftDrive.setPower(.5);
-            BackLeftDrive.setPower(.5);
-            BackRightDrive.setPower(.55);
-            FrontRightDrive.setPower(.55);
+            sleep(800);
 
-            sleep(1000);
+            leftTop.setPosition(CLOSE_TOP_LEFT);
+
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(-.55);
+            BackRightDrive.setPower(.5);
+            FrontRightDrive.setPower(-.5);
+
+            sleep(550);
+
+            rightBottom.setPosition(OPEN_BOTTOM_RIGHT);
+            leftBottom.setPosition(OPEN_BOTTOM_LEFT);
+            leftTop.setPosition(OPEN_TOP_LEFT);
+            rightTop.setPosition(OPEN_TOP_RIGHT);
+
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(.55);
+            BackRightDrive.setPower(.5);
+            FrontRightDrive.setPower(.5);
+
+            sleep(400);
+
+            FrontLeftDrive.setPower(-.55);
+            BackLeftDrive.setPower(-.55);
+            BackRightDrive.setPower(-.5);
+            FrontRightDrive.setPower(-.5);
+
+            sleep(400);
+
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(.55);
+            BackRightDrive.setPower(.5);
+            FrontRightDrive.setPower(.5);
+
+            sleep(700);
+
+            FrontLeftDrive.setPower(-.55);
+            BackLeftDrive.setPower(-.55);
+            BackRightDrive.setPower(-.5);
+            FrontRightDrive.setPower(-.5);
+
+            sleep(400);
 
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);
             BackRightDrive.setPower(0);
             FrontRightDrive.setPower(0);
-            loweringJewelServo.setPosition(0);
 
             sleep(50000);
-            stop();
+
         }
         telemetry.addData("Running", "False");
         telemetry.update();
@@ -150,6 +205,7 @@ public class BlueLeftAuto extends LinearOpMode {
     }
 
 
+
     public void blue() {
         telemetry.addData("Red:", colorSensorL.red());
         telemetry.addData("Blue:", colorSensorL.blue());
@@ -176,7 +232,6 @@ public class BlueLeftAuto extends LinearOpMode {
         } else {
             turningJewelServo.setPosition(.46);
             loweringJewelServo.setPosition(.95);
-
             sleep(1000);
 
             if (colorSensorL.red() > colorSensorL.blue()) {
@@ -201,7 +256,7 @@ public class BlueLeftAuto extends LinearOpMode {
                 loweringJewelServo.setPosition(0);
             }
         }
-
+//
         telemetry.addData("Servo Pos", turningJewelServo.getPosition());
         telemetry.update();
     }
@@ -214,3 +269,4 @@ public class BlueLeftAuto extends LinearOpMode {
         LEFT, RIGHT, NONE;
     }
 }
+

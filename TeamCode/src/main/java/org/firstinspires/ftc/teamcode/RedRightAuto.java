@@ -41,10 +41,15 @@ public class RedRightAuto extends LinearOpMode {
     public Servo loweringJewelServo;
     public Servo turningJewelServo;
 
+    Servo leftTop;
+    Servo rightTop;
+
     private DcMotor FrontLeftDrive = null;
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
+
+    private DcMotor LiftDrive = null;
 
     public double downPos = .85;
     public final double UP_POS = 0.3;
@@ -54,9 +59,15 @@ public class RedRightAuto extends LinearOpMode {
 
     public final double MIDDLE_POS = .5;
 
+    static final double CLOSE_TOP_LEFT = 0.38;
+    static final double CLOSE_TOP_RIGHT = 0.62;
+
     public double increment = .07;
 
     @Override public void runOpMode() {
+        rightTop = hardwareMap.get(Servo.class, "right top claw");
+        leftTop = hardwareMap.get(Servo.class, "left top claw");
+
         colorSensorL = hardwareMap.get(ColorSensor.class, "color sensor left");
         loweringJewelServo = hardwareMap.get(Servo.class, "lowering servo" );
         turningJewelServo = hardwareMap.get(Servo.class, "turning servo");
@@ -79,7 +90,6 @@ public class RedRightAuto extends LinearOpMode {
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
-        loweringJewelServo.setPosition(0);
         turningJewelServo.setPosition(.5);
 
         FrontLeftDrive.setPower(0);
@@ -201,5 +211,10 @@ public class RedRightAuto extends LinearOpMode {
         telemetry.addData("Servo Pos", turningJewelServo.getPosition());
         telemetry.update();
     }
+    public void close() {
+        rightTop.setPosition(CLOSE_TOP_RIGHT);
+        leftTop.setPosition(CLOSE_TOP_LEFT);
+    }
+
 
 }

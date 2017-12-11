@@ -40,14 +40,25 @@ public class RedLeftAuto extends LinearOpMode {
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
     public Servo turningJewelServo;
+    Servo leftTop;
+    Servo rightTop;
+    Servo rightBottom;
+    Servo leftBottom;
 
     private DcMotor FrontLeftDrive = null;
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
+    private DcMotor LiftDrive = null;
+
 
     public double downPos = 0.85;
     public final double UP_POS = 0.3;
+
+    static final double CLOSE_TOP_LEFT = 0.38;
+    static final double CLOSE_TOP_RIGHT = 0.62;
+    static final double OPEN_TOP_LEFT     =  0.95;
+    static final double OPEN_TOP_RIGHT     =  0.05;
 
     public final double LEFT_POS = .30;
     public final double RIGHT_POS = .70;
@@ -66,25 +77,38 @@ public class RedLeftAuto extends LinearOpMode {
         loweringJewelServo = hardwareMap.get(Servo.class, "lowering servo" );
         turningJewelServo = hardwareMap.get(Servo.class, "turning servo");
 
+
+        rightTop = hardwareMap.get(Servo.class, "right top claw");
+        leftTop = hardwareMap.get(Servo.class, "left top claw");
+        leftBottom = hardwareMap.get(Servo.class, "left bottom claw");
+        rightBottom = hardwareMap.get(Servo.class, "right bottom claw");
+
+
+
         FrontLeftDrive = hardwareMap.get(DcMotor.class, "front_left");
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
+        LiftDrive = hardwareMap.get(DcMotor.class, "lift");
+
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        LiftDrive.setDirection(DcMotor.Direction.FORWARD);
+
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LiftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
-        loweringJewelServo.setPosition(0);
         turningJewelServo.setPosition(.5);
 
         FrontLeftDrive.setPower(0);
@@ -100,6 +124,11 @@ public class RedLeftAuto extends LinearOpMode {
             telemetry.addData("Turing Servo:", turningJewelServo.getPosition());
             sleep(1000);
             red();
+
+
+            close();
+            lift();
+            sleep(200);
 
             sleep(1000);
             FrontLeftDrive.setPower(-.5);
@@ -219,5 +248,15 @@ public class RedLeftAuto extends LinearOpMode {
 
     public enum placement {
         LEFT, RIGHT, NONE;
+    }
+    public void close() {
+        rightTop.setPosition(CLOSE_TOP_RIGHT);
+        leftTop.setPosition(CLOSE_TOP_LEFT);
+    }
+    public void lift() {
+        LiftDrive.setPower(-.5);
+        sleep(500);
+        LiftDrive.setPower(0);
+
     }
 }

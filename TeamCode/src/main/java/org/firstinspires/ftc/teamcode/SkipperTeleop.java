@@ -67,6 +67,7 @@ public class SkipperTeleop extends LinearOpMode {
     double rightBottomPos = OPEN_BOTTOM_RIGHT;
     double leftBottomPos = OPEN_BOTTOM_LEFT;
     boolean openRelic = false;
+    public double speedMultiplier = .2;
 
 
     controllerPos previousDrive = controllerPos.ZERO;
@@ -178,19 +179,28 @@ public class SkipperTeleop extends LinearOpMode {
     }
     //DRIVING CONTROL
     public void moveRobot() {
+
+        if(gamepad1.y) {
+            if(speedMultiplier == .2) {
+                speedMultiplier = .1;
+            } else {
+                speedMultiplier = .2;
+            }
+        }
+
         double turn = gamepad1.right_stick_x;
         if(gamepad1.dpad_up && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
-            Drive(-0.8);
+            Drive(-4 * speedMultiplier);
         } else if(gamepad1.dpad_down && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_BACK;
-            Drive(0.8);
+            Drive(4 * speedMultiplier);
         } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_RIGHT;
-            Strafe(1);
+            Strafe((int) (5 * speedMultiplier));
         } else if(gamepad1.dpad_left && (previousDrive == controllerPos.STRAFE_LEFT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_LEFT;
-            Strafe(-1);
+            Strafe((int) (-5 * speedMultiplier));
         }  else if(turn > 0.3 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_RIGHT;
             turn(turn);

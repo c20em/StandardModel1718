@@ -32,9 +32,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="2 Blue Auto ", group ="Jewel")
+@Autonomous(name="Right Blue Auto ", group ="Jewel")
 public class BlueRightAuto extends LinearOpMode {
 
     public ColorSensor colorSensorL;
@@ -102,10 +103,11 @@ public class BlueRightAuto extends LinearOpMode {
             blue();
 
             sleep(1500);
-            FrontLeftDrive.setPower(.55);
-            BackLeftDrive.setPower(.55);
-            BackRightDrive.setPower(.5);
-            FrontRightDrive.setPower(.5);
+
+            FrontLeftDrive.setPower(.5);
+            BackLeftDrive.setPower(.5);
+            BackRightDrive.setPower(.55);
+            FrontRightDrive.setPower(.55);
 
             sleep(1000);
 
@@ -113,9 +115,10 @@ public class BlueRightAuto extends LinearOpMode {
             BackLeftDrive.setPower(0);
             BackRightDrive.setPower(0);
             FrontRightDrive.setPower(0);
+            loweringJewelServo.setPosition(0);
 
             sleep(50000);
-
+            stop();
         }
         telemetry.addData("Running", "False");
         telemetry.update();
@@ -147,7 +150,6 @@ public class BlueRightAuto extends LinearOpMode {
     }
 
 
-
     public void blue() {
         telemetry.addData("Red:", colorSensorL.red());
         telemetry.addData("Blue:", colorSensorL.blue());
@@ -174,6 +176,7 @@ public class BlueRightAuto extends LinearOpMode {
         } else {
             turningJewelServo.setPosition(.46);
             loweringJewelServo.setPosition(.95);
+
             sleep(1000);
 
             if (colorSensorL.red() > colorSensorL.blue()) {
@@ -198,7 +201,7 @@ public class BlueRightAuto extends LinearOpMode {
                 loweringJewelServo.setPosition(0);
             }
         }
-//
+
         telemetry.addData("Servo Pos", turningJewelServo.getPosition());
         telemetry.update();
     }

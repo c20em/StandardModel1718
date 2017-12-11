@@ -55,7 +55,7 @@ public class SkipperTeleop3 extends LinearOpMode {
     static final double CLOSE_HAND = 0.5;
 
     static final double TURNING_SERVO_RESET = 0.5;
-    static final double SLOWMODE = 0.5;
+    static final double SLOWMODE = 0.3;
 
 
     // Define class members
@@ -129,7 +129,7 @@ public class SkipperTeleop3 extends LinearOpMode {
         }
     }
     public enum controllerPos {
-        STRAFE_RIGHT, STRAFE_LEFT, DRIVE_FOWARD, DRIVE_BACK, TURN_RIGHT, TURN_LEFT, ZERO;
+        STRAFE_RIGHT, STRAFE_LEFT, DRIVE_FOWARD, DRIVE_BACK, TURN_RIGHT, TURN_LEFT, SLOW_MODE, ZERO;
     }
 
     public void moveJewelArm() {
@@ -180,10 +180,7 @@ public class SkipperTeleop3 extends LinearOpMode {
     public void moveRobot() {
         double drive = gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
-        if (gamepad1.right_trigger > .2) {
-            drive = drive * SLOWMODE;
-            turn = turn * SLOWMODE;
-        }
+
         if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
             Drive(drive);
@@ -202,7 +199,11 @@ public class SkipperTeleop3 extends LinearOpMode {
         } else if(turn < -0.25 &&(previousDrive == controllerPos.TURN_LEFT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_LEFT;
             turn(turn);
-        } else {
+        }  else if(gamepad1.right_trigger > 0.2 && (previousDrive == controllerPos.SLOW_MODE || previousDrive == controllerPos.ZERO)) {
+            previousDrive = controllerPos.SLOW_MODE;
+            Drive(-0.4);
+        }
+        else {
             previousDrive = controllerPos.ZERO;
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);
@@ -218,9 +219,9 @@ public class SkipperTeleop3 extends LinearOpMode {
     public void moveLift() {
         double LiftPower;
         if(gamepad2.left_bumper) {
-            LiftPower = 0.5;
+            LiftPower = 1;
         } else if (gamepad2.right_bumper) {
-            LiftPower = -0.5;
+            LiftPower = -1;
         } else {
             LiftPower = 0;
         }
