@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="1 Red Auto ", group ="Jewel")
+@Autonomous(name="Park Red Left", group ="Park")
 public class RedLeftAuto extends LinearOpMode {
 
     public ColorSensor colorSensorL;
@@ -42,8 +42,6 @@ public class RedLeftAuto extends LinearOpMode {
     public Servo turningJewelServo;
     Servo leftTop;
     Servo rightTop;
-    Servo rightBottom;
-    Servo leftBottom;
 
     private DcMotor FrontLeftDrive = null;
     private DcMotor FrontRightDrive = null;
@@ -57,8 +55,6 @@ public class RedLeftAuto extends LinearOpMode {
 
     static final double CLOSE_TOP_LEFT = 0.38;
     static final double CLOSE_TOP_RIGHT = 0.62;
-    static final double OPEN_TOP_LEFT     =  0.95;
-    static final double OPEN_TOP_RIGHT     =  0.05;
 
     public final double LEFT_POS = .30;
     public final double RIGHT_POS = .70;
@@ -66,11 +62,6 @@ public class RedLeftAuto extends LinearOpMode {
     public final double MIDDLE_POS = .5;
 
     public double increment = .07;
-
-    public placement myPlacement;
-
-    public alliance team;
-
 
     @Override public void runOpMode() {
         colorSensorL = hardwareMap.get(ColorSensor.class, "color sensor left");
@@ -80,8 +71,6 @@ public class RedLeftAuto extends LinearOpMode {
 
         rightTop = hardwareMap.get(Servo.class, "right top claw");
         leftTop = hardwareMap.get(Servo.class, "left top claw");
-        leftBottom = hardwareMap.get(Servo.class, "left bottom claw");
-        rightBottom = hardwareMap.get(Servo.class, "right bottom claw");
 
 
 
@@ -131,6 +120,7 @@ public class RedLeftAuto extends LinearOpMode {
             sleep(200);
 
             sleep(1000);
+
             FrontLeftDrive.setPower(-.5);
             BackLeftDrive.setPower(-.5);
             BackRightDrive.setPower(-.55);
@@ -254,7 +244,7 @@ public class RedLeftAuto extends LinearOpMode {
         leftTop.setPosition(CLOSE_TOP_LEFT);
     }
     public void lift() {
-        LiftDrive.setPower(-.5);
+        LiftDrive.setPower(-0.5);
         sleep(500);
         LiftDrive.setPower(0);
 

@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="2 Red Auto ", group ="Jewel")
+@Autonomous(name="Park Red Right ", group ="Park")
 public class RedRightAuto extends LinearOpMode {
 
     public ColorSensor colorSensorL;
@@ -105,8 +105,10 @@ public class RedRightAuto extends LinearOpMode {
             telemetry.addData("Turing Servo:", turningJewelServo.getPosition());
             sleep(1000);
             red();
+            close();
+            lift();
 
-            sleep(1500);
+            sleep(1000);
 
             FrontLeftDrive.setPower(-.55);
             BackLeftDrive.setPower(-.55);
@@ -214,6 +216,12 @@ public class RedRightAuto extends LinearOpMode {
     public void close() {
         rightTop.setPosition(CLOSE_TOP_RIGHT);
         leftTop.setPosition(CLOSE_TOP_LEFT);
+    }
+    public void lift() {
+        LiftDrive.setPower(-.5);
+        sleep(400);
+        LiftDrive.setPower(0);
+
     }
 
 

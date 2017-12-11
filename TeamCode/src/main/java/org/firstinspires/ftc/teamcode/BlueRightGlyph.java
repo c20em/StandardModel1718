@@ -44,7 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-@Autonomous(name="GLYPH Right Blue", group ="Glyph")
+@Autonomous(name="Glyph Right Blue", group ="Glyph")
 public class BlueRightGlyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;

@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Red Jewel ", group ="Jewel")
+@Autonomous(name="Red Jewel ", group = "Jewel")
 public class RedJewel extends LinearOpMode {
 
     public ColorSensor colorSensorL;

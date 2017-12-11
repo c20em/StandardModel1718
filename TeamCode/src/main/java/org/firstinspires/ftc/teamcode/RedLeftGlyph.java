@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="GLYPH Left Red Auto ", group ="Jewel")
+@Autonomous(name="Glyph Red Left ", group ="Glyph")
 public class RedLeftGlyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;

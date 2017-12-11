@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Skipper Teleop on DPad" +
-        "", group="Linear Opmode")
+@TeleOp(name="Skipper Teleop on DPad", group="Linear Opmode")
 public class SkipperTeleop extends LinearOpMode {
 
     // Declare OpMode members.

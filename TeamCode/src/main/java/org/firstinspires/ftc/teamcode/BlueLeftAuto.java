@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Blue Left Auto", group ="Jewel")
+@Autonomous(name="Park Blue Left ", group = "Park")
 public class BlueLeftAuto extends LinearOpMode {
 
     public ColorSensor colorSensorL;
@@ -77,12 +77,6 @@ public class BlueLeftAuto extends LinearOpMode {
         loweringJewelServo = hardwareMap.get(Servo.class, "lowering servo" );
         turningJewelServo = hardwareMap.get(Servo.class, "turning servo");
 
-
-        rightTop = hardwareMap.get(Servo.class, "right top claw");
-        leftTop = hardwareMap.get(Servo.class, "left top claw");
-        leftBottom = hardwareMap.get(Servo.class, "left bottom claw");
-        rightBottom = hardwareMap.get(Servo.class, "right bottom claw");
-
         FrontLeftDrive = hardwareMap.get(DcMotor.class, "front_left");
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
@@ -123,49 +117,7 @@ public class BlueLeftAuto extends LinearOpMode {
             BackRightDrive.setPower(.5);
             FrontRightDrive.setPower(.5);
 
-            sleep(800);
-
-            leftTop.setPosition(CLOSE_TOP_LEFT);
-
-            FrontLeftDrive.setPower(.55);
-            BackLeftDrive.setPower(-.55);
-            BackRightDrive.setPower(.5);
-            FrontRightDrive.setPower(-.5);
-
-            sleep(550);
-
-            rightBottom.setPosition(OPEN_BOTTOM_RIGHT);
-            leftBottom.setPosition(OPEN_BOTTOM_LEFT);
-            leftTop.setPosition(OPEN_TOP_LEFT);
-            rightTop.setPosition(OPEN_TOP_RIGHT);
-
-            FrontLeftDrive.setPower(.55);
-            BackLeftDrive.setPower(.55);
-            BackRightDrive.setPower(.5);
-            FrontRightDrive.setPower(.5);
-
-            sleep(400);
-
-            FrontLeftDrive.setPower(-.55);
-            BackLeftDrive.setPower(-.55);
-            BackRightDrive.setPower(-.5);
-            FrontRightDrive.setPower(-.5);
-
-            sleep(400);
-
-            FrontLeftDrive.setPower(.55);
-            BackLeftDrive.setPower(.55);
-            BackRightDrive.setPower(.5);
-            FrontRightDrive.setPower(.5);
-
-            sleep(700);
-
-            FrontLeftDrive.setPower(-.55);
-            BackLeftDrive.setPower(-.55);
-            BackRightDrive.setPower(-.5);
-            FrontRightDrive.setPower(-.5);
-
-            sleep(400);
+            sleep(1000);
 
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);

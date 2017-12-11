@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="GLYPH Right Red", group ="Glyph")
+@Autonomous(name="Glyph Red Right", group ="Glyph")
 public class RedRightGlyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;
@@ -58,11 +58,6 @@ public class RedRightGlyph extends LinearOpMode {
     static final double CLOSE_TOP_RIGHT = 0.62;
     static final double OPEN_TOP_LEFT     =  0.95;
     static final double OPEN_TOP_RIGHT     =  0.05;
-
-    static final double SEMI_OPEN_BOTTOM_RIGHT = 0.65;
-    static final double SEMI_OPEN_BOTTOM_LEFT = 0.3;
-    static final double SEMI_OPEN_TOP_RIGHT = 0.15;
-    static final double SEMI_OPEN_TOP_LEFT = 0.48;
 
     public double downPos = .85;
     public final double UP_POS = 0.3;

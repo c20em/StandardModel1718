@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Right Blue Auto ", group ="Jewel")
+@Autonomous(name="Park Blue Left ", group ="Park")
 public class BlueRightAuto extends LinearOpMode {
 
     public ColorSensor colorSensorL;

@@ -34,81 +34,65 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
-@Autonomous(name="GLYPH Left Blue", group ="Glyph")
-class BlueLeftGlpyh extends LinearOpMode  {
+@Autonomous(name="Glyph Blue Left", group = "Glyph")
+public class BlueLeftGlyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
     public Servo turningJewelServo;
 
-    Servo leftTop;
-    Servo rightTop;
-    Servo rightBottom;
-    Servo leftBottom;
+    public Servo leftTop;
+    public Servo rightTop;
+    public Servo rightBottom;
+    public Servo leftBottom;
 
     private DcMotor FrontLeftDrive = null;
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
 
-    private DcMotor LiftDrive = null;
-
-
-    static final double CLOSE_TOP_LEFT = 0.38;
-    static final double CLOSE_TOP_RIGHT = 0.62;
-    static final double OPEN_TOP_LEFT     =  0.95;
-    static final double OPEN_TOP_RIGHT     =  0.05;
-
-    static final double SEMI_OPEN_BOTTOM_RIGHT = 0.65;
-    static final double SEMI_OPEN_BOTTOM_LEFT = 0.3;
-    static final double SEMI_OPEN_TOP_RIGHT = 0.15;
-    static final double SEMI_OPEN_TOP_LEFT = 0.48;
-
     public double downPos = .85;
-    public final double UP_POS = 0.2;
+    public final double UP_POS = 0.3;
 
     public final double LEFT_POS = .30;
     public final double RIGHT_POS = .70;
 
-    public final double MIDDLE_POS = .5;
+    static final double CLOSE_TOP_LEFT = 0.28;
+    static final double OPEN_TOP_LEFT     =  0.55;
+    static final double OPEN_TOP_RIGHT     =  0.28;
 
-    public double increment = .07;
+    static final double OPEN_BOTTOM_RIGHT =  0.7;
+    static final double OPEN_BOTTOM_LEFT = 0.15;
 
     @Override public void runOpMode() {
-        rightTop = hardwareMap.get(Servo.class, "right top claw");
-        leftTop = hardwareMap.get(Servo.class, "left top claw");
-
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
         colorSensorL = hardwareMap.get(ColorSensor.class, "color sensor left");
         loweringJewelServo = hardwareMap.get(Servo.class, "lowering servo" );
         turningJewelServo = hardwareMap.get(Servo.class, "turning servo");
+
+
+        rightTop = hardwareMap.get(Servo.class, "right top claw");
+        leftTop = hardwareMap.get(Servo.class, "left top claw");
+        leftBottom = hardwareMap.get(Servo.class, "left bottom claw");
+        rightBottom = hardwareMap.get(Servo.class, "right bottom claw");
 
         FrontLeftDrive = hardwareMap.get(DcMotor.class, "front_left");
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
-        LiftDrive = hardwareMap.get(DcMotor.class, "lift");
-
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        LiftDrive.setDirection(DcMotor.Direction.FORWARD);
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        LiftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
-       // loweringJewelServo.setPosition(0);
         turningJewelServo.setPosition(.5);
 
         FrontLeftDrive.setPower(0);
@@ -116,13 +100,9 @@ class BlueLeftGlpyh extends LinearOpMode  {
         BackRightDrive.setPower(0);
         FrontRightDrive.setPower(0);
 
-
-
         waitForStart();
 
         lower();
-        close();
-        lift();
 
         while(opModeIsActive()) {
             telemetry.addData("Turing Servo:", turningJewelServo.getPosition());
@@ -130,28 +110,54 @@ class BlueLeftGlpyh extends LinearOpMode  {
             blue();
 
             sleep(1500);
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(.55);
+            BackRightDrive.setPower(.5);
+            FrontRightDrive.setPower(.5);
 
-            FrontLeftDrive.setPower(.6);
-            BackLeftDrive.setPower(.6);
+            sleep(800);
+
+            leftTop.setPosition(CLOSE_TOP_LEFT);
+
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(-.55);
+            BackRightDrive.setPower(.5);
+            FrontRightDrive.setPower(-.5);
+
+            sleep(550);
+
+            rightBottom.setPosition(OPEN_BOTTOM_RIGHT);
+            leftBottom.setPosition(OPEN_BOTTOM_LEFT);
+            leftTop.setPosition(OPEN_TOP_LEFT);
+            rightTop.setPosition(OPEN_TOP_RIGHT);
+
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(.55);
+            BackRightDrive.setPower(.5);
+            FrontRightDrive.setPower(.5);
+
+            sleep(400);
+
+            FrontLeftDrive.setPower(-.55);
+            BackLeftDrive.setPower(-.55);
+            BackRightDrive.setPower(-.5);
+            FrontRightDrive.setPower(-.5);
+
+            sleep(400);
+
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(.55);
             BackRightDrive.setPower(.5);
             FrontRightDrive.setPower(.5);
 
             sleep(700);
 
+            FrontLeftDrive.setPower(-.55);
+            BackLeftDrive.setPower(-.55);
+            BackRightDrive.setPower(-.5);
+            FrontRightDrive.setPower(-.5);
 
-            FrontLeftDrive.setPower(0);
-            BackLeftDrive.setPower(0);
-            BackRightDrive.setPower(0);
-            FrontRightDrive.setPower(0);
-
-            open();
-
-            FrontLeftDrive.setPower(.5);
-            BackLeftDrive.setPower(.5);
-            BackRightDrive.setPower(.5);
-            FrontRightDrive.setPower(.5);
-
-            sleep(600);
+            sleep(400);
 
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);
@@ -246,19 +252,5 @@ class BlueLeftGlpyh extends LinearOpMode  {
         telemetry.addData("Servo Pos", turningJewelServo.getPosition());
         telemetry.update();
     }
-
-    public void close() {
-        rightTop.setPosition(CLOSE_TOP_RIGHT);
-        leftTop.setPosition(CLOSE_TOP_LEFT);
-    }
-
-    public void open() {
-        rightTop.setPosition(OPEN_TOP_RIGHT);
-        leftTop.setPosition(OPEN_TOP_LEFT);
-    }
-
-    public void lift() {
-        LiftDrive.setPower(.5);
-        sleep(100);
-    }
 }
+

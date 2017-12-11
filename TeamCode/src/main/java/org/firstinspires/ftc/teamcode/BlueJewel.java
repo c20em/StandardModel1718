@@ -36,7 +36,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="Blue Jewel ", group ="Jewel")
 public class BlueJewel extends LinearOpMode {
-
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
     public Servo turningJewelServo;
