@@ -40,8 +40,11 @@ public class RedLeftGlyph extends LinearOpMode {
     public ColorSensor colorSensorL;
     public Servo loweringJewelServo;
     public Servo turningJewelServo;
-    Servo leftTop;
-    Servo rightTop;
+
+    public Servo leftTop;
+    public Servo rightTop;
+    public Servo rightBottom;
+    public Servo leftBottom;
 
     private DcMotor FrontLeftDrive = null;
     private DcMotor FrontRightDrive = null;
@@ -49,25 +52,21 @@ public class RedLeftGlyph extends LinearOpMode {
     private DcMotor BackRightDrive = null;
     private DcMotor LiftDrive = null;
 
-
-    public double downPos = 0.85;
+    public double downPos = .85;
     public final double UP_POS = 0.3;
-
-    static final double CLOSE_TOP_LEFT = 0.38;
-    static final double CLOSE_TOP_RIGHT = 0.62;
-    static final double OPEN_TOP_LEFT     =  0.95;
-    static final double OPEN_TOP_RIGHT     =  0.05;
 
     public final double LEFT_POS = .30;
     public final double RIGHT_POS = .70;
 
-    public final double MIDDLE_POS = .5;
+    static final double OPEN_BOTTOM_RIGHT =  0.7;
+    static final double OPEN_BOTTOM_LEFT = 0.15;
+    static final double CLOSE_BOTTOM_RIGHT     =  0.55;
+    static final double CLOSE_BOTTOM_LEFT     =  0.4;
 
-    public double increment = .07;
-
-    public placement myPlacement;
-
-    public alliance team;
+    static final double CLOSE_TOP_LEFT = 0.28;
+    static final double CLOSE_TOP_RIGHT = 0.55;
+    static final double OPEN_TOP_LEFT     =  0.55;
+    static final double OPEN_TOP_RIGHT     =  0.28;
 
 
     @Override public void runOpMode() {
@@ -75,9 +74,10 @@ public class RedLeftGlyph extends LinearOpMode {
         loweringJewelServo = hardwareMap.get(Servo.class, "lowering servo" );
         turningJewelServo = hardwareMap.get(Servo.class, "turning servo");
 
-
         rightTop = hardwareMap.get(Servo.class, "right top claw");
         leftTop = hardwareMap.get(Servo.class, "left top claw");
+        leftBottom = hardwareMap.get(Servo.class, "left bottom claw");
+        rightBottom = hardwareMap.get(Servo.class, "right bottom claw");
 
 
         FrontLeftDrive = hardwareMap.get(DcMotor.class, "front_left");
@@ -148,11 +148,17 @@ public class RedLeftGlyph extends LinearOpMode {
 
             sleep(700);
 
-            FrontLeftDrive.setPower(.55);
+            FrontLeftDrive.setPower(-.55);
             BackLeftDrive.setPower(-.55);
-            BackRightDrive.setPower(.5);
+            BackRightDrive.setPower(-.5);
             FrontRightDrive.setPower(-.5);
             sleep(300);
+
+            FrontLeftDrive.setPower(.55);
+            BackLeftDrive.setPower(.55);
+            BackRightDrive.setPower(.5);
+            FrontRightDrive.setPower(.5);
+            sleep(500);
 
             FrontLeftDrive.setPower(-.55);
             BackLeftDrive.setPower(-.55);
@@ -263,14 +269,6 @@ public class RedLeftGlyph extends LinearOpMode {
         telemetry.update();
     }
 
-
-    public enum alliance {
-        RED, BLUE;
-    }
-
-    public enum placement {
-        LEFT, RIGHT, NONE;
-    }
     public void close() {
         rightTop.setPosition(CLOSE_TOP_RIGHT);
         leftTop.setPosition(CLOSE_TOP_LEFT);
@@ -284,5 +282,8 @@ public class RedLeftGlyph extends LinearOpMode {
     public void open() {
         rightTop.setPosition(OPEN_TOP_RIGHT);
         leftTop.setPosition(OPEN_TOP_LEFT);
+        leftBottom.setPosition(OPEN_BOTTOM_LEFT);
+        rightBottom.setPosition(OPEN_BOTTOM_RIGHT);
+
     }
 }
