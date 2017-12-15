@@ -3,15 +3,16 @@ package org.firstinspires.ftc.teamcode.OmNomNomNom;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /**
- * Created by student on 12/14/17.
+ * Created by Libby on 12/14/17.
  */
 
-@TeleOp(name="Skipper Teleop LEFT STICK and DPAD", group="Linear Opmode")
+@TeleOp(name="Om Nom Base", group="Linear Opmode")
 public class BaseChassis extends LinearOpMode {
 
     // Declare OpMode members.
@@ -20,12 +21,14 @@ public class BaseChassis extends LinearOpMode {
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
+    private DcMotor NomNomNom = null;
 
     //static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   75;
 
     // Define class members
     double strafepower = 1;
+    static final double NOM_POWER = .7;
 
     controllerPos previousDrive = controllerPos.ZERO;
 
@@ -39,16 +42,19 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
+        NomNomNom = hardwareMap.get(DcMotor.class, "nom");
 
         FrontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         BackRightDrive.setDirection(DcMotor.Direction.REVERSE);
         FrontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        NomNomNom.setDirection(DcMotor.Direction.FORWARD);
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -57,10 +63,9 @@ public class BaseChassis extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            telemetry.update();
-
+            Nom();
             moveRobot();
-
+            telemetry.update();
             sleep(CYCLE_MS);
             idle();
         }
@@ -144,7 +149,6 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive.setPower(drivePower);
 
         telemetry.addData("Motors", "drive power (%.2f)", drivePower);
-        telemetry.update();
     }
     public void turn(double turn){
         double Rpower = turn;
@@ -162,6 +166,18 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive.setPower(Rpower);
     }
 
+    public void Nom() {
+        double nompower = gamepad1.right_trigger;
+        nompower = Range.clip(nompower, -1.0, 1.0);
+
+        if(gamepad1.right_trigger > .2) {
+            NomNomNom.setPower(nompower);
+            telemetry.addLine("nomnomnomnomnomnomnomnom");
+        } else {
+            NomNomNom.setPower(0);
+            telemetry.addLine("no nom :(");
+        }
+    }
 
     //KEEPS MOTORS FROM STALLING
     public double readjustMotorPower(double motorPower) {
