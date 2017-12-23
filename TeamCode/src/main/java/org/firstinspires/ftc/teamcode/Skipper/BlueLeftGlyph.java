@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="Glyph Blue Left", group = "Glyph")
-@Disabled
+
 public class BlueLeftGlyph extends LinearOpMode {
 
     public ColorSensor colorSensorL;

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Skipper Teleop LEFT STICK and DPAD", group="Linear Opmode")
-@Disabled
+
 public class SkipperTeleop3 extends LinearOpMode {
 
     // Declare OpMode members.
