@@ -42,19 +42,19 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
- //       NomNomNom = hardwareMap.get(DcMotor.class, "nom");
+        NomNomNom = hardwareMap.get(DcMotor.class, "nom");
 
         FrontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         BackRightDrive.setDirection(DcMotor.Direction.REVERSE);
         FrontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-///        NomNomNom.setDirection(DcMotor.Direction.FORWARD);
+        NomNomNom.setDirection(DcMotor.Direction.FORWARD);
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-///        NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -63,7 +63,7 @@ public class BaseChassis extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-        //    Nom();
+            Nom();
             moveRobot();
             telemetry.update();
             sleep(CYCLE_MS);
@@ -165,19 +165,26 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive.setPower(Rpower);
         BackRightDrive.setPower(Rpower);
     }
-//
-//    public void Nom() {
-//        double nompower = gamepad1.right_trigger;
-//        nompower = Range.clip(nompower, -1.0, 1.0);
-//
-//        if(gamepad1.right_trigger > .2) {
-//            NomNomNom.setPower(nompower);
-//            telemetry.addLine("nomnomnomnomnomnomnomnom");
-//        } else {
-//            NomNomNom.setPower(0);
-//            telemetry.addLine("no nom :(");
-//        }
-//    }
+
+    public void Nom() {
+        double nomfoward = gamepad1.right_trigger;
+        double nombackward = gamepad1.left_trigger;
+        nomfoward = Range.clip(nomfoward, 0, 1);
+        nombackward = Range.clip(nombackward, 0, 1);
+
+        if(nomfoward > .2) {
+            NomNomNom.setPower(nomfoward);
+            telemetry.addLine("nomnomfoward" + nomfoward);
+        }
+        else if(nombackward > 0.2) {
+            NomNomNom.setPower(-nombackward);
+            telemetry.addLine("nomnombackward" + nombackward);
+        }
+        else {
+            NomNomNom.setPower(0);
+            telemetry.addLine("no nom :(");
+        }
+    }
 
     //KEEPS MOTORS FROM STALLING
     public double readjustMotorPower(double motorPower) {
