@@ -22,9 +22,13 @@ public class BaseChassis extends LinearOpMode {
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
     private DcMotor NomNomNom = null;
+    private DcMotor box = null;
+
 
     //static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   75;
+    static final double NOM_FORWARD_POWER = -.9;
+    static final double NOM_BACKWARD_POWER = NOM_FORWARD_POWER * -0.5;
 
     // Define class members
     double strafepower = 1;
@@ -43,19 +47,22 @@ public class BaseChassis extends LinearOpMode {
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
         NomNomNom = hardwareMap.get(DcMotor.class, "nom");
+        box = hardwareMap.get(DcMotor.class, "box");
 
-        FrontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        FrontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         NomNomNom.setDirection(DcMotor.Direction.FORWARD);
+        box.setDirection(DcMotor.Direction.FORWARD);
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        box.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -64,6 +71,7 @@ public class BaseChassis extends LinearOpMode {
         while (opModeIsActive()) {
 
             Nom();
+            flip();
             moveRobot();
             telemetry.update();
             sleep(CYCLE_MS);
@@ -76,8 +84,8 @@ public class BaseChassis extends LinearOpMode {
 
     //DRIVING CONTROL
     public void moveRobot() {
-        double drive = gamepad1.left_stick_y;
-        double turn = gamepad1.right_stick_x;
+        double drive = -gamepad1.left_stick_y;
+        double turn = -gamepad1.right_stick_x;
 
         if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
@@ -87,19 +95,16 @@ public class BaseChassis extends LinearOpMode {
             Drive(drive);
         } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_RIGHT;
-            Strafe(1);
+            Strafe(-1);
         } else if(gamepad1.dpad_left && (previousDrive == controllerPos.STRAFE_LEFT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_LEFT;
-            Strafe(-1);
+            Strafe(1);
         }  else if(turn > 0.25 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_RIGHT;
             turn(turn);
         } else if(turn < -0.25 &&(previousDrive == controllerPos.TURN_LEFT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_LEFT;
             turn(turn);
-        }  else if(gamepad1.right_trigger > 0.2 && (previousDrive == controllerPos.SLOW_MODE || previousDrive == controllerPos.ZERO)) {
-            previousDrive = controllerPos.SLOW_MODE;
-            Drive(-0.4);
         }
         else {
             previousDrive = controllerPos.ZERO;
@@ -165,7 +170,27 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive.setPower(Rpower);
         BackRightDrive.setPower(Rpower);
     }
-
+    public void flip () {
+        if(gamepad1.y) {
+            box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            box.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            box.setTargetPosition(360);
+            box.setPower(0.75);
+            while (box.isBusy() && opModeIsActive()) {
+                telemetry.addLine("Running box motor...Encoder Position = " + box.getCurrentPosition());
+            }
+            box.setPower(0);
+        } else if (gamepad1.a) {
+            box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            box.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            box.setTargetPosition(-360);
+            box.setPower(-0.75);
+            while (box.isBusy() && opModeIsActive()) {
+                telemetry.addLine("Running box motor...Encoder Position = " + box.getCurrentPosition());
+            }
+            box.setPower(0);
+        }
+    }
     public void Nom() {
         double nomfoward = gamepad1.right_trigger;
         double nombackward = gamepad1.left_trigger;
@@ -173,11 +198,11 @@ public class BaseChassis extends LinearOpMode {
         nombackward = Range.clip(nombackward, 0, 1);
 
         if(nomfoward > .2) {
-            NomNomNom.setPower(nomfoward);
+            NomNomNom.setPower(NOM_FORWARD_POWER);
             telemetry.addLine("nomnomfoward" + nomfoward);
         }
         else if(nombackward > 0.2) {
-            NomNomNom.setPower(-nombackward);
+            NomNomNom.setPower(NOM_BACKWARD_POWER);
             telemetry.addLine("nomnombackward" + nombackward);
         }
         else {
