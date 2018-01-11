@@ -21,6 +21,7 @@ public class BaseChassis extends LinearOpMode {
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
+    private DcMotor lift = null;
     private DcMotor NomNomNom = null;
     private DcMotor box = null;
 
@@ -32,10 +33,12 @@ public class BaseChassis extends LinearOpMode {
 
     // Define class members
     double strafepower = 1;
-    static final double NOM_POWER = .7;
+    static final double NOM_POWER = 1;
 
     controllerPos previousDrive = controllerPos.ZERO;
 
+    //boolean box position
+    boxPosition boxPos = boxPosition.DOWN;
 
     @Override
     public void runOpMode() {
@@ -46,6 +49,7 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
+        lift = hardwareMap.get(DcMotor.class, "lift");
         NomNomNom = hardwareMap.get(DcMotor.class, "nom");
         box = hardwareMap.get(DcMotor.class, "box");
 
@@ -54,6 +58,7 @@ public class BaseChassis extends LinearOpMode {
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        lift.setDirection(DcMotor.Direction.FORWARD);
         NomNomNom.setDirection(DcMotor.Direction.FORWARD);
         box.setDirection(DcMotor.Direction.FORWARD);
 
@@ -61,20 +66,23 @@ public class BaseChassis extends LinearOpMode {
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         box.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-
+        box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         while (opModeIsActive()) {
-
+            telemetry.addData("x stick", gamepad1.left_stick_x);
+            telemetry.addData("y stick", gamepad1.left_stick_y);
             Nom();
             flip();
             moveRobot();
+            moveLift();
             telemetry.update();
-            sleep(CYCLE_MS);
+    //        sleep(CYCLE_MS);
             idle();
         }
     }
@@ -171,29 +179,94 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive.setPower(Rpower);
     }
     public void flip () {
-        if(gamepad1.y) {
-            box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            box.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            box.setTargetPosition(360);
-            box.setPower(0.75);
-            while (box.isBusy() && opModeIsActive()) {
-                telemetry.addLine("Running box motor...Encoder Position = " + box.getCurrentPosition());
-            }
-            box.setPower(0);
-        } else if (gamepad1.a) {
-            box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            box.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            box.setTargetPosition(-360);
-            box.setPower(-0.75);
-            while (box.isBusy() && opModeIsActive()) {
-                telemetry.addLine("Running box motor...Encoder Position = " + box.getCurrentPosition());
-            }
+        if(gamepad2.dpad_up) {
+            telemetry.addLine("Dpad UP");
+            box.setPower(-0.4);
+        } else if(gamepad2.dpad_down) {
+            box.setPower(0.4);
+            telemetry.addLine("Dpad DOWN");
+        }
+        else {
             box.setPower(0);
         }
+//        if(gamepad2.y && ( boxPos == boxPosition.HALF_UP)){
+//            box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            box.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            box.setTargetPosition(-30);
+//
+//            box.setPower(1);
+//
+//            boxPos = boxPosition.UP;
+//
+//            while (box.isBusy() && opModeIsActive()) {
+//                telemetry.addLine("Running box motor...Encoder Position = " + box.getCurrentPosition());
+//            }
+//        }
+//        else if (gamepad2.x && (boxPos == boxPosition.DOWN)) {
+//            box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            box.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            box.setTargetPosition(-40);
+//
+//            box.setPower(1);
+//
+//            boxPos = boxPosition.HALF_UP;
+//            while (box.isBusy() && opModeIsActive()) {
+//                telemetry.addLine("Running box motor...Encoder Position = " + box.getCurrentPosition());
+//            }
+//        } else if(gamepad2.a && (boxPos == boxPosition.HALF_UP || boxPos == boxPosition.UP)) {
+//            if(boxPos == boxPosition.UP) {
+//                box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//                box.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                box.setTargetPosition(80);
+//
+//                box.setPower(-1);
+//
+//                boxPos = boxPosition.DOWN;
+//
+//                while (box.isBusy() && opModeIsActive()) {
+//
+//                }
+//                telemetry.addLine("Running box motor...Encoder Position = " + box.getCurrentPosition());
+//            } else if(boxPos == boxPosition.HALF_UP)
+//                box.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//                box.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                box.setTargetPosition(40);
+//
+//                box.setPower(-1);
+//
+//                boxPos = boxPosition.DOWN;
+//
+//                while (box.isBusy() && opModeIsActive()) {
+//                    telemetry.addLine("Running box motor...Encoder Position = " + box.getCurrentPosition());
+//            }
+
+  //      }
+
+//
+//
+//        box.setPower(0);
+
     }
+
+    public void moveLift() {
+        double LiftPower;
+        if(gamepad2.left_bumper) {
+            LiftPower = 1;
+        } else if (gamepad2.right_bumper) {
+            LiftPower = -1;
+        } else {
+            LiftPower = 0;
+        }
+        lift.setPower(LiftPower);
+    }
+
+    public enum boxPosition {
+        HALF_UP, UP, DOWN;
+    }
+
     public void Nom() {
-        double nomfoward = gamepad1.right_trigger;
-        double nombackward = gamepad1.left_trigger;
+        double nomfoward = gamepad2.right_trigger;
+        double nombackward = gamepad2.left_trigger;
         nomfoward = Range.clip(nomfoward, 0, 1);
         nombackward = Range.clip(nombackward, 0, 1);
 
@@ -207,7 +280,7 @@ public class BaseChassis extends LinearOpMode {
         }
         else {
             NomNomNom.setPower(0);
-            telemetry.addLine("no nom :(");
+//            telemetry.addLine("no nom :(");
         }
     }
 
