@@ -30,8 +30,8 @@ public class BaseChassis extends LinearOpMode {
 
     //static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   75;
-    static final double NOM_FORWARD_POWER = -1;
-    static final double NOM_BACKWARD_POWER = 1;
+    static final double NOM_FORWARD_POWER = -.8;
+    static final double NOM_BACKWARD_POWER = .8;
 
     // Define class members
     double strafepower = 1;
@@ -180,21 +180,35 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive.setPower(Rpower);
     }
     public void flip () {
-        telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
-        telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
-        if(gamepad2.a){
-            leftBoxServo.setPosition(.75);
-            rightBoxServo.setPosition(.2);
+//        telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
+//        telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
+//        if(gamepad2.a){
+//            leftBoxServo.setPosition(.75);
+//            rightBoxServo.setPosition(.3);
+//        } else if(gamepad2.y){
+//            leftBoxServo.setPosition(.1);
+//            rightBoxServo.setPosition(.95);
+//        } else if(gamepad2.x &&  leftBoxServo.getPosition() >.1 && rightBoxServo.getPosition() <.95){
+//            leftBoxServo.setPosition(leftBoxServo.getPosition()-.01);
+//            rightBoxServo.setPosition(rightBoxServo.getPosition()+.01);
+//        } else if(gamepad2.b &&  leftBoxServo.getPosition() <.75 && rightBoxServo.getPosition() >.3){
+//            leftBoxServo.setPosition(leftBoxServo.getPosition()+.01);
+//            rightBoxServo.setPosition(rightBoxServo.getPosition()-.01);
+//        }
+        if(gamepad2.dpad_down){
+            leftBoxServo.setPosition(leftBoxServo.getPosition()-.005);
+            telemetry.addLine("left current position: " + leftBoxServo.getPosition());
+        } else if(gamepad2.dpad_up){
+            leftBoxServo.setPosition(leftBoxServo.getPosition()+.005);
+            telemetry.addLine("left current position: " + leftBoxServo.getPosition());
         } else if(gamepad2.y){
-            leftBoxServo.setPosition(.1);
-            rightBoxServo.setPosition(.85);
-        } else if(gamepad2.x &&  leftBoxServo.getPosition() >.1 && rightBoxServo.getPosition() <.85){
-            leftBoxServo.setPosition(leftBoxServo.getPosition()-.01);
-            rightBoxServo.setPosition(rightBoxServo.getPosition()+.01);
-        } else if(gamepad2.b &&  leftBoxServo.getPosition() <.75 && rightBoxServo.getPosition() >.2){
-            leftBoxServo.setPosition(leftBoxServo.getPosition()+.01);
-            rightBoxServo.setPosition(rightBoxServo.getPosition()-.01);
+            rightBoxServo.setPosition(rightBoxServo.getPosition()-.005);
+            telemetry.addLine("right current position: " + rightBoxServo.getPosition());
+        } else if(gamepad2.a){
+            rightBoxServo.setPosition(rightBoxServo.getPosition()+.005);
+            telemetry.addLine("right current position: " + rightBoxServo.getPosition());
         }
+
     }
 
 
