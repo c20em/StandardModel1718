@@ -30,8 +30,12 @@ public class BaseChassis extends LinearOpMode {
 
     //static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   75;
-    static final double NOM_FORWARD_POWER = -.8;
-    static final double NOM_BACKWARD_POWER = .8;
+    static final double NOM_FORWARD_POWER = -1;
+    static final double NOM_BACKWARD_POWER = 1;
+    static final double BOX_RIGHT_DOWN = .255;
+    static final double BOX_LEFT_DOWN = .695;
+    static final double BOX_RIGHT_UP = .81;
+    static final double BOX_LEFT_UP = .12;
 
     // Define class members
     double strafepower = 1;
@@ -180,21 +184,22 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive.setPower(Rpower);
     }
     public void flip () {
-//        telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
-//        telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
-//        if(gamepad2.a){
-//            leftBoxServo.setPosition(.75);
-//            rightBoxServo.setPosition(.3);
-//        } else if(gamepad2.y){
-//            leftBoxServo.setPosition(.1);
-//            rightBoxServo.setPosition(.95);
-//        } else if(gamepad2.x &&  leftBoxServo.getPosition() >.1 && rightBoxServo.getPosition() <.95){
-//            leftBoxServo.setPosition(leftBoxServo.getPosition()-.01);
-//            rightBoxServo.setPosition(rightBoxServo.getPosition()+.01);
-//        } else if(gamepad2.b &&  leftBoxServo.getPosition() <.75 && rightBoxServo.getPosition() >.3){
-//            leftBoxServo.setPosition(leftBoxServo.getPosition()+.01);
-//            rightBoxServo.setPosition(rightBoxServo.getPosition()-.01);
-//        }
+        telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
+        telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
+        if(gamepad2.a){
+            leftBoxServo.setPosition(BOX_LEFT_DOWN);
+            rightBoxServo.setPosition(BOX_RIGHT_DOWN);
+        } else if(gamepad2.y){
+            leftBoxServo.setPosition(BOX_LEFT_UP);
+            rightBoxServo.setPosition(BOX_RIGHT_UP);
+        }
+         if(gamepad2.x &&  leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP){
+            leftBoxServo.setPosition(leftBoxServo.getPosition()-.01);
+            rightBoxServo.setPosition(rightBoxServo.getPosition()+.01);
+        } else if(gamepad2.b &&  leftBoxServo.getPosition() <BOX_LEFT_DOWN && rightBoxServo.getPosition() >BOX_RIGHT_DOWN){
+            leftBoxServo.setPosition(leftBoxServo.getPosition()+.01);
+            rightBoxServo.setPosition(rightBoxServo.getPosition()-.01);
+        }
         if(gamepad2.dpad_down){
             leftBoxServo.setPosition(leftBoxServo.getPosition()-.005);
             telemetry.addLine("left current position: " + leftBoxServo.getPosition());
@@ -229,8 +234,8 @@ public class BaseChassis extends LinearOpMode {
     }
 
     public void Nom() {
-        double nomfoward = gamepad1.right_trigger;
-        double nombackward = gamepad1.left_trigger;
+        double nomfoward = gamepad1.left_trigger;
+        double nombackward = gamepad1.right_trigger;
         nomfoward = Range.clip(nomfoward, 0, 1);
         nombackward = Range.clip(nombackward, 0, 1);
 
