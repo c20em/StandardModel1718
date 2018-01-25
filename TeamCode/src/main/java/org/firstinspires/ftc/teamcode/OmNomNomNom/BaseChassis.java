@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OmNomNomNom;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -25,6 +26,9 @@ public class BaseChassis extends LinearOpMode {
     private DcMotor NomNomNom = null;
     private Servo rightBoxServo = null;
     private Servo leftBoxServo = null;
+    private CRServo pushBackServoLeft = null;
+    private CRServo pushBackServoRight = null;
+
 
 
 
@@ -32,10 +36,12 @@ public class BaseChassis extends LinearOpMode {
     static final int    CYCLE_MS    =   75;
     static final double NOM_FORWARD_POWER = -1;
     static final double NOM_BACKWARD_POWER = 1;
-    static final double BOX_RIGHT_DOWN = .255;
-    static final double BOX_LEFT_DOWN = .695;
+    static final double BOX_RIGHT_DOWN = .34;
+    static final double BOX_LEFT_DOWN = .61;
     static final double BOX_RIGHT_UP = .81;
     static final double BOX_LEFT_UP = .12;
+    static final double Push_Back_Power = 1;
+
 
     // Define class members
     double strafepower = 1;
@@ -59,7 +65,8 @@ public class BaseChassis extends LinearOpMode {
         NomNomNom = hardwareMap.get(DcMotor.class, "nom");
         rightBoxServo = hardwareMap.get(Servo.class, "right_box_servo");
         leftBoxServo = hardwareMap.get(Servo.class, "left_box_servo");
-
+        pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
+        pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
 
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -86,6 +93,7 @@ public class BaseChassis extends LinearOpMode {
             flip();
             moveRobot();
             moveLift();
+            pushBack();
             telemetry.update();
     //        sleep(CYCLE_MS);
             idle();
@@ -200,22 +208,21 @@ public class BaseChassis extends LinearOpMode {
             leftBoxServo.setPosition(leftBoxServo.getPosition()+.01);
             rightBoxServo.setPosition(rightBoxServo.getPosition()-.01);
         }
-        if(gamepad2.dpad_down){
-            leftBoxServo.setPosition(leftBoxServo.getPosition()-.005);
-            telemetry.addLine("left current position: " + leftBoxServo.getPosition());
-        } else if(gamepad2.dpad_up){
-            leftBoxServo.setPosition(leftBoxServo.getPosition()+.005);
-            telemetry.addLine("left current position: " + leftBoxServo.getPosition());
-        } else if(gamepad2.y){
-            rightBoxServo.setPosition(rightBoxServo.getPosition()-.005);
-            telemetry.addLine("right current position: " + rightBoxServo.getPosition());
-        } else if(gamepad2.a){
-            rightBoxServo.setPosition(rightBoxServo.getPosition()+.005);
-            telemetry.addLine("right current position: " + rightBoxServo.getPosition());
-        }
-
     }
-
+    public void pushBack(){
+        if(gamepad2.dpad_up){
+            pushBackServoLeft.setPower(Push_Back_Power);
+            pushBackServoRight.setPower(-Push_Back_Power);
+        }
+        else if(gamepad2.dpad_down){
+            pushBackServoLeft.setPower(-Push_Back_Power);
+            pushBackServoRight.setPower(Push_Back_Power);
+        }
+        else{
+            pushBackServoLeft.setPower(0);
+            pushBackServoRight.setPower(0);
+        }
+    }
 
     public void moveLift() {
         double LiftPower;
@@ -246,6 +253,8 @@ public class BaseChassis extends LinearOpMode {
         else if(nombackward > 0.2) {
             NomNomNom.setPower(NOM_BACKWARD_POWER);
             telemetry.addLine("nomnombackward" + nombackward);
+            pushBackServoLeft.setPower(-Push_Back_Power);
+            pushBackServoRight.setPower(Push_Back_Power);
         }
         else {
             NomNomNom.setPower(0);
