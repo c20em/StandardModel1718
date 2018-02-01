@@ -82,7 +82,6 @@ public class BaseChassis extends LinearOpMode {
             moveRobot();
             moveLift();
             telemetry.update();
-    //        sleep(CYCLE_MS);
             idle();
         }
     }
@@ -225,7 +224,6 @@ public class BaseChassis extends LinearOpMode {
         }
         else {
             NomNomNom.setPower(0);
-//            telemetry.addLine("no nom :(");
         }
     }
 
