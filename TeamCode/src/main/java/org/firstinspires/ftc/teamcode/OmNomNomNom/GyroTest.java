@@ -20,18 +20,14 @@ import org.firstinspires.ftc.teamcode.Skipper.BlueLeftAuto;
 /**
  * Created by student on 1/14/18.
  */
-@Autonomous(name="Red Left Glyph", group="Autonomous")
-public class TurnGlyph extends LinearOpMode {
+@Autonomous(name="Gyro", group="Sensor")
+public class GyroTest extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FrontLeftDrive = null;
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
-    private DcMotor lift = null;
-    private DcMotor NomNomNom = null;
-    private Servo rightBoxServo = null;
-    private Servo leftBoxServo = null;
 
     BNO055IMU imu;
 
@@ -61,25 +57,19 @@ public class TurnGlyph extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
-        lift = hardwareMap.get(DcMotor.class, "lift");
-        NomNomNom = hardwareMap.get(DcMotor.class, "nom");
-        rightBoxServo = hardwareMap.get(Servo.class, "right_box_servo");
-        leftBoxServo = hardwareMap.get(Servo.class, "left_box_servo");
 
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        lift.setDirection(DcMotor.Direction.FORWARD);
-        NomNomNom.setDirection(DcMotor.Direction.FORWARD);
+
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
@@ -91,62 +81,19 @@ public class TurnGlyph extends LinearOpMode {
 
         waitForStart();
 
-        while(opModeIsActive()) {
-
-            FrontLeftDrive.setPower(.6);
-            BackLeftDrive.setPower(.6);
-            BackRightDrive.setPower(.6);
-            FrontRightDrive.setPower(.6);
-
-            sleep(1000);
+        while (opModeIsActive()) {
 
             turnToAngle(90);
 
-            sleep(200);
+            sleep(1000);
+
+            telemetry.addLine("Turned!");
 
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);
             BackRightDrive.setPower(0);
             FrontRightDrive.setPower(0);
 
-            NomNomNom.setPower(-1);
-
-            sleep(750);
-
-            NomNomNom.setPower(0);
-
-            FrontLeftDrive.setPower(.6);
-            BackLeftDrive.setPower(.6);
-            BackRightDrive.setPower(.6);
-            FrontRightDrive.setPower(.6);
-
-            sleep(200);
-
-            FrontLeftDrive.setPower(-.6);
-            BackLeftDrive.setPower(-.6);
-            BackRightDrive.setPower(-.6);
-            FrontRightDrive.setPower(-.6);
-
-            sleep(400);
-
-            FrontLeftDrive.setPower(.6);
-            BackLeftDrive.setPower(.6);
-            BackRightDrive.setPower(.6);
-            FrontRightDrive.setPower(.6);
-
-                sleep(400);
-
-                FrontLeftDrive.setPower(-.6);
-                BackLeftDrive.setPower(-.6);
-                BackRightDrive.setPower(-.6);
-                FrontRightDrive.setPower(-.6);
-
-                sleep(400);
-
-                FrontLeftDrive.setPower(0);
-                BackLeftDrive.setPower(0);
-                BackRightDrive.setPower(0);
-                FrontRightDrive.setPower(0);
 
         }
         telemetry.addData("Running", "False");
@@ -181,11 +128,17 @@ public class TurnGlyph extends LinearOpMode {
             while (angle >= current + 5 && angle <= current -5) {
                 spinClockwise(.75);
                 current = angles.firstAngle;
+
+                telemetry.addLine("Angle: " + current);
+                telemetry.update();
             }
         } else {
             while (angle >= current + 5 && angle <= current -5) {
                 spinCounter(.75);
                 current = angles.firstAngle;
+
+                telemetry.addLine("Angle: " + current);
+                telemetry.update();
             }
         }
     }

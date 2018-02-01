@@ -23,22 +23,24 @@ public class BaseChassis extends LinearOpMode {
     private DcMotor BackRightDrive = null;
     private DcMotor lift = null;
     private DcMotor NomNomNom = null;
+    private Servo rightBoxServo = null;
+    private Servo leftBoxServo = null;
 
-    public Servo boxRight = null;
-    public Servo boxLeft = null;
+
 
     //static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   75;
-    static final double NOM_FORWARD_POWER = -.9;
-    static final double NOM_BACKWARD_POWER = NOM_FORWARD_POWER * -0.5;
+    static final double NOM_FORWARD_POWER = -1;
+    static final double NOM_BACKWARD_POWER = 1;
 
     // Define class members
     double strafepower = 1;
     static final double NOM_POWER = 1;
 
-    stickPos prevpos = stickPos.Zero;
     controllerPos previousDrive = controllerPos.ZERO;
-    double servopos = 0.5;
+
+    //boolean box position
+    boxPosition boxPos = boxPosition.DOWN;
 
     @Override
     public void runOpMode() {
@@ -51,9 +53,10 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
         lift = hardwareMap.get(DcMotor.class, "lift");
         NomNomNom = hardwareMap.get(DcMotor.class, "nom");
+        rightBoxServo = hardwareMap.get(Servo.class, "right_box_servo");
+        leftBoxServo = hardwareMap.get(Servo.class, "left_box_servo");
 
-        boxLeft = hardwareMap.get(Servo.class, "box left");
-        boxRight = hardwareMap.get(Servo.class, "box right");
+
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -77,10 +80,10 @@ public class BaseChassis extends LinearOpMode {
             telemetry.addData("y stick", gamepad1.left_stick_y);
             Nom();
             flip();
-            telemetry.addLine("servopos = " + servopos);
             moveRobot();
             moveLift();
             telemetry.update();
+    //        sleep(CYCLE_MS);
             idle();
         }
     }
@@ -176,24 +179,24 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive.setPower(Rpower);
         BackRightDrive.setPower(Rpower);
     }
-    public enum stickPos {
-        NotZero, Zero;
-    }
     public void flip () {
-        if (gamepad1.dpad_up && prevpos == stickPos.Zero) {
-            prevpos = stickPos.NotZero;
-            servopos++;
-            boxRight.setPosition(servopos);
-            boxLeft.setPosition(servopos);
-        } else if(gamepad2.dpad_down && prevpos == stickPos.Zero) {
-            prevpos = stickPos.NotZero;
-            servopos--;
-            boxRight.setPosition(servopos);
-            boxLeft.setPosition(servopos);
-        } else {
-            prevpos = stickPos.Zero;
+        telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
+        telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
+        if(gamepad2.a){
+            leftBoxServo.setPosition(.75);
+            rightBoxServo.setPosition(.2);
+        } else if(gamepad2.y){
+            leftBoxServo.setPosition(.1);
+            rightBoxServo.setPosition(.85);
+        } else if(gamepad2.x &&  leftBoxServo.getPosition() >.1 && rightBoxServo.getPosition() <.85){
+            leftBoxServo.setPosition(leftBoxServo.getPosition()-.01);
+            rightBoxServo.setPosition(rightBoxServo.getPosition()+.01);
+        } else if(gamepad2.b &&  leftBoxServo.getPosition() <.75 && rightBoxServo.getPosition() >.2){
+            leftBoxServo.setPosition(leftBoxServo.getPosition()+.01);
+            rightBoxServo.setPosition(rightBoxServo.getPosition()-.01);
         }
     }
+
 
     public void moveLift() {
         double LiftPower;
@@ -207,25 +210,27 @@ public class BaseChassis extends LinearOpMode {
         lift.setPower(LiftPower);
     }
 
+    public enum boxPosition {
+        HALF_UP, UP, DOWN;
+    }
+
     public void Nom() {
-        if(gamepad1.right_trigger > .2) {
+        double nomfoward = gamepad1.right_trigger;
+        double nombackward = gamepad1.left_trigger;
+        nomfoward = Range.clip(nomfoward, 0, 1);
+        nombackward = Range.clip(nombackward, 0, 1);
+
+        if(nomfoward > .2) {
             NomNomNom.setPower(NOM_FORWARD_POWER);
-            telemetry.addLine("nomnomfoward" + gamepad1.right_trigger);
+            telemetry.addLine("nomnomfoward" + nomfoward);
         }
-        else if(gamepad1.left_trigger > 0.2) {
+        else if(nombackward > 0.2) {
             NomNomNom.setPower(NOM_BACKWARD_POWER);
-            telemetry.addLine("nomnombackward" + gamepad1.left_trigger);
-        }
-        else  if(gamepad2.right_trigger > .2) {
-            NomNomNom.setPower(NOM_FORWARD_POWER);
-            telemetry.addLine("nomnomfoward" + gamepad1.right_trigger);
-        }
-        else if(gamepad2.left_trigger > 0.2) {
-            NomNomNom.setPower(NOM_BACKWARD_POWER);
-            telemetry.addLine("nomnombackward" + gamepad1.left_trigger);
+            telemetry.addLine("nomnombackward" + nombackward);
         }
         else {
             NomNomNom.setPower(0);
+//            telemetry.addLine("no nom :(");
         }
     }
 
