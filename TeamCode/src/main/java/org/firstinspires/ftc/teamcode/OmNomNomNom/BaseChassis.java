@@ -29,21 +29,18 @@ public class BaseChassis extends LinearOpMode {
 
 
     //static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
-    static final int    CYCLE_MS    =   75;
+
     static final double NOM_FORWARD_POWER = -1;
     static final double NOM_BACKWARD_POWER = 1;
 
     // Define class members
     double strafepower = 1;
-    static final double NOM_POWER = 1;
 
     controllerPos previousDrive = controllerPos.ZERO;
 
-    //boolean box position
-    boxPosition boxPos = boxPosition.DOWN;
-
     @Override
     public void runOpMode() {
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -74,7 +71,9 @@ public class BaseChassis extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
         runtime.reset();
+
         while (opModeIsActive()) {
             telemetry.addData("x stick", gamepad1.left_stick_x);
             telemetry.addData("y stick", gamepad1.left_stick_y);
@@ -208,10 +207,6 @@ public class BaseChassis extends LinearOpMode {
             LiftPower = 0;
         }
         lift.setPower(LiftPower);
-    }
-
-    public enum boxPosition {
-        HALF_UP, UP, DOWN;
     }
 
     public void Nom() {
