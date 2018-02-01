@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OmNomNomNom;
+package org.firstinspires.ftc.teamcode.OmNomNomNomAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.Skipper.BlueLeftAuto;
 /**
  * Created by student on 1/14/18.
  */
-@Autonomous(name="Basic Park", group="Autonomous")
-public class BasicPark extends LinearOpMode {
+@Autonomous(name="Blue Left Park", group="Autonomous")
+public class BlueLeftPark extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -53,19 +53,17 @@ public class BasicPark extends LinearOpMode {
 
         while(opModeIsActive()) {
 
-            FrontLeftDrive.setPower(.5);
-            BackLeftDrive.setPower(.5);
-            BackRightDrive.setPower(.5);
-            FrontRightDrive.setPower(.5);
+            FrontLeftDrive.setPower(.7);
+            BackLeftDrive.setPower(.7);
+            BackRightDrive.setPower(.6);
+            FrontRightDrive.setPower(.6);
 
-            sleep(1000);
+            sleep(1500);
 
             FrontLeftDrive.setPower(0);
             BackLeftDrive.setPower(0);
             BackRightDrive.setPower(0);
             FrontRightDrive.setPower(0);
-
-            sleep(30000);
 
         }
         telemetry.addData("Running", "False");
