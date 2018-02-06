@@ -35,8 +35,6 @@ public class GyroTest extends LinearOpMode {
     Orientation angles;
     Acceleration gravity;
 
-    BaseChassis.boxPosition boxPos = BaseChassis.boxPosition.DOWN;
-
     @Override public void runOpMode() {
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -84,6 +82,7 @@ public class GyroTest extends LinearOpMode {
         while (opModeIsActive()) {
 
             turnToAngle(90);
+            telemetry.update();
 
             sleep(1000);
 

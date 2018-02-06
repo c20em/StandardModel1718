@@ -53,8 +53,6 @@ public class AutoGlyph extends LinearOpMode {
     Orientation angles;
     Acceleration gravity;
 
-    BaseChassis.boxPosition boxPos = BaseChassis.boxPosition.DOWN;
-
     @Override public void runOpMode() {
 
         //Gyro
