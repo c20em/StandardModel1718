@@ -112,6 +112,7 @@ public class GyroSquareTest extends LinearOpMode
         angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 
         float forwardheading = angles.firstAngle;
+        float initheading = angles.firstAngle;
 
         telemetry.addData("Current: ", forwardheading);
 
@@ -121,37 +122,54 @@ public class GyroSquareTest extends LinearOpMode
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         // Loop and update the dashboard
+        double[] anglegoal = {-90, 90, 0};
+
         while (opModeIsActive()) {
             double runtime = getRuntime();
 
             telemetry.addData("FORWARD HEADING: ", forwardheading);
             double power = .25;
+            for(int i = 0; i < 3; i++) {
 
-            while(forwardheading < 85 || forwardheading > 95) {
+                while(forwardheading > anglegoal[i]) {
+                    forwardheading = angles.firstAngle;
+
+                    FrontLeftDrive.setPower(-power);
+                    BackLeftDrive.setPower(-power);
+                    BackRightDrive.setPower(power);
+                    FrontRightDrive.setPower(power);
+
+                    telemetry.addLine("Angle: " + forwardheading);
+                    telemetry.addLine("loop: " + i + " " + anglegoal[i]);
+                    telemetry.update();
+                }
+
                 forwardheading = angles.firstAngle;
 
-                FrontLeftDrive.setPower(power);
-                BackLeftDrive.setPower(power);
-                BackRightDrive.setPower(-power);
-                FrontRightDrive.setPower(-power);
+                while(forwardheading < anglegoal[i]) {
+                    forwardheading = angles.firstAngle;
 
+                    FrontLeftDrive.setPower(power * .5);
+                    BackLeftDrive.setPower(power * .5);
+                    BackRightDrive.setPower(-power * .5);
+                    FrontRightDrive.setPower(-power * .5);
+
+                    telemetry.addLine("Angle: " + forwardheading);
+                    telemetry.update();
+                }
+                FrontLeftDrive.setPower(0);
+                BackLeftDrive.setPower(0);
+                BackRightDrive.setPower(0);
+                FrontRightDrive.setPower(0);
+
+                forwardheading = angles.firstAngle;
                 telemetry.addLine("Angle: " + forwardheading);
+
+                sleep(2000);
+
                 telemetry.update();
+
             }
-
-            FrontLeftDrive.setPower(0);
-            BackLeftDrive.setPower(0);
-            BackRightDrive.setPower(0);
-            FrontRightDrive.setPower(0);
-
-            forwardheading = angles.firstAngle;
-            telemetry.addLine("Angle: " + forwardheading);
-
-
-            telemetry.addLine("working");
-            telemetry.update();
-
-
         }
     }
 
