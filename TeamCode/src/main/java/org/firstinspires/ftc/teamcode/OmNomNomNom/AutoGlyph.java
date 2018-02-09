@@ -147,10 +147,8 @@ public class AutoGlyph extends LinearOpMode {
 
             stopDrive();
 
-
-
-
         }
+
         telemetry.addData("Running", "False");
         telemetry.update();
     }
