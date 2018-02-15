@@ -24,10 +24,16 @@ public class BaseChassis extends LinearOpMode {
     private DcMotor BackRightDrive = null;
     private DcMotor lift = null;
     private DcMotor NomNomNom = null;
+    private DcMotor relicArm = null;
     private Servo rightBoxServo = null;
     private Servo leftBoxServo = null;
     private CRServo pushBackServoLeft = null;
     private CRServo pushBackServoRight = null;
+    private Servo wallServo = null;
+    private Servo liftIn = null;
+    private Servo elbowServo = null;
+    private Servo handServo = null;
+
 
 
 
@@ -38,14 +44,16 @@ public class BaseChassis extends LinearOpMode {
     static final double NOM_BACKWARD_POWER = -1;
     static final double BOX_RIGHT_DOWN = .34;
     static final double BOX_LEFT_DOWN = .61;
-    static final double BOX_RIGHT_UP = .86;
-    static final double BOX_LEFT_UP = .09;
+    static double BOX_RIGHT_UP = .84;     //.9  //.84
+    static double BOX_LEFT_UP = .1;          //.05     //.10
     static final double Push_Back_Power = 1;
 
 
     // Define class members
-    double strafepower = .5;
+    double strafepower = .85;
     static final double NOM_POWER = 1;
+    boolean wallout = false;
+    boolean relicGang = false;
 
     controllerPos previousDrive = controllerPos.ZERO;
 
@@ -62,10 +70,15 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
         lift = hardwareMap.get(DcMotor.class, "lift");
         NomNomNom = hardwareMap.get(DcMotor.class, "nom");
+        relicArm = hardwareMap.get(DcMotor.class, "relic_arm");
         rightBoxServo = hardwareMap.get(Servo.class, "right_box_servo");
         leftBoxServo = hardwareMap.get(Servo.class, "left_box_servo");
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
+        wallServo = hardwareMap.get(Servo.class, "wall_servo");
+        liftIn = hardwareMap.get(Servo.class, "lift_in");
+        elbowServo = hardwareMap.get(Servo.class, "elbow_servo");
+        handServo = hardwareMap.get(Servo.class, "hand_servo");
 
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -74,6 +87,7 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
         NomNomNom.setDirection(DcMotor.Direction.FORWARD);
+        relicArm.setDirection(DcMotor.Direction.FORWARD);
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -81,6 +95,15 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        relicArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //get sevro values
+//        BOX_RIGHT_UP = leftBoxServo.getPosition();
+//        BOX_LEFT_UP = rightBoxServo.getPosition();
+
+        telemetry.addData("right up", leftBoxServo.getPosition());
+        telemetry.addData("left up", rightBoxServo.getPosition());
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -88,24 +111,38 @@ public class BaseChassis extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("x stick", gamepad1.left_stick_x);
             telemetry.addData("y stick", gamepad1.left_stick_y);
+            if (relicGang){
+                telemetry.addLine("Relic Gang true");
+            }else {
+                telemetry.addLine("Relic Gang false");
+
+            }
+
             Nom();
             flip();
+            wall();
             moveRobot();
             moveLift();
             pushBack();
+            relic();
             telemetry.update();
     //        sleep(CYCLE_MS);
             idle();
         }
     }
+
     public enum controllerPos {
         STRAFE_RIGHT, STRAFE_LEFT, DRIVE_FOWARD, DRIVE_BACK, TURN_RIGHT, TURN_LEFT, SLOW_MODE, ZERO;
     }
 
-    //DRIVING CONTROL
+
+    //DRIVER CONTROL
+                                         //MOTORS
+
+
     public void moveRobot() {
         double drive = -gamepad1.left_stick_y;
-        double turn = -gamepad1.right_stick_x/2;
+        double turn = -gamepad1.right_stick_x/1.5;
 
         if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
@@ -160,7 +197,6 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive.setPower(BRpower);
 
     }
-
     //DRIVING FOWARADS/BACKWARDS/TURNING
     public void Drive(double drive) {
         double drivePower = drive;
@@ -190,30 +226,111 @@ public class BaseChassis extends LinearOpMode {
         FrontRightDrive.setPower(Rpower);
         BackRightDrive.setPower(Rpower);
     }
-    public void flip () {
-        telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
-        telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
-        if(gamepad2.y){
-            leftBoxServo.setPosition(BOX_LEFT_DOWN);
-            rightBoxServo.setPosition(BOX_RIGHT_DOWN);
-        } else if(gamepad2.a){
-            leftBoxServo.setPosition(BOX_LEFT_UP);
-            rightBoxServo.setPosition(BOX_RIGHT_UP);
+
+     public void moveLift() {
+         double LiftPower;
+         if(gamepad2.right_bumper) {                    //GAMEPAD2
+             LiftPower = 1;
+         } else if (gamepad2.left_bumper) {             //GAMEPAD2
+             LiftPower = -1;
+         } else {
+             LiftPower = 0;
+         }
+         lift.setPower(LiftPower);
+     }
+
+     public void Nom() {
+         double nomfoward = gamepad1.left_trigger;
+         double nombackward = gamepad1.right_trigger;
+         nomfoward = Range.clip(nomfoward, 0, 1);
+         nombackward = Range.clip(nombackward, 0, 1);
+
+         if(nomfoward > .2) {
+             NomNomNom.setPower(NOM_FORWARD_POWER);
+             telemetry.addLine("nomnomfoward" + nomfoward);
+         }
+         else if(nombackward > 0.2) {
+             NomNomNom.setPower(NOM_BACKWARD_POWER);
+             telemetry.addLine("nomnombackward" + nombackward);
+             wallout = true;
+         }
+         else {
+             NomNomNom.setPower(0);
+               telemetry.addLine("no nom :(");
+         }
+     }
+    public void relic() {
+        if (relicGang) {
+            if (Math.abs(gamepad2.right_stick_y) > .2) {
+                relicArm.setPower(Range.clip(gamepad2.right_stick_y, -1, 1));
+            }else{
+                relicArm.setPower(0);
+            }
+             if (gamepad2.y) {
+                elbowServo.setPosition(.47);
+            } else if (gamepad2.a) {
+                elbowServo.setPosition(.2);
+            } else if (gamepad2.x) {
+                handServo.setPosition(.8);
+            } else if (gamepad2.b) {
+                handServo.setPosition(.4);
+            }
         }
-         if(gamepad2.b &&  leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP){
-            leftBoxServo.setPosition(leftBoxServo.getPosition()-.01);
-            rightBoxServo.setPosition(rightBoxServo.getPosition()+.01);
-        } else if(gamepad2.x &&  leftBoxServo.getPosition() <BOX_LEFT_DOWN && rightBoxServo.getPosition() >BOX_RIGHT_DOWN){
-            leftBoxServo.setPosition(leftBoxServo.getPosition()+.01);
-            rightBoxServo.setPosition(rightBoxServo.getPosition()-.01);
+    }
+
+     //KEEPS MOTORS FROM STALLING
+     public double readjustMotorPower(double motorPower) {
+         if (Math.abs(motorPower) >= 0.3) {
+             return motorPower;
+         } else {
+             return 0;
+         }
+     }
+
+
+                                        //SERVOS
+
+
+    public void flip () {
+        if(!relicGang) {
+            telemetry.addLine("running flip()");
+            telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
+            telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
+            if (gamepad2.y) {                                         //GAMEPAD2
+                leftBoxServo.setPosition(BOX_LEFT_DOWN);
+                rightBoxServo.setPosition(BOX_RIGHT_DOWN);
+            } else if (gamepad2.a) {                                  //GAMEPAD2
+                leftBoxServo.setPosition(BOX_LEFT_UP);
+                rightBoxServo.setPosition(BOX_RIGHT_UP);
+            }
+            if (gamepad2.b && leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP) {
+                leftBoxServo.setPosition(leftBoxServo.getPosition() - .01);//GAMEPAD2
+                rightBoxServo.setPosition(rightBoxServo.getPosition() + .01);
+            } else if (gamepad2.x && leftBoxServo.getPosition() < BOX_LEFT_DOWN && rightBoxServo.getPosition() > BOX_RIGHT_DOWN) {
+                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
+                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
+            }
+            if (gamepad1.b) {
+                relicGang = true;
+                liftIn.setPosition(.3);
+            }else{
+                telemetry.addLine(" flip() is off");
+            }
+        }
+    }
+    public void wall() {
+        if (wallout) {
+            elbowServo.setPosition(1);
+            wallServo.setPosition(.3);
+            liftIn.setPosition(.9);
         }
     }
     public void pushBack(){
-        if(gamepad2.dpad_up){
+        if(gamepad2.dpad_up){                               //GAMEPAD2
             pushBackServoLeft.setPower(Push_Back_Power);
             pushBackServoRight.setPower(-Push_Back_Power);
         }
-        else if(gamepad2.dpad_down){
+        else if(gamepad2.dpad_down){                         //GAMEPAD2
             pushBackServoLeft.setPower(-Push_Back_Power);
             pushBackServoRight.setPower(Push_Back_Power);
         }
@@ -223,49 +340,9 @@ public class BaseChassis extends LinearOpMode {
         }
     }
 
-    public void moveLift() {
-        double LiftPower;
-        if(gamepad2.right_bumper) {
-            LiftPower = 1;
-        } else if (gamepad2.left_bumper) {
-            LiftPower = -1;
-        } else {
-            LiftPower = 0;
-        }
-        lift.setPower(LiftPower);
-    }
 
     public enum boxPosition {
         HALF_UP, UP, DOWN;
-    }
-
-    public void Nom() {
-        double nomfoward = gamepad1.left_trigger;
-        double nombackward = gamepad1.right_trigger;
-        nomfoward = Range.clip(nomfoward, 0, 1);
-        nombackward = Range.clip(nombackward, 0, 1);
-
-        if(nomfoward > .2) {
-            NomNomNom.setPower(NOM_FORWARD_POWER);
-            telemetry.addLine("nomnomfoward" + nomfoward);
-        }
-        else if(nombackward > 0.2) {
-            NomNomNom.setPower(NOM_BACKWARD_POWER);
-            telemetry.addLine("nomnombackward" + nombackward);
-        }
-        else {
-            NomNomNom.setPower(0);
-//            telemetry.addLine("no nom :(");
-        }
-    }
-
-    //KEEPS MOTORS FROM STALLING
-    public double readjustMotorPower(double motorPower) {
-        if (Math.abs(motorPower) >= 0.3) {
-            return motorPower;
-        } else {
-            return 0;
-        }
     }
 }
 
