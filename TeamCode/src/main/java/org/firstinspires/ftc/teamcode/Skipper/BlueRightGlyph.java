@@ -184,7 +184,6 @@ public class BlueRightGlyph extends LinearOpMode {
             BackLeftDrive.setPower(0);
             BackRightDrive.setPower(0);
             FrontRightDrive.setPower(0);
-
         }
         telemetry.addData("Running", "False");
         telemetry.update();

@@ -198,8 +198,6 @@ public class BlueLeftGlyph extends LinearOpMode {
         telemetry.update();
     }
 
-
-
     public void blue() {
         telemetry.addData("Red:", colorSensorL.red());
         telemetry.addData("Blue:", colorSensorL.blue());

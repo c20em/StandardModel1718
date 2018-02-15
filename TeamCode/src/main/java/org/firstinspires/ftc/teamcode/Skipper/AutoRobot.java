@@ -47,6 +47,7 @@ public abstract class AutoRobot extends LinearOpMode {
 
         // Motors
         colorSensorL = hardwareMap.get(ColorSensor.class, "color sensor left");
+
         loweringJewelServo = hardwareMap.get(Servo.class, "lowering servo" );
         turningJewelServo = hardwareMap.get(Servo.class, "turning servo");
 
