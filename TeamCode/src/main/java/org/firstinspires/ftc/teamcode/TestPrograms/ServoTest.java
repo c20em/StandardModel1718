@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Servo Tester", group = "Tester")
-@Disabled
+
 public class ServoTest extends LinearOpMode {
 
     Servo servo;
@@ -45,9 +45,10 @@ public class ServoTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        servo = hardwareMap.get(Servo.class, "INSERT HERE");
+        servo = hardwareMap.get(Servo.class, "jewel_servo");
         stickPos prevpos = stickPos.Zero;
         double servopos = startpos;
+        waitForStart();
         while(opModeIsActive()) {
             if (gamepad1.left_stick_y > 0.2 && prevpos == stickPos.Zero) {
                 prevpos = stickPos.NotZero;
