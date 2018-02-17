@@ -13,23 +13,35 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import java.nio.channels.FileLockInterruptionException;
+
 abstract class BaseAutoFunctions extends LinearOpMode {
     DcMotor FrontLeftDrive = null;
     DcMotor FrontRightDrive = null;
     DcMotor BackLeftDrive = null;
     DcMotor BackRightDrive = null;
+    DcMotor lift = null;
+    private DcMotor NomNomNom = null;
+    private Servo rightBoxServo = null;
+    private Servo leftBoxServo = null;
+
+
     Servo jewelServo;
     ColorSensor colorSensor;
 
     static final double JEWEL_DOWN_POS = 0.2;
     static final double JEWEL_UP_POS = 0.5;
 
-    double strafepower = 0.85;
-    double drivepower = .3;
-    boolean jewelHit = false;
+    static double BOX_RIGHT_UP = .84;
+    static double BOX_LEFT_UP = .1;
+    static final double BOX_RIGHT_DOWN = .34;
+    static final double BOX_LEFT_DOWN = .61;
 
-    //STRAFING CONTROL
-    public void Strafe(int strafedirection) {
+    double strafepower = 0.85;
+    boolean jewelHit = false;
+    double nomPower = .95;
+
+    public void strafeforTime(int strafedirection, long time){
 
         double FRpower = strafedirection * strafepower;
         double BLpower = strafedirection * strafepower;
@@ -40,29 +52,52 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackLeftDrive.setPower(BLpower);
         FrontRightDrive.setPower(FRpower);
         BackRightDrive.setPower(BRpower);
+        sleep(time);
 
     }
 
-    //DRIVING FOWARADS/BACKWARDS/TURNING
-    public void Drive(double drive) {
-        double drivePower = drive;
+    public void turnforTime(double turn, long time){
 
-        FrontLeftDrive.setPower(drivePower);
-        BackLeftDrive.setPower(drivePower);
-        FrontRightDrive.setPower(drivePower);
-        BackRightDrive.setPower(drivePower);
-
-        telemetry.addData("Motors", "drive power (%.2f)", drivePower);
-    }
-
-    public void turn(double turn) {
         FrontLeftDrive.setPower(turn);
         BackLeftDrive.setPower(turn);
-        FrontRightDrive.setPower(turn);
-        BackRightDrive.setPower(turn);
+        FrontRightDrive.setPower(-turn);
+        BackRightDrive.setPower(-turn);
+        sleep(time);
+    }
+    public void driveforTime(double drivepower, long time){
+        FrontLeftDrive.setPower(drivepower);
+        BackLeftDrive.setPower(drivepower);
+        FrontRightDrive.setPower(drivepower);
+        BackRightDrive.setPower(drivepower);
+        telemetry.addData("Motors", "drive power (%.2f)", drivepower);
+        sleep(time);
+    }
+    public void liftforTime(double liftpower, long time){
+        lift.setPower(liftpower);
+        sleep(time);
+    }
+    public void autoFlip(boolean flipTrue){
+        leftBoxServo.setPosition(BOX_LEFT_DOWN);
+        rightBoxServo.setPosition(BOX_RIGHT_DOWN);
+        sleep(20);
+        leftBoxServo.setPosition(BOX_LEFT_UP-.1);
+        rightBoxServo.setPosition(BOX_RIGHT_UP+.1);
+    }
+    public void driveBackNomming(double drivepower){
+        NomNomNom.setPower(nomPower);
+        FrontLeftDrive.setPower(-drivepower/2);
+        BackLeftDrive.setPower(-drivepower/2);
+        FrontRightDrive.setPower(-drivepower/2);
+        BackRightDrive.setPower(-drivepower/2);
+        sleep(600);
+        NomNomNom.setPower(0);
+        sleep(300);
+        NomNomNom.setPower(nomPower);
+        sleep(500);
+
     }
 
-    public void jewel(boolean blue) {
+    public void jewel(boolean blue){
         servoSequence();
         telemetry.addData("Blue:", colorSensor.blue());
         telemetry.addData("Red:", colorSensor.red());
@@ -77,16 +112,10 @@ abstract class BaseAutoFunctions extends LinearOpMode {
             telemetry.addLine("Red!");
             turn = .2;
         }
-        turn(turn);
-        sleep(300);
+        turnforTime(turn, 50);
         jewelServo.setPosition(.6);
-        turn(-turn);
-        sleep(300);
+        turnforTime(-turn, 50);
 
-        FrontLeftDrive.setPower(0);
-        BackLeftDrive.setPower(0);
-        FrontRightDrive.setPower(0);
-        BackRightDrive.setPower(0);
         jewelHit = true;
     }
 
