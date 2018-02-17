@@ -50,16 +50,25 @@ public class ServoTest extends LinearOpMode {
         double servopos = startpos;
         waitForStart();
         while(opModeIsActive()) {
-            if (gamepad1.left_stick_y > 0.2 && prevpos == stickPos.Zero) {
-                prevpos = stickPos.NotZero;
-                servopos++;
-                servo.setPosition(servopos);
-            } else if(gamepad1.left_stick_y < -0.2 && prevpos == stickPos.Zero) {
-                prevpos = stickPos.NotZero;
-                servopos--;
-                servo.setPosition(servopos);
-            } else {
-                prevpos = stickPos.Zero;
+//            if (gamepad1.left_stick_y > 0.2 && prevpos == stickPos.Zero) {
+//                prevpos = stickPos.NotZero;
+//                servopos++;
+//                servo.setPosition(servopos);
+//            } else if(gamepad1.left_stick_y < -0.2 && prevpos == stickPos.Zero) {
+//                prevpos = stickPos.NotZero;
+//                servopos--;
+//                servo.setPosition(servopos);
+//            } else {
+//                prevpos = stickPos.Zero;
+//            }
+            if(gamepad1.y){
+                servo.setPosition(.2);
+            } else if(gamepad1.a){
+                servo.setPosition(.6);
+            } else if(gamepad1.b) {
+                servo.setPosition(.3);
+            } else if(gamepad1.x) {
+                servo.setPosition(.5);
             }
             telemetry.addLine("Servo Position: " + servopos);
         }

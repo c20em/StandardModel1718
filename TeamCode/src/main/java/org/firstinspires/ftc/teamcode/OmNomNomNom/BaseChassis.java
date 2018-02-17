@@ -252,11 +252,14 @@ public class BaseChassis extends LinearOpMode {
          else if(nombackward > 0.2) {
              NomNomNom.setPower(NOM_BACKWARD_POWER);
              telemetry.addLine("nomnombackward" + nombackward);
-             wallout = true;
          }
          else {
              NomNomNom.setPower(0);
                telemetry.addLine("no nom :(");
+         }
+
+         if(gamepad1.y) {
+             wallout = true;
          }
      }
     public void relic() {
@@ -320,9 +323,10 @@ public class BaseChassis extends LinearOpMode {
     }
     public void wall() {
         if (wallout) {
-            elbowServo.setPosition(1);
+            elbowServo.setPosition(.2);
             wallServo.setPosition(.3);
             liftIn.setPosition(.9);
+//            wallout = true;
         }
     }
     public void pushBack(){
