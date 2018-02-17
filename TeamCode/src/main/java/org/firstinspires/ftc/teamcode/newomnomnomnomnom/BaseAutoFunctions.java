@@ -94,7 +94,6 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         sleep(300);
         NomNomNom.setPower(nomPower);
         sleep(500);
-
     }
 
     public void jewel(boolean blue){
