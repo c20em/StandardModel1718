@@ -84,7 +84,7 @@ public class RedCornerAuto extends BaseAutoFunctions {
             sleep(1000);
             driveforTime(.6,500);
             strafeforTime(1,500);
-            //second glyph
+            //second glyph?
             driveforTime(.3, 1600);
             nomOn(nomPower,500);
             drivewithNom(-.2, 2000);
