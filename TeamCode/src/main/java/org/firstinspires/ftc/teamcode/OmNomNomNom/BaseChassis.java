@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OmNomNomNom;
 
+import com.google.gson.graph.GraphAdapterBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -224,9 +225,9 @@ public class BaseChassis extends LinearOpMode {
 
      public void moveLift() {
          double LiftPower;
-         if(gamepad2.right_bumper) {                    //GAMEPAD2
+         if(gamepad1.right_bumper) {                    //GAMEPAD2
              LiftPower = 1;
-         } else if (gamepad2.left_bumper) {             //GAMEPAD2
+         } else if (gamepad1.left_bumper) {             //GAMEPAD2
              LiftPower = -1;
          } else {
              LiftPower = 0;
@@ -253,9 +254,9 @@ public class BaseChassis extends LinearOpMode {
                telemetry.addLine("no nom :(");
          }
 
-         if(gamepad1.y) {
-             wallout = true;
-         }
+         if(gamepad1.right_stick_button) {                 //Backup teleop control in case we do not run auto for some reason
+             wallout = true;              //when wallout=true the relic arm servo, the wall servo, and the liftIn servo will
+         }                                //all go to their starting positions
      }
     public void relic() {
         if (relicGang) {
@@ -294,21 +295,21 @@ public class BaseChassis extends LinearOpMode {
             telemetry.addLine("running flip()");
             telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
             telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
-            if (gamepad2.y) {                                         //GAMEPAD2
+            if (gamepad1.y) {                                         //GAMEPAD2
                 leftBoxServo.setPosition(BOX_LEFT_DOWN);
                 rightBoxServo.setPosition(BOX_RIGHT_DOWN);
-            } else if (gamepad2.a) {                                  //GAMEPAD2
+            } else if (gamepad1.a) {                                  //GAMEPAD2
                 leftBoxServo.setPosition(BOX_LEFT_UP);
                 rightBoxServo.setPosition(BOX_RIGHT_UP);
             }
-            if (gamepad2.b && leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP) {
+            if (gamepad1.b && leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP) {
                 leftBoxServo.setPosition(leftBoxServo.getPosition() - .01);//GAMEPAD2
                 rightBoxServo.setPosition(rightBoxServo.getPosition() + .01);
-            } else if (gamepad2.x && leftBoxServo.getPosition() < BOX_LEFT_DOWN && rightBoxServo.getPosition() > BOX_RIGHT_DOWN) {
+            } else if (gamepad1.x && leftBoxServo.getPosition() < BOX_LEFT_DOWN && rightBoxServo.getPosition() > BOX_RIGHT_DOWN) {
                 leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
                 rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
             }
-            if (gamepad1.b) {
+            if (gamepad1.left_stick_button) {
                 relicGang = true;
                 liftIn.setPosition(.3);
             }
@@ -316,18 +317,19 @@ public class BaseChassis extends LinearOpMode {
     }
     public void wall() {
         if (wallout) {                                   //OPENING EXPANSE SEQUENCE
-            elbowServo.setPosition(.2);         //Relic arm up
-            sleep(200);
-            wallServo.setPosition(.3);          //Wall servo out
             liftIn.setPosition(.9);             //Relic Blocker
+            elbowServo.setPosition(.2);         //Relic arm up
+            sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
+            wallServo.setPosition(.3);          //Wall servo out
+            wallout = false;
         }
     }
     public void pushBack(){
-        if(gamepad2.dpad_up){                               //GAMEPAD2
+        if(gamepad1.dpad_up){                               //GAMEPAD2
             pushBackServoLeft.setPower(Push_Back_Power);
             pushBackServoRight.setPower(-Push_Back_Power);
         }
-        else if(gamepad2.dpad_down){                         //GAMEPAD2
+        else if(gamepad1.dpad_down){                         //GAMEPAD2
             pushBackServoLeft.setPower(-Push_Back_Power);
             pushBackServoRight.setPower(Push_Back_Power);
         }

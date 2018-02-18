@@ -8,6 +8,7 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -21,9 +22,14 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     DcMotor BackLeftDrive = null;
     DcMotor BackRightDrive = null;
     DcMotor lift = null;
-    private DcMotor NomNomNom = null;
-    private Servo rightBoxServo = null;
-    private Servo leftBoxServo = null;
+    DcMotor NomNomNom = null;
+    Servo rightBoxServo = null;
+    Servo leftBoxServo = null;
+    Servo liftIn = null;
+    Servo elbowServo = null;
+    Servo wallServo = null;
+    CRServo pushBackServoLeft = null;
+    CRServo pushBackServoRight = null;
 
 
     Servo jewelServo;
@@ -41,12 +47,22 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     boolean jewelHit = false;
     double nomPower = .95;
 
-    public void strafeforTime(int strafedirection, long time){
+    public void strafeforTime(double strafedirection, long time){
 
-        double FRpower = strafedirection * strafepower;
-        double BLpower = strafedirection * strafepower;
-        double BRpower = -1 * strafedirection * strafepower;
-        double FLpower = -1 * strafedirection * strafepower;
+        double FRpower = 1*strafedirection;
+        double BLpower = -1*strafedirection;
+        double BRpower = -1*strafedirection;
+        double FLpower = 1*strafedirection;
+
+        FLpower = Range.clip(FLpower, -1.0, 1.0) ;
+        BRpower = Range.clip(BRpower, -1.0, 1.0) ;
+        BLpower = Range.clip(BLpower, -1.0, 1.0) ;
+        FRpower = Range.clip(FRpower, -1.0, 1.0) ;
+
+        readjustMotorPower(FRpower);
+        readjustMotorPower(BRpower);
+        readjustMotorPower(FLpower);
+        readjustMotorPower(BLpower);
 
         FrontLeftDrive.setPower(FLpower);
         BackLeftDrive.setPower(BLpower);
@@ -54,49 +70,98 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackRightDrive.setPower(BRpower);
         sleep(time);
 
+        FrontLeftDrive.setPower(0);
+        BackLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        BackRightDrive.setPower(0);
+    }
+    public double readjustMotorPower(double motorPower) {
+        if (Math.abs(motorPower) >= 0.3) {
+            return motorPower;
+        } else {
+            return 0;
+        }
     }
 
-    public void turnforTime(double turn, long time){
+    public void turnforTime(double turn, long time) throws InterruptedException{
 
         FrontLeftDrive.setPower(turn);
         BackLeftDrive.setPower(turn);
-        FrontRightDrive.setPower(-turn);
-        BackRightDrive.setPower(-turn);
+        FrontRightDrive.setPower(turn);
+        BackRightDrive.setPower(turn);
+        sleep(time);
+        FrontLeftDrive.setPower(0);
+        BackLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        BackRightDrive.setPower(0);
         sleep(time);
     }
-    public void driveforTime(double drivepower, long time){
-        FrontLeftDrive.setPower(drivepower);
-        BackLeftDrive.setPower(drivepower);
+    public void driveforTime(double drivepower, long time)throws InterruptedException{
+        FrontLeftDrive.setPower(-drivepower); //THIS IS DRIVING BACKWARDS
+        BackLeftDrive.setPower(-drivepower);
         FrontRightDrive.setPower(drivepower);
         BackRightDrive.setPower(drivepower);
         telemetry.addData("Motors", "drive power (%.2f)", drivepower);
         sleep(time);
+        FrontLeftDrive.setPower(0);
+        BackLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        BackRightDrive.setPower(0);
     }
-    public void liftforTime(double liftpower, long time){
+    public void liftforTime(double liftpower, long time)throws InterruptedException{
         lift.setPower(liftpower);
         sleep(time);
     }
-    public void autoFlip(boolean flipTrue){
+    public void flipOut(){
+            leftBoxServo.setPosition(BOX_LEFT_UP);
+            rightBoxServo.setPosition(BOX_RIGHT_UP);
+    }
+    public void flipIn(){
         leftBoxServo.setPosition(BOX_LEFT_DOWN);
         rightBoxServo.setPosition(BOX_RIGHT_DOWN);
-        sleep(20);
-        leftBoxServo.setPosition(BOX_LEFT_UP-.1);
-        rightBoxServo.setPosition(BOX_RIGHT_UP+.1);
     }
-    public void driveBackNomming(double drivepower){
-        NomNomNom.setPower(nomPower);
+
+    public void drivewithNom(double drivepower, long time)throws InterruptedException{
+        starsAndNomOn(nomPower);
+        FrontLeftDrive.setPower(-drivepower);
+        BackLeftDrive.setPower(-drivepower);
+        FrontRightDrive.setPower(drivepower);
+        BackRightDrive.setPower(drivepower);
+        sleep(time);
+        FrontLeftDrive.setPower(0);
+        BackLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        BackRightDrive.setPower(0);
+
+
+    }
+
+    public void nomOn(double power, long time) {
+        NomNomNom.setPower(-power);
+        sleep(time);
+        NomNomNom.setPower(0);
+    }
+    public void starsAndNomOn(double power) {
+        NomNomNom.setPower(-power);
+        pushBackServoLeft.setPower(-1);
+        pushBackServoRight.setPower(1);
+
+    }
+
+    public void driveBackNomming(double drivepower)throws InterruptedException{
+        starsAndNomOn(nomPower);
+
         FrontLeftDrive.setPower(-drivepower/2);
         BackLeftDrive.setPower(-drivepower/2);
         FrontRightDrive.setPower(-drivepower/2);
         BackRightDrive.setPower(-drivepower/2);
-        sleep(600);
-        NomNomNom.setPower(0);
-        sleep(300);
-        NomNomNom.setPower(nomPower);
-        sleep(500);
+
+        starsAndNomOn(nomPower);
+
+
     }
 
-    public void jewel(boolean blue){
+    public void jewel(boolean blue) throws InterruptedException {
         servoSequence();
         telemetry.addData("Blue:", colorSensor.blue());
         telemetry.addData("Red:", colorSensor.red());
