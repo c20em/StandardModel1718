@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OmNomNomNomAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Skipper.BlueLeftAuto;
  * Created by student on 1/14/18.
  */
 @Autonomous(name="Blue Left Park", group="Autonomous")
+@Disabled
 public class BlueLeftPark extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();

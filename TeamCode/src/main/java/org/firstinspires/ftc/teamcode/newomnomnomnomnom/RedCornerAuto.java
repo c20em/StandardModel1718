@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name="Blue Square Corner", group="Autonomous")
+@Autonomous(name="Red Corner Corner", group="Autonomous")
 
-public class BlueSquareCorner extends BaseAutoFunctions {
+public class RedCornerAuto extends BaseAutoFunctions {
     static double BOX_RIGHT_UP = .84;
     static double BOX_LEFT_UP = .1;
     static final double BOX_RIGHT_DOWN = .34;
@@ -43,78 +43,79 @@ public class BlueSquareCorner extends BaseAutoFunctions {
         waitForStart();
 
         jewelHit = false; /////TAKE THIS OUT WHEN USING THE JEWEL
-                         /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
+        /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
 
         while(opModeIsActive() && !jewelHit) {
             telemetry.addLine("made it this far");
             telemetry.update();
-
-            //jewel(true); /////TAKE THIS OUT WHEN USING THE JEWEL
-            //sleep(1000);   /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
-
-            driveforTime(.4, 850);
-            sleep(1000);
-            turnforTime(-.4, 750);
-            sleep(1000);
-            driveforTime(-.4, 800);
-            sleep(500);
-            driveforTime(.4, 400);
-
-            flipIn();               //NECESSARY: need the sleep in between for 1000ms to allow servo to actually get to position before being called back in
-            sleep(1000);
-            flipOut();
-            sleep(1000);
-
-            driveforTime(-.3, 1000);
-            sleep(500);
-            strafeforTime(-1, 400);
-            sleep(500);
-            driveforTime(-.3, 1000);
-            sleep(500);
-            telemetry.addLine("going for 2");
-            telemetry.update();
-            //BEGIN 2nd GLYPH!!
-
-
             liftIn.setPosition(.9);             //Relic Blocker
             elbowServo.setPosition(.2);         //Relic arm up
             sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
             wallServo.setPosition(.3);          //Wall servo out
 
+            //jewel(true); /////TAKE THIS OUT WHEN USING THE JEWEL
+            //sleep(1000);   /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
+//////////
+            driveforTime(-.8, 300);
             sleep(500);
-            drivewithNom(.6, 1500);
-            telemetry.addLine("drive forward with nom");
-            telemetry.update();
-            nomOn(nomPower,400);
-
-            drivewithNom(-.4, 1000);
-
-            nomOn(nomPower, 600);
-
-
-            drivewithNom(.6, 400);
-
-            nomOn(nomPower,400);
-
-            drivewithNom(-.4, 800);
-
+            strafeforTime(-.95, 650);
             sleep(500);
-            strafeforTime(.75, 300);
-
-
+            driveforTime(-.4, 1000);
+            sleep(500);
             driveforTime(.4, 400);
+            sleep(500);
+            flipIn();               //NECESSARY: need the sleep in between for 1000ms to allow servo to actually get to position before being called back in
+            sleep(500);
+            flipOut();
+            sleep(500);
+            strafeforTime(-.95, 200);
+            driveforTime(-.3, 600);
 
 
+            //FIRST GLYPH PLACED
+///////////
+            strafeforTime(-1, 500);
+            nomOn(nomPower, 50);
+            sleep(200);
+
+            driveforTime(-.2, 1500);//align with wall
+            driveforTime(-.6, 800);//align with wall
+
+            sleep(1000);
+            driveforTime(.6,500);
+            strafeforTime(1,500);
+            //second glyph?
+            driveforTime(.3, 1600);
+            nomOn(nomPower,500);
+            drivewithNom(-.2, 2000);
+            nomOn(1, 400);
+            //third glyph?
+            driveforTime(.3, 1600);
+            nomOn(nomPower,500);
+            drivewithNom(-.2, 2000);
+            nomOn(1, 400);
+
+
+            strafeforTime(1, 800);
+            sleep(500);
+            driveforTime(-.4, 1400);
+            sleep(500);
+            driveforTime(.4, 400);
+            sleep(500);
             flipIn();               //NECESSARY: need the sleep in between for 1000ms to allow servo to actually get to position before being called back in
             sleep(1000);
             flipOut();
             sleep(1000);
-            driveforTime(.3, 1000);
-            sleep(500);
-            strafeforTime(-1, 800);
-            sleep(500);
-            driveforTime(-.3, 1000);
-            sleep(500);
+            strafeforTime(-.95, 200);
+            driveforTime(-.3, 600);
+            sleep(100);
+            driveforTime(.9, 100);
+            sleep(100);
+            driveforTime(-.3, 600);
+            sleep(100);
+            driveforTime(.9, 100);
+
+
             break;
 //
 

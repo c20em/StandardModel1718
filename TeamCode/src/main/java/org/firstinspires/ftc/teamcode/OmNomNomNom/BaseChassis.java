@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OmNomNomNom;
 
+import com.google.gson.graph.GraphAdapterBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -44,13 +45,13 @@ public class BaseChassis extends LinearOpMode {
     static final double NOM_BACKWARD_POWER = -1;
     static final double BOX_RIGHT_DOWN = .34;
     static final double BOX_LEFT_DOWN = .61;
-    static double BOX_RIGHT_UP = .84;     //.9  //.84
-    static double BOX_LEFT_UP = .1;          //.05     //.10
+    static double BOX_RIGHT_UP = .84;
+    static double BOX_LEFT_UP = .1;
     static final double Push_Back_Power = 1;
 
 
     // Define class members
-    double strafepower = .85;
+    double strafepower = 1;
     static final double NOM_POWER = 1;
     boolean wallout = false;
     boolean relicGang = false;
@@ -88,7 +89,6 @@ public class BaseChassis extends LinearOpMode {
         lift.setDirection(DcMotor.Direction.FORWARD);
         NomNomNom.setDirection(DcMotor.Direction.FORWARD);
         relicArm.setDirection(DcMotor.Direction.FORWARD);
-
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -97,9 +97,6 @@ public class BaseChassis extends LinearOpMode {
         NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         relicArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //get sevro values
-//        BOX_RIGHT_UP = leftBoxServo.getPosition();
-//        BOX_LEFT_UP = rightBoxServo.getPosition();
 
         telemetry.addData("right up", leftBoxServo.getPosition());
         telemetry.addData("left up", rightBoxServo.getPosition());
@@ -109,12 +106,12 @@ public class BaseChassis extends LinearOpMode {
         waitForStart();
         runtime.reset();
         while (opModeIsActive()) {
-            telemetry.addData("x stick", gamepad1.left_stick_x);
-            telemetry.addData("y stick", gamepad1.left_stick_y);
+//            telemetry.addData("x stick", gamepad1.left_stick_x);
+//            telemetry.addData("y stick", gamepad1.left_stick_y);
             if (relicGang){
-                telemetry.addLine("Relic Gang true");
+                telemetry.addLine("Relic Engaged");
             }else {
-                telemetry.addLine("Relic Gang false");
+                telemetry.addLine("Relic Disengaged");
 
             }
 
@@ -126,7 +123,6 @@ public class BaseChassis extends LinearOpMode {
             pushBack();
             relic();
             telemetry.update();
-    //        sleep(CYCLE_MS);
             idle();
         }
     }
@@ -142,7 +138,7 @@ public class BaseChassis extends LinearOpMode {
 
     public void moveRobot() {
         double drive = -gamepad1.left_stick_y;
-        double turn = -gamepad1.right_stick_x/1.5;
+    double turn = -gamepad1.right_stick_x/1.2;
 
         if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
@@ -258,9 +254,9 @@ public class BaseChassis extends LinearOpMode {
                telemetry.addLine("no nom :(");
          }
 
-         if(gamepad1.y) {
-             wallout = true;
-         }
+         if(gamepad1.right_stick_button) {                 //Backup teleop control in case we do not run auto for some reason
+             wallout = true;              //when wallout=true the relic arm servo, the wall servo, and the liftIn servo will
+         }                                //all go to their starting positions
      }
     public void relic() {
         if (relicGang) {
@@ -309,24 +305,26 @@ public class BaseChassis extends LinearOpMode {
             if (gamepad2.b && leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP) {
                 leftBoxServo.setPosition(leftBoxServo.getPosition() - .01);//GAMEPAD2
                 rightBoxServo.setPosition(rightBoxServo.getPosition() + .01);
-            } else if (gamepad2.x && leftBoxServo.getPosition() < BOX_LEFT_DOWN && rightBoxServo.getPosition() > BOX_RIGHT_DOWN) {
-                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
-                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
+//            } else if (gamepad2.x && leftBoxServo.getPosition() < BOX_LEFT_DOWN && rightBoxServo.getPosition() > BOX_RIGHT_DOWN) {
+//                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
+//                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
+            }else if(gamepad2.x){
+                leftBoxServo.setPosition(BOX_LEFT_UP + .03);//GAMEPAD2
+                rightBoxServo.setPosition(BOX_RIGHT_UP - .03);
             }
-            if (gamepad1.b) {
+            if (gamepad1.left_stick_button) {
                 relicGang = true;
                 liftIn.setPosition(.3);
-            }else{
-                telemetry.addLine(" flip() is off");
             }
         }
     }
     public void wall() {
-        if (wallout) {
-            elbowServo.setPosition(.2);
-            wallServo.setPosition(.3);
-            liftIn.setPosition(.9);
-//            wallout = true;
+        if (wallout) {                                   //OPENING EXPANSE SEQUENCE
+            liftIn.setPosition(.9);             //Relic Blocker
+            elbowServo.setPosition(.2);         //Relic arm up
+            sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
+            wallServo.setPosition(.3);          //Wall servo out
+            wallout = false;
         }
     }
     public void pushBack(){
