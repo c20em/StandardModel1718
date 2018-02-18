@@ -86,33 +86,24 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             telemetry.addLine("drive forward with nom");
             telemetry.update();
             nomOn(nomPower,400);
-            telemetry.addLine("stop with nom");
-            telemetry.update();
 
             drivewithNom(-.4, 1000);
-            telemetry.addLine("backward with nom");
-            telemetry.update();
+
             nomOn(nomPower, 600);
-            telemetry.addLine("stop with nom");
-            telemetry.update();
+
 
             drivewithNom(.6, 400);
-            telemetry.addLine("forward again");
-            telemetry.update();
+
             nomOn(nomPower,400);
-            telemetry.addLine("stop again");
-            telemetry.update();
+
             drivewithNom(-.4, 800);
-            telemetry.addLine("backward again");
-            telemetry.update();
+
             sleep(500);
             strafeforTime(.75, 300);
-            telemetry.addLine("strafe");
-            telemetry.update();
+
 
             driveforTime(.4, 400);
-            telemetry.addLine("drive forward");
-            telemetry.update();
+
 
             flipIn();               //NECESSARY: need the sleep in between for 1000ms to allow servo to actually get to position before being called back in
             sleep(1000);

@@ -225,9 +225,9 @@ public class BaseChassis extends LinearOpMode {
 
      public void moveLift() {
          double LiftPower;
-         if(gamepad1.right_bumper) {                    //GAMEPAD2
+         if(gamepad2.right_bumper) {                    //GAMEPAD2
              LiftPower = 1;
-         } else if (gamepad1.left_bumper) {             //GAMEPAD2
+         } else if (gamepad2.left_bumper) {             //GAMEPAD2
              LiftPower = -1;
          } else {
              LiftPower = 0;
@@ -295,19 +295,22 @@ public class BaseChassis extends LinearOpMode {
             telemetry.addLine("running flip()");
             telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
             telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
-            if (gamepad1.y) {                                         //GAMEPAD2
+            if (gamepad2.y) {                                         //GAMEPAD2
                 leftBoxServo.setPosition(BOX_LEFT_DOWN);
                 rightBoxServo.setPosition(BOX_RIGHT_DOWN);
-            } else if (gamepad1.a) {                                  //GAMEPAD2
+            } else if (gamepad2.a) {                                  //GAMEPAD2
                 leftBoxServo.setPosition(BOX_LEFT_UP);
                 rightBoxServo.setPosition(BOX_RIGHT_UP);
             }
-            if (gamepad1.b && leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP) {
+            if (gamepad2.b && leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP) {
                 leftBoxServo.setPosition(leftBoxServo.getPosition() - .01);//GAMEPAD2
                 rightBoxServo.setPosition(rightBoxServo.getPosition() + .01);
-            } else if (gamepad1.x && leftBoxServo.getPosition() < BOX_LEFT_DOWN && rightBoxServo.getPosition() > BOX_RIGHT_DOWN) {
-                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
-                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
+//            } else if (gamepad2.x && leftBoxServo.getPosition() < BOX_LEFT_DOWN && rightBoxServo.getPosition() > BOX_RIGHT_DOWN) {
+//                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
+//                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
+            }else if(gamepad2.x){
+                leftBoxServo.setPosition(BOX_LEFT_UP + .03);//GAMEPAD2
+                rightBoxServo.setPosition(BOX_RIGHT_UP - .03);
             }
             if (gamepad1.left_stick_button) {
                 relicGang = true;
@@ -325,11 +328,11 @@ public class BaseChassis extends LinearOpMode {
         }
     }
     public void pushBack(){
-        if(gamepad1.dpad_up){                               //GAMEPAD2
+        if(gamepad2.dpad_up){                               //GAMEPAD2
             pushBackServoLeft.setPower(Push_Back_Power);
             pushBackServoRight.setPower(-Push_Back_Power);
         }
-        else if(gamepad1.dpad_down){                         //GAMEPAD2
+        else if(gamepad2.dpad_down){                         //GAMEPAD2
             pushBackServoLeft.setPower(-Push_Back_Power);
             pushBackServoRight.setPower(Push_Back_Power);
         }
