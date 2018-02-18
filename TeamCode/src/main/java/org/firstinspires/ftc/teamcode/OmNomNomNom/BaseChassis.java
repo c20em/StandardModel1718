@@ -105,7 +105,15 @@ public class BaseChassis extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        liftIn.setPosition(.9);             //Relic Blocker
+        elbowServo.setPosition(.2);         //Relic arm up
+        sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
+        wallServo.setPosition(.3);          //Wall servo out
         while (opModeIsActive()) {
+            liftIn.setPosition(.9);             //Relic Blocker
+            elbowServo.setPosition(.2);         //Relic arm up
+            wallServo.setPosition(.3);          //Wall servo out
+
 //            telemetry.addData("x stick", gamepad1.left_stick_x);
 //            telemetry.addData("y stick", gamepad1.left_stick_y);
             if (relicGang){
@@ -115,7 +123,7 @@ public class BaseChassis extends LinearOpMode {
 
             }
 
-            Nom();
+            nom();
             flip();
             wall();
             moveRobot();
@@ -128,7 +136,7 @@ public class BaseChassis extends LinearOpMode {
     }
 
     public enum controllerPos {
-        STRAFE_RIGHT, STRAFE_LEFT, DRIVE_FOWARD, DRIVE_BACK, TURN_RIGHT, TURN_LEFT, SLOW_MODE, ZERO;
+        STRAFE_RIGHT, STRAFE_LEFT, DRIVE_FOWARD, DRIVE_BACK, TURN_RIGHT, TURN_LEFT, ZERO;
     }
 
 
@@ -235,7 +243,7 @@ public class BaseChassis extends LinearOpMode {
          lift.setPower(LiftPower);
      }
 
-     public void Nom() {
+     public void nom() {
          double nomfoward = gamepad1.left_trigger;
          double nombackward = gamepad1.right_trigger;
          nomfoward = Range.clip(nomfoward, 0, 1);
@@ -309,8 +317,8 @@ public class BaseChassis extends LinearOpMode {
 //                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
 //                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
             }else if(gamepad2.x){
-                leftBoxServo.setPosition(BOX_LEFT_UP + .03);//GAMEPAD2
-                rightBoxServo.setPosition(BOX_RIGHT_UP - .03);
+                leftBoxServo.setPosition(BOX_LEFT_UP + .1);//GAMEPAD2
+                rightBoxServo.setPosition(BOX_RIGHT_UP - .1);
             }
             if (gamepad1.left_stick_button) {
                 relicGang = true;

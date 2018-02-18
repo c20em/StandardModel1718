@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name="Red Corner Corner", group="Autonomous")
+@Autonomous(name="Red Rectangle Corner", group="Autonomous")
 
-public class RedCornerAuto extends BaseAutoFunctions {
+public class RedRectangleCorner extends BaseAutoFunctions {
     static double BOX_RIGHT_UP = .84;
     static double BOX_LEFT_UP = .1;
     static final double BOX_RIGHT_DOWN = .34;
@@ -45,7 +45,7 @@ public class RedCornerAuto extends BaseAutoFunctions {
         jewelHit = false; /////TAKE THIS OUT WHEN USING THE JEWEL
         /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
 
-        while(opModeIsActive() && !jewelHit) {
+        while(opModeIsActive()) {
             telemetry.addLine("made it this far");
             telemetry.update();
             liftIn.setPosition(.9);             //Relic Blocker
@@ -83,7 +83,7 @@ public class RedCornerAuto extends BaseAutoFunctions {
 
             sleep(1000);
             driveforTime(.6,500);
-            strafeforTime(1,500);
+            strafeforTime(1,200);
             //second glyph?
             driveforTime(.3, 1600);
             nomOn(nomPower,500);

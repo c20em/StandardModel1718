@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.newomnomnomnomnom;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,9 +11,8 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name="Blue Square Corner", group="Autonomous")
-
-public class BlueSquareCorner extends BaseAutoFunctions {
+@Autonomous(name="Red Square Corner", group="Autonomous")
+public class RedSquareCorner extends BaseAutoFunctions {
     static double BOX_RIGHT_UP = .84;
     static double BOX_LEFT_UP = .1;
     static final double BOX_RIGHT_DOWN = .34;
@@ -36,14 +36,10 @@ public class BlueSquareCorner extends BaseAutoFunctions {
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
 
-
-
-
-
         waitForStart();
 
         jewelHit = false; /////TAKE THIS OUT WHEN USING THE JEWEL
-                         /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
+        /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
 
         while(opModeIsActive()) {
             telemetry.addLine("made it this far");
@@ -52,10 +48,14 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             //jewel(true); /////TAKE THIS OUT WHEN USING THE JEWEL
             //sleep(1000);   /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
 
-            driveforTime(.4, 850);
-            sleep(1000);
-            turnforTime(-.4, 750);
-            sleep(1000);
+            liftforTime(.5, 400);
+            sleep(200);
+            driveforTime(-.4, 500);
+            sleep(200);
+            liftforTime(-.5, 400);
+            sleep(500);
+            turnforTime(-.5, 650);
+            sleep(500);
             driveforTime(-.4, 800);
             sleep(500);
             driveforTime(.4, 400);
@@ -67,7 +67,7 @@ public class BlueSquareCorner extends BaseAutoFunctions {
 
             driveforTime(-.3, 1000);
             sleep(500);
-            strafeforTime(-1, 400);
+            strafeforTime(-1, 300);
             sleep(500);
             driveforTime(-.3, 1000);
             sleep(500);
@@ -82,6 +82,10 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             wallServo.setPosition(.3);          //Wall servo out
 
             sleep(500);
+            drivewithNom(.7,400);
+            sleep(100);
+            driveforTime(-.7, 400);
+            sleep(500);
             drivewithNom(.6, 1500);
             telemetry.addLine("drive forward with nom");
             telemetry.update();
@@ -90,7 +94,6 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             drivewithNom(-.4, 1000);
 
             nomOn(nomPower, 600);
-
 
             drivewithNom(.6, 400);
 
@@ -101,9 +104,7 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             sleep(500);
             strafeforTime(.75, 300);
 
-
             driveforTime(.4, 400);
-
 
             flipIn();               //NECESSARY: need the sleep in between for 1000ms to allow servo to actually get to position before being called back in
             sleep(1000);

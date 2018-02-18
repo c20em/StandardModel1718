@@ -111,6 +111,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     public void liftforTime(double liftpower, long time)throws InterruptedException{
         lift.setPower(liftpower);
         sleep(time);
+        lift.setPower(0);
     }
     public void flipOut(){
             leftBoxServo.setPosition(BOX_LEFT_UP);
