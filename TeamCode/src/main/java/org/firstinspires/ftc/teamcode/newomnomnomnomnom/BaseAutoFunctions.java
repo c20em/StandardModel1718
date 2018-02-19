@@ -5,18 +5,37 @@ package org.firstinspires.ftc.teamcode.newomnomnomnomnom;
  */
 import android.graphics.Color;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.nio.channels.FileLockInterruptionException;
 
 abstract class BaseAutoFunctions extends LinearOpMode {
+
+    /*
+    initializing motors, servos, and sensors
+     */
+
     DcMotor FrontLeftDrive = null;
     DcMotor FrontRightDrive = null;
     DcMotor BackLeftDrive = null;
@@ -30,136 +49,178 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     Servo wallServo = null;
     CRServo pushBackServoLeft = null;
     CRServo pushBackServoRight = null;
-
-
     Servo jewelServo;
     ColorSensor colorSensor;
 
+    BNO055IMU imu;
+    Orientation angles;
+    Acceleration gravity;
+
     static final double JEWEL_DOWN_POS = 0.2;
-    static final double JEWEL_UP_POS = 0.5;
+    static final double JEWEL_MID_POS = 0.45;
+    static final double JEWEL_UP_POS = 0.6;
 
     static double BOX_RIGHT_UP = .84;
     static double BOX_LEFT_UP = .1;
     static final double BOX_RIGHT_DOWN = .34;
     static final double BOX_LEFT_DOWN = .61;
 
-    double strafepower = 0.85;
-    boolean jewelHit = false;
-    double nomPower = .95;
+    double nomPower = 0.95;
 
-    public void strafeforTime(double strafedirection, long time){
+    OpenGLMatrix lastLocation = null;
+    VuforiaLocalizer vuforia;
+    VuforiaLocalizer.Parameters parameters = null;
+    VuforiaTrackables relicTrackables = null;
+    VuforiaTrackable relicTemplate = null;
 
-        double FRpower = 1*strafedirection;
-        double BLpower = -1*strafedirection;
-        double BRpower = -1*strafedirection;
-        double FLpower = 1*strafedirection;
+    ElapsedTime clock = new ElapsedTime();
 
-        FLpower = Range.clip(FLpower, -1.0, 1.0) ;
-        BRpower = Range.clip(BRpower, -1.0, 1.0) ;
-        BLpower = Range.clip(BLpower, -1.0, 1.0) ;
-        FRpower = Range.clip(FRpower, -1.0, 1.0) ;
+    public void declare() {
+        FrontLeftDrive = hardwareMap.get(DcMotor.class, "front_left");
+        FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
+        BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
+        BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
+        jewelServo = hardwareMap.get(Servo.class, "jewel_servo");
+        colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+        rightBoxServo = hardwareMap.get(Servo.class, "right_box_servo");
+        leftBoxServo = hardwareMap.get(Servo.class, "left_box_servo");
+        lift = hardwareMap.get(DcMotor.class, "lift");
+        NomNomNom = hardwareMap.get(DcMotor.class, "nom");
+        liftIn = hardwareMap.get(Servo.class, "lift_in");
+        elbowServo = hardwareMap.get(Servo.class, "elbow_servo");
+        wallServo = hardwareMap.get(Servo.class, "wall_servo");
+        pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
+        pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
 
-        readjustMotorPower(FRpower);
-        readjustMotorPower(BRpower);
-        readjustMotorPower(FLpower);
-        readjustMotorPower(BLpower);
+        FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        NomNomNom.setDirection(DcMotor.Direction.REVERSE);
 
-        FrontLeftDrive.setPower(FLpower);
-        BackLeftDrive.setPower(BLpower);
-        FrontRightDrive.setPower(FRpower);
-        BackRightDrive.setPower(BRpower);
-        sleep(time);
+        FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
 
+    public void initGyro() {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+    }
+
+    public void initVuforia() {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        parameters.vuforiaLicenseKey = "Aeba4Qn/////AAAAGahNOxzreUE8nItPWzsrOlF7uoyrR/qbjue3kUmhxZcfZMSd5MRyEY+3uEoVA+gpQGz5KyP3wEjBxSOAb4+FBYMZ+QblFU4byMG4+aiI+GeeBA+RatQXVzSduRBdniCW4qehTnwS204KTUMXg1ioPvUlbYQmqM5aPMx/2xnYN1b+htNBWV0Bc8Vkyspa0NNgz7PzF1gozlCIc9FgzbzNYoOMhqSG+jhKf47SZQxD6iEAtj5iAkWBvJwFDLr/EfDfPr3BIA6Cpb4xaDc0t4Iz5wJ/p4oLRiEJaLoE/noCcWFjLmPcw9ccwYXThtjC+7u0DsMX+r+1dMikBCZCWWkLzEyjWzy3pOOR3exNRYGZ0vzr";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
+        relicTrackables.activate();
+    }
+
+    public void stopDrive() {
         FrontLeftDrive.setPower(0);
         BackLeftDrive.setPower(0);
         FrontRightDrive.setPower(0);
         BackRightDrive.setPower(0);
     }
-    public double readjustMotorPower(double motorPower) {
-        if (Math.abs(motorPower) >= 0.3) {
-            return motorPower;
-        } else {
-            return 0;
-        }
+
+    public void strafe(double strafe, int time) throws InterruptedException {
+        strafe(strafe);
+        delay(time);
+        stopDrive();
     }
 
-    public void turnforTime(double turn, long time) throws InterruptedException{
+    public void strafe(double strafe) {
+        FrontLeftDrive.setPower(strafe);
+        BackLeftDrive.setPower(-strafe);
+        FrontRightDrive.setPower(strafe);
+        BackRightDrive.setPower(-strafe);
+    }
 
-        FrontLeftDrive.setPower(turn);
-        BackLeftDrive.setPower(turn);
-        FrontRightDrive.setPower(turn);
-        BackRightDrive.setPower(turn);
-        sleep(time);
-        FrontLeftDrive.setPower(0);
-        BackLeftDrive.setPower(0);
-        FrontRightDrive.setPower(0);
-        BackRightDrive.setPower(0);
-        sleep(time);
+    public void turn(double power, int time) throws InterruptedException{
+        turn(power);
+        delay(time);
+        stopDrive();
     }
-    public void driveforTime(double drivepower, long time)throws InterruptedException{
-        FrontLeftDrive.setPower(-drivepower); //THIS IS DRIVING BACKWARDS
-        BackLeftDrive.setPower(-drivepower);
-        FrontRightDrive.setPower(drivepower);
-        BackRightDrive.setPower(drivepower);
-        telemetry.addData("Motors", "drive power (%.2f)", drivepower);
-        sleep(time);
-        FrontLeftDrive.setPower(0);
-        BackLeftDrive.setPower(0);
-        FrontRightDrive.setPower(0);
-        BackRightDrive.setPower(0);
+
+    public void turn(double power) {
+        FrontLeftDrive.setPower(power);
+        BackLeftDrive.setPower(power);
+        FrontRightDrive.setPower(power);
+        BackRightDrive.setPower(power);
     }
-    public void liftforTime(double liftpower, long time)throws InterruptedException{
+
+    public void drive(double power, int time)throws InterruptedException{
+        drive(power);
+        delay(time);
+        stopDrive();
+    }
+
+    public void drive(double power)throws InterruptedException{
+        FrontLeftDrive.setPower(-power); //THIS IS DRIVING BACKWARDS
+        BackLeftDrive.setPower(-power);
+        FrontRightDrive.setPower(power);
+        BackRightDrive.setPower(power);
+        telemetry.addData("Motors", "drive power (%.2f)", power);
+    }
+
+    public void lift(double liftpower, int time)throws InterruptedException{
         lift.setPower(liftpower);
-        sleep(time);
+        delay(time);
         lift.setPower(0);
     }
+
     public void flipOut(){
-            leftBoxServo.setPosition(BOX_LEFT_UP);
-            rightBoxServo.setPosition(BOX_RIGHT_UP);
+        leftBoxServo.setPosition(BOX_LEFT_UP);
+        rightBoxServo.setPosition(BOX_RIGHT_UP);
     }
     public void flipIn(){
         leftBoxServo.setPosition(BOX_LEFT_DOWN);
         rightBoxServo.setPosition(BOX_RIGHT_DOWN);
     }
 
-    public void drivewithNom(double drivepower, long time)throws InterruptedException{
-        starsAndNomOn(nomPower);
-        FrontLeftDrive.setPower(-drivepower);
-        BackLeftDrive.setPower(-drivepower);
-        FrontRightDrive.setPower(drivepower);
-        BackRightDrive.setPower(drivepower);
-        sleep(time);
-        FrontLeftDrive.setPower(0);
-        BackLeftDrive.setPower(0);
-        FrontRightDrive.setPower(0);
-        BackRightDrive.setPower(0);
-
-
+    public void nom(int time) {
+        nom();
+        delay(time);
+        stopNom();
     }
 
-    public void nomOn(double power, long time) {
-        NomNomNom.setPower(-power);
-        sleep(time);
-        NomNomNom.setPower(0);
-    }
-    public void starsAndNomOn(double power) {
-        NomNomNom.setPower(-power);
+    public void nom() {
+        NomNomNom.setPower(nomPower);
         pushBackServoLeft.setPower(-1);
         pushBackServoRight.setPower(1);
-
     }
 
-    public void driveBackNomming(double drivepower)throws InterruptedException{
-        starsAndNomOn(nomPower);
+    public void stopNom() {
+        NomNomNom.setPower(0);
+        pushBackServoLeft.setPower(0);
+        pushBackServoRight.setPower(0);
+    }
 
-        FrontLeftDrive.setPower(-drivepower/2);
-        BackLeftDrive.setPower(-drivepower/2);
-        FrontRightDrive.setPower(-drivepower/2);
-        BackRightDrive.setPower(-drivepower/2);
+    public void nomDrive(double power)throws InterruptedException{
+        nom();
+        drive(power);
+    }
 
-        starsAndNomOn(nomPower);
-
-
+    public void nomDrive(double power, int time)throws InterruptedException{
+        nomDrive(power);
+        delay(time);
+        stopDrive();
+        stopNom();
     }
 
     public void jewel(boolean blue) throws InterruptedException {
@@ -172,35 +233,62 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         sleep(500);
         if(blue && isBlue() || !blue && !isBlue()) {
             telemetry.addLine("Blue!");
-            turn = -.2;
+            turn = 0.2;
         } else if(blue && !isBlue() || !blue && isBlue()) {
             telemetry.addLine("Red!");
-            turn = .2;
+            turn = -0.2;
         }
-        turnforTime(turn, 50);
-        jewelServo.setPosition(.6);
-        turnforTime(-turn, 50);
 
-        jewelHit = true;
+        turn(turn, 50);
+        jewelServo.setPosition(JEWEL_UP_POS);
+        turn(-turn, 50);
     }
 
     public void servoSequence() {
-        jewelServo.setPosition(.45);
-        sleep(1600);
-        jewelServo.setPosition(.2);
-        sleep(800);
+        jewelServo.setPosition(JEWEL_MID_POS);
+        delay(1600);
+        jewelServo.setPosition(JEWEL_DOWN_POS);
+        delay(800);
     }
 
     public boolean isBlue() {
         telemetry.addData("Red:", colorSensor.red());
         telemetry.addData("Blue:", colorSensor.blue());
-
         telemetry.update();
+
         colorSensor.enableLed(true);
+        delay(200);
+
         if (colorSensor.red() < colorSensor.blue()) {
+            colorSensor.enableLed(false);
             return true;
         } else {
+            colorSensor.enableLed(false);
             return false;
+        }
+    }
+
+    public RelicRecoveryVuMark pictograph() {
+        double startTime = getRuntime() * 1000;
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        if(vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            return vuMark;
+        } else {
+            while(startTime - getRuntime() < 2000) {
+                vuMark = RelicRecoveryVuMark.from(relicTemplate);
+                if(vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                    return vuMark;
+                }
+            }
+        }
+        return vuMark;
+    }
+
+    public void delay(int milliseconds) {
+        clock.reset();
+        while(clock.milliseconds() < milliseconds) {
+            telemetry.addLine("delayyy");
         }
     }
 }
