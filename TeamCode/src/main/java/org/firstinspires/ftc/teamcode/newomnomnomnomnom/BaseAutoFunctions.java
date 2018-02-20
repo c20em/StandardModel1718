@@ -46,6 +46,18 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     double strafepower = 0.85;
     boolean jewelHit = false;
     double nomPower = .95;
+    double gradualPower = 0.0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////TIME BASED DRIVE METHODS/////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     public void strafeforTime(double strafedirection, long time){
 
@@ -75,13 +87,6 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         FrontRightDrive.setPower(0);
         BackRightDrive.setPower(0);
     }
-    public double readjustMotorPower(double motorPower) {
-        if (Math.abs(motorPower) >= 0.3) {
-            return motorPower;
-        } else {
-            return 0;
-        }
-    }
 
     public void turnforTime(double turn, long time) throws InterruptedException{
 
@@ -96,8 +101,9 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackRightDrive.setPower(0);
         sleep(time);
     }
+
     public void driveforTime(double drivepower, long time)throws InterruptedException{
-        FrontLeftDrive.setPower(-drivepower); //THIS IS DRIVING BACKWARDS
+        FrontLeftDrive.setPower(-drivepower); //THIS IS DRIVING FORWARDS
         BackLeftDrive.setPower(-drivepower);
         FrontRightDrive.setPower(drivepower);
         BackRightDrive.setPower(drivepower);
@@ -107,19 +113,6 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackLeftDrive.setPower(0);
         FrontRightDrive.setPower(0);
         BackRightDrive.setPower(0);
-    }
-    public void liftforTime(double liftpower, long time)throws InterruptedException{
-        lift.setPower(liftpower);
-        sleep(time);
-        lift.setPower(0);
-    }
-    public void flipOut(){
-            leftBoxServo.setPosition(BOX_LEFT_UP);
-            rightBoxServo.setPosition(BOX_RIGHT_UP);
-    }
-    public void flipIn(){
-        leftBoxServo.setPosition(BOX_LEFT_DOWN);
-        rightBoxServo.setPosition(BOX_RIGHT_DOWN);
     }
 
     public void drivewithNom(double drivepower, long time)throws InterruptedException{
@@ -133,33 +126,205 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackLeftDrive.setPower(0);
         FrontRightDrive.setPower(0);
         BackRightDrive.setPower(0);
-
-
     }
 
-    public void nomOn(double power, long time) {
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////ENCODER BASED DRIVE METHODS////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // will call these in ____withEncoders methods
+    public void DriveForward(double drivePower) {
+        FrontLeftDrive.setPower(-drivePower);
+        BackLeftDrive.setPower(-drivePower);
+        FrontRightDrive.setPower(drivePower);
+        BackRightDrive.setPower(drivePower);
+    }
+    public void turn(double turn){
+        FrontLeftDrive.setPower(turn);
+        BackLeftDrive.setPower(turn);
+        FrontRightDrive.setPower(turn);
+        BackRightDrive.setPower(turn);
+    }
+    public void StrafeRight(double drivePower) {
+        FrontLeftDrive.setPower(drivePower);
+        BackLeftDrive.setPower(-drivePower);
+        FrontRightDrive.setPower(drivePower);
+        BackRightDrive.setPower(-drivePower);
+    }
+    public void StopDriving(){
+        FrontLeftDrive.setPower(0);
+        BackLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        BackRightDrive.setPower(0);
+    }
+
+    //WITH ENCODER DRIVE METHODS
+    public void DriveForwardwithEncoders(double drivePower, int distance, boolean nom){
+
+        // reset the encoders
+        FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FrontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // set to the target (distance)
+        FrontLeftDrive.setTargetPosition(distance);
+        BackLeftDrive.setTargetPosition(distance);
+        FrontRightDrive.setTargetPosition(distance);
+        BackRightDrive.setTargetPosition(distance);
+
+        // set to RUN_TO_POSITION mode
+        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        DriveForward(drivePower);
+
+        while (FrontLeftDrive.isBusy() && BackLeftDrive.isBusy() && FrontRightDrive.isBusy() && BackRightDrive.isBusy()){
+            // waiting until the target position is reached
+            // if asked for nom, run nom while moving
+            if(nom)NomNomNom.setPower(nomPower);
+        }
+        // stop driving
+        StopDriving();
+
+        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void DriveBackwardwithEncoders(double drivePower, int distance, boolean nom){
+        DriveForwardwithEncoders(-drivePower, distance, nom);
+    }
+
+    public void TurnLeftwithEncoders(double drivePower, int distance, boolean nom){
+        // reset the encoders
+        FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FrontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // set to the target (distance)
+        FrontLeftDrive.setTargetPosition(distance);
+        BackLeftDrive.setTargetPosition(distance);
+        FrontRightDrive.setTargetPosition(distance);
+        BackRightDrive.setTargetPosition(distance);
+
+        // set to RUN_TO_POSITION mode
+        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        turn(drivePower);
+
+        while (FrontLeftDrive.isBusy() && BackLeftDrive.isBusy() && FrontRightDrive.isBusy() && BackRightDrive.isBusy()){
+            // waiting until the target position is reached
+            // if asked for nom, run nom while moving
+            if(nom)NomNomNom.setPower(nomPower);
+        }
+        // stop driving
+        StopDriving();
+        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void TurnRightwithEncoders(double drivePower, int distance, boolean nom){
+        TurnLeftwithEncoders(-drivePower, distance, nom);
+    }
+
+    public void StrafeRightwithEncoders(double drivePower, int distance, boolean nom){
+        // reset the encoders
+        FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FrontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // set to the target (distance)
+        FrontLeftDrive.setTargetPosition(distance);
+        BackLeftDrive.setTargetPosition(distance);
+        FrontRightDrive.setTargetPosition(distance);
+        BackRightDrive.setTargetPosition(distance);
+
+        // set to RUN_TO_POSITION mode
+        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        StrafeRight(drivePower);
+
+        while (FrontLeftDrive.isBusy() && BackLeftDrive.isBusy() && FrontRightDrive.isBusy() && BackRightDrive.isBusy()){
+            // waiting until the target position is reached
+            // if asked for nom, run nom while moving
+            if(nom)NomNomNom.setPower(nomPower);
+        }
+        // stop driving
+        StopDriving();
+
+        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void StrafeLeftwithEncoders(double drivePower, int distance, boolean nom) {
+        StrafeLeftwithEncoders(-drivePower, distance, nom);
+    }
+
+    //prevent motors from stalling out
+    public double readjustMotorPower(double motorPower) {
+        if (Math.abs(motorPower) >= 0.3) {
+            return motorPower;
+        } else {
+            return 0;
+        }
+    }
+
+    //time based nom only
+    public void nomforTime(double power, long time)throws InterruptedException {
         NomNomNom.setPower(-power);
         sleep(time);
         NomNomNom.setPower(0);
     }
+
+    //time based nom and stars in only
     public void starsAndNomOn(double power) {
         NomNomNom.setPower(-power);
         pushBackServoLeft.setPower(-1);
         pushBackServoRight.setPower(1);
-
     }
 
-    public void driveBackNomming(double drivepower)throws InterruptedException{
-        starsAndNomOn(nomPower);
+    //time based lift
+    public void liftforTime(double liftpower, long time)throws InterruptedException{
+        lift.setPower(liftpower);
+        sleep(time);
+        lift.setPower(0);
+    }
 
-        FrontLeftDrive.setPower(-drivepower/2);
-        BackLeftDrive.setPower(-drivepower/2);
-        FrontRightDrive.setPower(-drivepower/2);
-        BackRightDrive.setPower(-drivepower/2);
+    //glyph place flip out
+    public void flipOut(){
+        leftBoxServo.setPosition(BOX_LEFT_UP);
+        rightBoxServo.setPosition(BOX_RIGHT_UP);
+    }
 
-        starsAndNomOn(nomPower);
-
-
+    //blyph place flip in
+    public void flipIn(){
+        leftBoxServo.setPosition(BOX_LEFT_DOWN);
+        rightBoxServo.setPosition(BOX_RIGHT_DOWN);
     }
 
     public void jewel(boolean blue) throws InterruptedException {

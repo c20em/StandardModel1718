@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
@@ -36,9 +37,10 @@ public class BlueSquareCorner extends BaseAutoFunctions {
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
 
-
-
-
+        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
 
@@ -85,16 +87,13 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             drivewithNom(.6, 1500);
             telemetry.addLine("drive forward with nom");
             telemetry.update();
-            nomOn(nomPower,400);
 
             drivewithNom(-.4, 1000);
 
-            nomOn(nomPower, 600);
 
 
             drivewithNom(.6, 400);
 
-            nomOn(nomPower,400);
 
             drivewithNom(-.4, 800);
 
