@@ -170,7 +170,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         stopDrive();
     }
 
-    public void drive(double power)throws InterruptedException{
+    public void drive(double power) {
         FrontLeftDrive.setPower(-power); //THIS IS DRIVING BACKWARDS
         BackLeftDrive.setPower(-power);
         FrontRightDrive.setPower(power);
@@ -178,7 +178,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         telemetry.addData("Motors", "drive power (%.2f)", power);
     }
 
-    public void lift(double liftpower, int time)throws InterruptedException{
+    public void lift(double liftpower, int time) throws InterruptedException{
         lift.setPower(liftpower);
         delay(time);
         lift.setPower(0);
@@ -193,7 +193,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         rightBoxServo.setPosition(BOX_RIGHT_DOWN);
     }
 
-    public void nom(int time) {
+    public void nom(int time) throws InterruptedException {
         nom();
         delay(time);
         stopNom();
@@ -211,7 +211,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         pushBackServoRight.setPower(0);
     }
 
-    public void nomDrive(double power)throws InterruptedException{
+    public void nomDrive(double power) {
         nom();
         drive(power);
     }
