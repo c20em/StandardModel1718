@@ -285,15 +285,6 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         StrafeLeftwithEncoders(-drivePower, distance, nom);
     }
 
-    //prevent motors from stalling out
-    public double readjustMotorPower(double motorPower) {
-        if (Math.abs(motorPower) >= 0.3) {
-            return motorPower;
-        } else {
-            return 0;
-        }
-    }
-
     //time based nom only
     public void nomforTime(double power, long time)throws InterruptedException {
         NomNomNom.setPower(-power);
@@ -313,6 +304,15 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         lift.setPower(liftpower);
         sleep(time);
         lift.setPower(0);
+    }
+
+    //prevent motors from stalling out
+    public double readjustMotorPower(double motorPower) {
+        if (Math.abs(motorPower) >= 0.3) {
+            return motorPower;
+        } else {
+            return 0;
+        }
     }
 
     //glyph place flip out
