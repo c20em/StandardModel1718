@@ -49,41 +49,38 @@ public class BlueSquareCorner_withencoders extends BaseAutoFunctions {
 
         waitForStart();
 
-        jewelHit = false; /////TAKE THIS OUT WHEN USING THE JEWEL
-        /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
+  
 
         while(opModeIsActive()) {
             //jewel(true); /////TAKE THIS OUT WHEN USING THE JEWEL
-            //sleep(1000);   /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
+            //delay(1000);   /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
 
 
             //Knock off a jewel
-            TurnLeftwithEncoders(.2,100,false);
-            sleep(30);
-            TurnRightwithEncoders(.2,100,false);
-            sleep(300);
+            TurnLeftwithEncoders(.2,40,false);
+            delay(30);
+            TurnRightwithEncoders(.2,40,false);
+            delay(300);
 
-            liftforTime(.3, 200);
-            sleep(200);
+            lift(.3, 200);
+            delay(200);
             DriveBackwardwithEncoders(.5, 400, false);
+            delay(200);
+            TurnLeftwithEncoders(.3, 200, false);
 
-
-            flipIn();               //NECESSARY: need the sleep in between for 1000ms to allow servo to actually get to position before being called back in
-            sleep(1000);
-            flipOut();
-            sleep(1000);
-
-
-            flipIn();               //NECESSARY: need the sleep in between for 1000ms to allow servo to actually get to position before being called back in
-            sleep(600);
-            flipOut();
-            sleep(600);
-            driveforTime(.3, 1000);
-            sleep(500);
-            strafeforTime(-1, 800);
-            sleep(500);
-            driveforTime(-.3, 1000);
-            sleep(500);
+            flipOut();               //NECESSARY: need the delay in between for 1000ms to allow servo to actually get to position before being called back in
+            delay(600);
+            flipIn();
+            delay(600);
+            DriveBackwardwithEncoders(.3, 200, false);
+            delay(500);
+            DriveForwardwithEncoders(.3, 100, false);
+            delay(200);
+            StrafeLeftwithEncoders(.4, 40, false);
+            delay(500);
+            DriveBackwardwithEncoders(.3, 200, false);
+            delay(500);
+            DriveForwardwithEncoders(.5, 200, false);
             break;
 
         }

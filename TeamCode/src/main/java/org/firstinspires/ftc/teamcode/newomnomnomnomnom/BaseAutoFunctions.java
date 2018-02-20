@@ -131,19 +131,17 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         relicTrackables.activate();
     }
 
-
-
-    public void strafe(double strafe, int time) throws InterruptedException {
-        strafe(strafe);
+    public void strafeforTime(double power, int time) throws InterruptedException {
+        strafe(power);
         delay(time);
         StopDriving();
     }
 
-    public void strafe(double strafe) {
-        FrontLeftDrive.setPower(strafe);
-        BackLeftDrive.setPower(-strafe);
-        FrontRightDrive.setPower(strafe);
-        BackRightDrive.setPower(-strafe);
+    public void strafe(double power) {
+        FrontLeftDrive.setPower(power);
+        BackLeftDrive.setPower(-power);
+        FrontRightDrive.setPower(power);
+        BackRightDrive.setPower(-power);
     }
 
     public void turn(double power, int time) throws InterruptedException{
@@ -152,7 +150,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         StopDriving();
     }
 
-    public void drive(double power, int time)throws InterruptedException{
+    public void driveforTime(double power, int time)throws InterruptedException{
         drive(power);
         delay(time);
         StopDriving();
@@ -181,7 +179,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         rightBoxServo.setPosition(BOX_RIGHT_DOWN);
     }
 
-    public void nom(int time) throws InterruptedException {
+    public void nomforTime(int time) throws InterruptedException {
         nom();
         delay(time);
         stopNom();
@@ -204,7 +202,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         drive(power);
     }
 
-    public void nomDrive(double power, int time)throws InterruptedException{
+    public void nomDriveForTime(double power, int time)throws InterruptedException{
         nomDrive(power);
         delay(time);
         StopDriving();
@@ -296,12 +294,6 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackLeftDrive.setPower(turn);
         FrontRightDrive.setPower(turn);
         BackRightDrive.setPower(turn);
-    }
-    public void StrafeRight(double drivePower) {
-        FrontLeftDrive.setPower(drivePower);
-        BackLeftDrive.setPower(-drivePower);
-        FrontRightDrive.setPower(drivePower);
-        BackRightDrive.setPower(-drivePower);
     }
     public void StopDriving(){
         FrontLeftDrive.setPower(0);
@@ -411,7 +403,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        StrafeRight(drivePower);
+        strafe(drivePower);
 
         while (FrontLeftDrive.isBusy() && BackLeftDrive.isBusy() && FrontRightDrive.isBusy() && BackRightDrive.isBusy()){
             // waiting until the target position is reached
@@ -432,10 +424,4 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         StrafeLeftwithEncoders(-drivePower, distance, nom);
     }
 
-    //time based lift
-    public void liftforTime(double liftpower, long time)throws InterruptedException{
-        lift.setPower(liftpower);
-        sleep(time);
-        lift.setPower(0);
-    }
 }
