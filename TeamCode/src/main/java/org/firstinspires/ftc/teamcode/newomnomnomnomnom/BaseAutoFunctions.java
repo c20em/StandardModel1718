@@ -56,8 +56,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     Orientation angles;
     Acceleration gravity;
 
-    static final double JEWEL_DOWN_POS = 0.2;
-    static final double JEWEL_MID_POS = 0.45;
+    static final double JEWEL_DOWN_POS = 0.0;
+    static final double JEWEL_MID_POS = 0.2;
     static final double JEWEL_UP_POS = 0.6;
 
     static double BOX_RIGHT_UP = .84;
@@ -92,10 +92,10 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
 
-        FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        FrontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        BackRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        FrontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         NomNomNom.setDirection(DcMotor.Direction.REVERSE);
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -131,9 +131,9 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         relicTrackables.activate();
     }
 
-    public void strafeforTime(double power, int time) throws InterruptedException {
+        public void strafeforTime(double power, int time) throws InterruptedException {
         strafe(power);
-        delay(time);
+        sleep(time);
         StopDriving();
     }
 
@@ -146,13 +146,13 @@ abstract class BaseAutoFunctions extends LinearOpMode {
 
     public void turn(double power, int time) throws InterruptedException{
         turn(power);
-        delay(time);
+        sleep(time);
         StopDriving();
     }
 
     public void driveforTime(double power, int time)throws InterruptedException{
         drive(power);
-        delay(time);
+        sleep(time);
         StopDriving();
     }
 
@@ -166,7 +166,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
 
     public void lift(double liftpower, int time) throws InterruptedException{
         lift.setPower(liftpower);
-        delay(time);
+        sleep(time);
         lift.setPower(0);
     }
 
@@ -181,7 +181,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
 
     public void nomforTime(int time) throws InterruptedException {
         nom();
-        delay(time);
+        sleep(time);
         stopNom();
     }
 
@@ -204,13 +204,18 @@ abstract class BaseAutoFunctions extends LinearOpMode {
 
     public void nomDriveForTime(double power, int time)throws InterruptedException{
         nomDrive(power);
-        delay(time);
+        sleep(time);
         StopDriving();
         stopNom();
     }
 
     public void jewel(boolean blue) throws InterruptedException {
-        servoSequence();
+        jewelServo.setPosition(JEWEL_MID_POS);
+        sleep(1200);
+        jewelServo.setPosition(0.4);
+        sleep(500);
+        jewelServo.setPosition(JEWEL_DOWN_POS);
+        sleep(800);
         telemetry.addData("Blue:", colorSensor.blue());
         telemetry.addData("Red:", colorSensor.red());
         telemetry.update();
@@ -230,21 +235,13 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         turn(-turn, 50);
     }
 
-    public void servoSequence() {
-        jewelServo.setPosition(JEWEL_MID_POS);
-        delay(1600);
-        jewelServo.setPosition(JEWEL_DOWN_POS);
-        delay(800);
-    }
-
-    public boolean isBlue() {
+    public boolean isBlue() throws InterruptedException {
         telemetry.addData("Red:", colorSensor.red());
         telemetry.addData("Blue:", colorSensor.blue());
         telemetry.update();
 
         colorSensor.enableLed(true);
-        delay(200);
-
+        sleep(200);
         if (colorSensor.red() < colorSensor.blue()) {
             colorSensor.enableLed(false);
             return true;
@@ -271,10 +268,10 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         return vuMark;
     }
 
-    public void delay(int milliseconds) {
+    public void delay(int milliseconds) throws InterruptedException {
         clock.reset();
         while(clock.milliseconds() < milliseconds) {
-            telemetry.addLine("delayyy");
+            telemetry.addLine("sleepyy");
         }
     }
 
@@ -352,10 +349,10 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set to the target (distance)
-        FrontLeftDrive.setTargetPosition(distance);
-        BackLeftDrive.setTargetPosition(distance);
-        FrontRightDrive.setTargetPosition(distance);
-        BackRightDrive.setTargetPosition(distance);
+        FrontLeftDrive.setTargetPosition(-distance);
+        BackLeftDrive.setTargetPosition(-distance);
+        FrontRightDrive.setTargetPosition(-distance);
+        BackRightDrive.setTargetPosition(-distance);
 
         // set to RUN_TO_POSITION mode
         FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -421,7 +418,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     }
 
     public void StrafeLeftwithEncoders(double drivePower, int distance, boolean nom) {
-        StrafeLeftwithEncoders(-drivePower, distance, nom);
+        StrafeRightwithEncoders(-drivePower, distance, nom);
     }
 
 }
