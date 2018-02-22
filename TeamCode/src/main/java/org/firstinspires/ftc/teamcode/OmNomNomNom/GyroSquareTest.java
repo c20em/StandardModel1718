@@ -50,6 +50,7 @@ import java.util.Locale;
 
 
 @Autonomous(name = "Gyro Square Challenge", group = "Sensor")// Comment this out to add to the opmode list
+@Disabled
 public class GyroSquareTest extends LinearOpMode
 {
     //----------------------------------------------------------------------------------------------

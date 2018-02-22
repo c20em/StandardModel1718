@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.newomnomnomnomnom;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @Autonomous(name="Red Rectangle Corner", group="Autonomous")
-
+@Disabled
 public class RedRectangleCorner extends BaseAutoFunctions {
 
     @Override

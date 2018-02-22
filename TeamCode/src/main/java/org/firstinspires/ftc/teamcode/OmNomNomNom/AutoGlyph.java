@@ -29,6 +29,7 @@ import org.firstinspires.ftc.teamcode.Skipper.BlueLeftAuto;
  * Created by student on 1/14/18.
  */
 @Autonomous(name="Basic Glyph", group="Autonomous")
+@Disabled
 public class AutoGlyph extends LinearOpMode {
 
     //Vuforia

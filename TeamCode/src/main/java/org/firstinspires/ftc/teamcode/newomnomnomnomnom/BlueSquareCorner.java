@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @Autonomous(name="Blue Square Corner", group="Autonomous")
+@Disabled
 public class BlueSquareCorner extends BaseAutoFunctions {
 
     @Override
