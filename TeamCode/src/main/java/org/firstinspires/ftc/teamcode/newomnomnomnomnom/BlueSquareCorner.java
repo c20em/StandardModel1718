@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.newomnomnomnomnom;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @Autonomous(name="Blue Square Corner", group="Autonomous")
-
+@Disabled
 public class BlueSquareCorner extends BaseAutoFunctions {
     static double BOX_RIGHT_UP = .84;
     static double BOX_LEFT_UP = .1;

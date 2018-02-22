@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode.newomnomnomnomnom;
  */
 
         import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+        import com.qualcomm.robotcore.eventloop.opmode.Disabled;
         import com.qualcomm.robotcore.util.Range;
 
         import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -12,6 +13,7 @@ package org.firstinspires.ftc.teamcode.newomnomnomnomnom;
         import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 @Autonomous(name = "Gyro Tester", group = "Sensor")
+@Disabled
 public class PIDTesting extends BaseAutoFunctions {
     @Override
     public void runOpMode() throws InterruptedException {

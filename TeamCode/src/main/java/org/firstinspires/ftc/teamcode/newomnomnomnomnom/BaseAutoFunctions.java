@@ -60,10 +60,10 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     static final double JEWEL_MID_POS = 0.2;
     static final double JEWEL_UP_POS = 0.6;
 
-    static double BOX_RIGHT_UP = .84;
-    static double BOX_LEFT_UP = .1;
-    static final double BOX_RIGHT_DOWN = .34;
-    static final double BOX_LEFT_DOWN = .61;
+    static double BOX_RIGHT_DOWN = .84;
+    static double BOX_LEFT_DOWN = .1;
+    static final double BOX_RIGHT_UP = .34;
+    static final double BOX_LEFT_UP = .61;
 
     double nomPower = 0.95;
 
@@ -92,10 +92,10 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
 
-        FrontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        FrontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         NomNomNom.setDirection(DcMotor.Direction.REVERSE);
 
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -131,7 +131,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         relicTrackables.activate();
     }
 
-        public void strafeforTime(double power, int time) throws InterruptedException {
+    public void strafeforTime(double power, int time) throws InterruptedException {
         strafe(power);
         sleep(time);
         StopDriving();
@@ -140,8 +140,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     public void strafe(double power) {
         FrontLeftDrive.setPower(power);
         BackLeftDrive.setPower(-power);
-        FrontRightDrive.setPower(power);
-        BackRightDrive.setPower(-power);
+        FrontRightDrive.setPower(-power);
+        BackRightDrive.setPower(power);
     }
 
     public void turn(double power, int time) throws InterruptedException{
@@ -157,8 +157,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     }
 
     public void drive(double power) {
-        FrontLeftDrive.setPower(-power); //THIS IS DRIVING BACKWARDS
-        BackLeftDrive.setPower(-power);
+        FrontLeftDrive.setPower(power); //THIS IS DRIVING BACKWARDS
+        BackLeftDrive.setPower(power);
         FrontRightDrive.setPower(power);
         BackRightDrive.setPower(power);
         telemetry.addData("Motors", "drive power (%.2f)", power);
@@ -210,29 +210,59 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     }
 
     public void jewel(boolean blue) throws InterruptedException {
-        jewelServo.setPosition(JEWEL_MID_POS);
-        sleep(1200);
-        jewelServo.setPosition(0.4);
-        sleep(500);
         jewelServo.setPosition(JEWEL_DOWN_POS);
         sleep(800);
         telemetry.addData("Blue:", colorSensor.blue());
         telemetry.addData("Red:", colorSensor.red());
         telemetry.update();
         double turn = 0;
+        sleep(800);
 
-        sleep(500);
-        if(blue && isBlue() || !blue && !isBlue()) {
+        boolean isB = isBlue();
+
+        if((blue && isB) || (!blue && !isB)) {
             telemetry.addLine("Blue!");
-            turn = 0.2;
-        } else if(blue && !isBlue() || !blue && isBlue()) {
+            telemetry.update();
+
+            turn = -0.3;
+        } else if((blue && !isB) || (!blue && isB)) {
             telemetry.addLine("Red!");
-            turn = -0.2;
+            telemetry.update();
+            turn = 0.3;
         }
 
-        turn(turn, 50);
+        turn(turn);
+        sleep(200);
         jewelServo.setPosition(JEWEL_UP_POS);
-        turn(-turn, 50);
+        turn(-turn);
+        sleep(200);
+        turn(0);
+    }
+
+    public void jewelTime(boolean blue) throws InterruptedException {
+        jewelServo.setPosition(JEWEL_DOWN_POS);
+        sleep(800);
+        telemetry.addData("Blue:", colorSensor.blue());
+        telemetry.addData("Red:", colorSensor.red());
+        telemetry.update();
+        double turn = 0;
+        sleep(800);
+
+
+        if(colorSensor.blue()>colorSensor.red()) {
+            telemetry.addLine("Blue!");
+            turn = -0.3;
+        }
+        else if(colorSensor.blue()<colorSensor.red()) {
+            telemetry.addLine("Red!");
+
+        }
+
+        turn(turn);
+        sleep(200);
+        jewelServo.setPosition(JEWEL_UP_POS);
+        turn(-turn);
+        sleep(200);
     }
 
     public boolean isBlue() throws InterruptedException {
@@ -242,10 +272,22 @@ abstract class BaseAutoFunctions extends LinearOpMode {
 
         colorSensor.enableLed(true);
         sleep(200);
-        if (colorSensor.red() < colorSensor.blue()) {
+        clock.reset();
+        int red = 0;
+        int blue = 0;
+        while(clock.milliseconds() < 800) {
+            red = colorSensor.red();
+            blue = colorSensor.blue();
+        }
+        if (red < blue) {
+            telemetry.addLine("SEES BLUE");
+            telemetry.update();
             colorSensor.enableLed(false);
             return true;
         } else {
+            telemetry.addLine("SEES RED");
+            telemetry.update();
+
             colorSensor.enableLed(false);
             return false;
         }
@@ -289,8 +331,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     public void turn(double turn){
         FrontLeftDrive.setPower(turn);
         BackLeftDrive.setPower(turn);
-        FrontRightDrive.setPower(turn);
-        BackRightDrive.setPower(turn);
+        FrontRightDrive.setPower(-turn);
+        BackRightDrive.setPower(-turn);
     }
     public void StopDriving(){
         FrontLeftDrive.setPower(0);
@@ -300,7 +342,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     }
 
     //WITH ENCODER DRIVE METHODS
-    public void DriveForwardwithEncoders(double drivePower, int distance, boolean nom){
+    public void encoderDriveForwards(double drivePower, int distance, boolean nom){
 
         // reset the encoders
         FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -320,7 +362,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        DriveForward(drivePower);
+        drive(drivePower);
 
         while (FrontLeftDrive.isBusy() && BackLeftDrive.isBusy() && FrontRightDrive.isBusy() && BackRightDrive.isBusy()){
             // waiting until the target position is reached
@@ -337,11 +379,11 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void DriveBackwardwithEncoders(double drivePower, int distance, boolean nom){
-        DriveForwardwithEncoders(-drivePower, distance, nom);
+    public void encoderDriveBackwards(double drivePower, int distance, boolean nom){
+        encoderDriveForwards(-drivePower, -distance, nom);
     }
 
-    public void TurnLeftwithEncoders(double drivePower, int distance, boolean nom){
+    public void encoderTurnLeft(double drivePower, int distance, boolean nom){
         // reset the encoders
         FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -349,8 +391,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // set to the target (distance)
-        FrontLeftDrive.setTargetPosition(-distance);
-        BackLeftDrive.setTargetPosition(-distance);
+        FrontLeftDrive.setTargetPosition(distance);
+        BackLeftDrive.setTargetPosition(distance);
         FrontRightDrive.setTargetPosition(-distance);
         BackRightDrive.setTargetPosition(-distance);
 
@@ -377,11 +419,11 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void TurnRightwithEncoders(double drivePower, int distance, boolean nom){
-        TurnLeftwithEncoders(-drivePower, distance, nom);
+    public void encoderTurnRight(double drivePower, int distance, boolean nom){
+        encoderTurnLeft(-drivePower, -distance, nom);
     }
 
-    public void StrafeRightwithEncoders(double drivePower, int distance, boolean nom){
+    public void encoderStrafeRight(double drivePower, int distance, boolean nom){
         // reset the encoders
         FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -390,8 +432,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
 
         // set to the target (distance)
         FrontLeftDrive.setTargetPosition(distance);
-        BackLeftDrive.setTargetPosition(distance);
-        FrontRightDrive.setTargetPosition(distance);
+        BackLeftDrive.setTargetPosition(-distance);
+        FrontRightDrive.setTargetPosition(-distance);
         BackRightDrive.setTargetPosition(distance);
 
         // set to RUN_TO_POSITION mode
@@ -417,8 +459,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void StrafeLeftwithEncoders(double drivePower, int distance, boolean nom) {
-        StrafeRightwithEncoders(-drivePower, distance, nom);
+    public void encoderStrafeLeft(double drivePower, int distance, boolean nom) {
+        encoderStrafeRight(-drivePower, -distance, nom);
     }
 
 }

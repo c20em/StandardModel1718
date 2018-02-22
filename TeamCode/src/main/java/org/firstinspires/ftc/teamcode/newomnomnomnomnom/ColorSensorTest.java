@@ -26,7 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.firstinspires.ftc.teamcode.OmNomNomNom;
+package org.firstinspires.ftc.teamcode.newomnomnomnomnom;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -41,7 +41,7 @@ public class ColorSensorTest extends LinearOpMode {
     public ColorSensor colorSensor;
 
     @Override public void runOpMode() {
-        colorSensor = hardwareMap.get(ColorSensor.class, "color sensor");
+        colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();

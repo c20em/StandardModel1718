@@ -27,31 +27,43 @@ public class RedSquareCorner extends BaseAutoFunctions {
         while(opModeIsActive()) {
             telemetry.addLine("made it this far");
             telemetry.update();
-//
-//            jewel(false); /////TAKE THIS OUT WHEN USING THE JEWEL
-//            sleep(1000);   /////THIS IS JUST WHILE JEWEL SERVO IS UNDER REPAIR
 
-//            DriveBackwardwithEncoders(.4, 500,false);
-//
-//            sleep(1000);
-//            StrafeRightwithEncoders(.8, 200, false);
-//            flipIn();               //NECESSARY: need the sleep in between for 1000ms to allow servo to actually get to position before being called back in
-//            sleep(1000);
-//            flipOut();
-//            sleep(1000);
-//            break;
+            jewel(false);
+            sleep(600);
 
-            DriveBackwardwithEncoders(.4, 200,false);
-             sleep(1000);
-            DriveForwardwithEncoders(.4,200,false);
+
+            driveforTime(-.5, 1200);
+            sleep(200);
+            turn(0.8, 480);
+            sleep(300);
+            driveforTime(-.4, 500);
+            sleep(300);
+            driveforTime(.4, 300);
+            sleep(200);
+            flipOut();
             sleep(1000);
-            StrafeRightwithEncoders(.4, 200, false);
+            driveforTime(-.3, 400);
+            sleep(200);
+            driveforTime(.4, 200);
+            sleep(200);
+            flipIn();
             sleep(1000);
-            StrafeLeftwithEncoders(.4, 200, false);
-            sleep(1000);
-            TurnLeftwithEncoders(.4,200,false);
-            sleep(1000);
-            TurnRightwithEncoders(.4,200,false);
+            driveforTime(.5, 500);
+            NomNomNom.setPower(-1);
+            sleep(200);
+            nomDrive(.7);
+            sleep(400);
+            nom();
+            StopDriving();
+            sleep(200);
+            nomDrive(-.7);
+            sleep(800);
+            StopDriving();
+
+
+
+
+
             break;
 
 
