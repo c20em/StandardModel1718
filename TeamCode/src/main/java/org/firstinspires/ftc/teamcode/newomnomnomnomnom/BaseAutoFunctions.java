@@ -49,8 +49,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     Servo wallServo = null;
     CRServo pushBackServoLeft = null;
     CRServo pushBackServoRight = null;
-    Servo jewelServo;
     ColorSensor colorSensor;
+    Servo jewelServo;
 
     BNO055IMU imu;
     Orientation angles;
@@ -66,6 +66,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     static final double BOX_LEFT_UP = .61;
 
     double nomPower = 0.95;
+    boolean canSeeJewel = false;
 
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia;
@@ -80,7 +81,6 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
         BackRightDrive = hardwareMap.get(DcMotor.class, "back_right");
-        jewelServo = hardwareMap.get(Servo.class, "jewel_servo");
         colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
         rightBoxServo = hardwareMap.get(Servo.class, "right_box_servo");
         leftBoxServo = hardwareMap.get(Servo.class, "left_box_servo");
@@ -91,6 +91,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         wallServo = hardwareMap.get(Servo.class, "wall_servo");
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
+        jewelServo = hardwareMap.get(Servo.class, "jewel_servo");
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -221,14 +222,21 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         boolean isB = isBlue();
 
         if((blue && isB) || (!blue && !isB)) {
-            telemetry.addLine("Blue!");
-            telemetry.update();
-
-            turn = -0.3;
+            if(canSeeJewel) {
+                telemetry.addLine("Gonna hit ...   BLUE!");
+                telemetry.update();
+                turn = -0.3;
+            }
         } else if((blue && !isB) || (!blue && isB)) {
-            telemetry.addLine("Red!");
+            if(canSeeJewel) {
+                telemetry.addLine("Gonna hit ...   RED!");
+                telemetry.update();
+                turn = 0.3;
+            }
+        } else if (!canSeeJewel) {
+            telemetry.addLine("Cannot see jewel ...   oh shucks :(");
             telemetry.update();
-            turn = 0.3;
+            turn = 0;
         }
 
         turn(turn);
@@ -240,29 +248,29 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     }
 
     public void jewelTime(boolean blue) throws InterruptedException {
-        jewelServo.setPosition(JEWEL_DOWN_POS);
-        sleep(800);
-        telemetry.addData("Blue:", colorSensor.blue());
-        telemetry.addData("Red:", colorSensor.red());
-        telemetry.update();
-        double turn = 0;
-        sleep(800);
-
-
-        if(colorSensor.blue()>colorSensor.red()) {
-            telemetry.addLine("Blue!");
-            turn = -0.3;
-        }
-        else if(colorSensor.blue()<colorSensor.red()) {
-            telemetry.addLine("Red!");
-
-        }
-
-        turn(turn);
-        sleep(200);
-        jewelServo.setPosition(JEWEL_UP_POS);
-        turn(-turn);
-        sleep(200);
+//        jewelServo.setPosition(JEWEL_DOWN_POS);
+//        sleep(800);
+//        telemetry.addData("Blue:", colorSensor.blue());
+//        telemetry.addData("Red:", colorSensor.red());
+//        telemetry.update();
+//        double turn = 0;
+//        sleep(800);
+//
+//
+//        if(colorSensor.blue()>colorSensor.red()) {
+//            telemetry.addLine("Blue!");
+//            turn = -0.3;
+//        }
+//        else if(colorSensor.blue()<colorSensor.red()) {
+//            telemetry.addLine("Red!");
+//
+//        }
+//
+//        turn(turn);
+//        sleep(200);
+//        jewelServo.setPosition(JEWEL_UP_POS);
+//        turn(-turn);
+//        sleep(200);
     }
 
     public boolean isBlue() throws InterruptedException {
@@ -283,16 +291,21 @@ abstract class BaseAutoFunctions extends LinearOpMode {
             telemetry.addLine("SEES BLUE");
             telemetry.update();
             colorSensor.enableLed(false);
+            canSeeJewel = true;
             return true;
-        } else {
+        } else if(red > blue) {
             telemetry.addLine("SEES RED");
             telemetry.update();
-
             colorSensor.enableLed(false);
+            canSeeJewel = true;
+            return false;
+        }else{
+            canSeeJewel = false;
             return false;
         }
     }
 
+    //      we've got the vision     ( ⚆ _ ⚆ )
     public RelicRecoveryVuMark pictograph() {
         double startTime = getRuntime() * 1000;
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -310,6 +323,8 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         return vuMark;
     }
 
+
+    //DELAY
     public void delay(int milliseconds) throws InterruptedException {
         clock.reset();
         while(clock.milliseconds() < milliseconds) {
@@ -317,23 +332,14 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////ENCODER BASED DRIVE METHODS////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // will call these in ____withEncoders methods
-    public void DriveForward(double drivePower) {
-        FrontLeftDrive.setPower(-drivePower);
-        BackLeftDrive.setPower(-drivePower);
-        FrontRightDrive.setPower(drivePower);
-        BackRightDrive.setPower(drivePower);
-    }
     public void turn(double turn){
         FrontLeftDrive.setPower(turn);
         BackLeftDrive.setPower(turn);
         FrontRightDrive.setPower(-turn);
         BackRightDrive.setPower(-turn);
     }
+
     public void StopDriving(){
         FrontLeftDrive.setPower(0);
         BackLeftDrive.setPower(0);
@@ -342,6 +348,12 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     }
 
     //WITH ENCODER DRIVE METHODS
+    //THESE ARE SHITTT DONT USE THESE
+
+
+    //                ༼ つ ◕_◕ ༽つ    ༼ つ ◕_◕ ༽つ     ༼ つ ◕_◕ ༽つ
+
+    //                         move along nothing to see here
     public void encoderDriveForwards(double drivePower, int distance, boolean nom){
 
         // reset the encoders

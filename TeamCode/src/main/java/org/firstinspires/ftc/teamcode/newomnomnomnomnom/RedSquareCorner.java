@@ -31,15 +31,22 @@ public class RedSquareCorner extends BaseAutoFunctions {
             jewel(false);
             sleep(600);
 
+            ////////////////////
+            //GO FOR FIRST GLYPH
+            ////////////////////
 
+            //Drive to Cryptobox
             driveforTime(-.5, 1200);
             sleep(200);
             turn(0.8, 480);
             sleep(300);
-            driveforTime(-.4, 500);
+
+            //SERVO flip out SEQUENCE
+            driveforTime(-.4, 500);        //align with box .....?
             sleep(300);
             driveforTime(.4, 300);
             sleep(200);
+
             flipOut();
             sleep(1000);
             driveforTime(-.3, 400);
@@ -48,20 +55,57 @@ public class RedSquareCorner extends BaseAutoFunctions {
             sleep(200);
             flipIn();
             sleep(1000);
-            driveforTime(.5, 500);
+            driveforTime(-.3, 500);
             NomNomNom.setPower(-1);
             sleep(200);
-            nomDrive(.7);
-            sleep(400);
-            nom();
-            StopDriving();
+            strafeforTime(-5,100);
             sleep(200);
-            nomDrive(-.7);
-            sleep(800);
-            StopDriving();
+            driveforTime(-.3, 500);
+            sleep(200);
 
 
 
+            ////////////////////
+            //FIRST GLYPH PLACED!
+            ////////////////////
+
+            //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
+            nomDriveForTime(.7, 1000);
+            sleep(100);
+            nomDriveForTime(-.7, 800);
+            sleep(100);
+            nomDriveForTime(.2, 800);
+            sleep(100);
+            nomDriveForTime(-.4, 500);
+            //Copped first glyph?? ⚆ _ ⚆
+
+            //get into position for second placement
+            strafeforTime(.6, 300);
+
+            //SERVO flip out SEQUENCE
+            driveforTime(-.4, 500);        //align with box .....?
+            sleep(300);
+            driveforTime(.4, 300);
+            sleep(200);
+
+            flipOut();
+            sleep(1000);
+            driveforTime(-.3, 400);
+            sleep(200);
+            driveforTime(.4, 200);
+            sleep(200);
+            flipIn();
+            sleep(1000);
+            driveforTime(-.3, 500);
+            NomNomNom.setPower(-1);
+            sleep(200);
+            strafeforTime(-5,100);
+            sleep(200);
+            driveforTime(-.3, 500);
+            sleep(200);
+
+            //release!
+            driveforTime(.3, 200);
 
 
             break;

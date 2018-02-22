@@ -34,6 +34,8 @@ public class BaseChassis extends LinearOpMode {
     private Servo liftIn = null;
     private Servo elbowServo = null;
     private Servo handServo = null;
+    public Servo jewelServo = null;
+
 
 
 
@@ -49,6 +51,8 @@ public class BaseChassis extends LinearOpMode {
     static double BOX_LEFT_UP = .1;
     static final double Push_Back_Power = 1;
     static final double ELBOW_UP = .2;
+    static final double JEWEL_UP_POS = 0.6;
+
 
 
 
@@ -82,6 +86,8 @@ public class BaseChassis extends LinearOpMode {
         liftIn = hardwareMap.get(Servo.class, "lift_in");
         elbowServo = hardwareMap.get(Servo.class, "elbow_servo");
         handServo = hardwareMap.get(Servo.class, "hand_servo");
+        jewelServo = hardwareMap.get(Servo.class, "jewel_servo");
+
 
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -114,8 +120,7 @@ public class BaseChassis extends LinearOpMode {
         liftIn.setPosition(.9);             //Relic Blocker
 
         while (opModeIsActive()) {
-//            elbowServo.setPosition(ELBOW_UP);         //Relic arm up
-            wallServo.setPosition(.3);          //Wall servo out
+            jewelServo.setPosition(JEWEL_UP_POS);
 
             telemetry.addData("x stick", gamepad1.left_stick_x);
             telemetry.addData("y stick", gamepad1.left_stick_y);
@@ -272,6 +277,7 @@ public class BaseChassis extends LinearOpMode {
      }
     public void relic() {
         if (relicGang) {
+
             if (Math.abs(gamepad2.right_stick_y) > .2) {
                 relicArm.setPower(Range.clip(gamepad2.right_stick_y, -1, 1));
             }else{
@@ -326,8 +332,9 @@ public class BaseChassis extends LinearOpMode {
             }
             if (gamepad1.left_stick_button) {
                 relicGang = true;
-                wallServo.setPosition(.3);
+                wallServo.setPosition(.8);
                 liftIn.setPosition(.3);
+
             }
         }
     }
