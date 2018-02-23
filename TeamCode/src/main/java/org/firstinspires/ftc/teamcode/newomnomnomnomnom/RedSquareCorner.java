@@ -51,13 +51,11 @@ public class RedSquareCorner extends BaseAutoFunctions {
             sleep(1000);
             driveforTime(-.3, 400);
             sleep(200);
-            driveforTime(.4, 200);
+            driveforTime(.4, 400);
             sleep(200);
             flipIn();
             sleep(1000);
             driveforTime(-.3, 500);
-            NomNomNom.setPower(-1);
-            sleep(200);
             strafeforTime(-5,100);
             sleep(200);
             driveforTime(-.3, 500);
@@ -70,7 +68,7 @@ public class RedSquareCorner extends BaseAutoFunctions {
             ////////////////////
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
-            nomDriveForTime(.7, 1000);
+            nomDriveForTime(.7, 1500);
             sleep(100);
             nomDriveForTime(-.7, 800);
             sleep(100);
@@ -80,7 +78,7 @@ public class RedSquareCorner extends BaseAutoFunctions {
             //Copped first glyph?? ⚆ _ ⚆
 
             //get into position for second placement
-            strafeforTime(.6, 300);
+            strafeforTime(-.6, 500);
 
             //SERVO flip out SEQUENCE
             driveforTime(-.4, 500);        //align with box .....?
@@ -92,7 +90,7 @@ public class RedSquareCorner extends BaseAutoFunctions {
             sleep(1000);
             driveforTime(-.3, 400);
             sleep(200);
-            driveforTime(.4, 200);
+            driveforTime(.4, 400);
             sleep(200);
             flipIn();
             sleep(1000);

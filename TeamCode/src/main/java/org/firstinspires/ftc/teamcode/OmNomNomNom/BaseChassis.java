@@ -128,19 +128,21 @@ public class BaseChassis extends LinearOpMode {
             telemetry.addData("y stick", gamepad1.left_stick_y);
             if (relicGang){
                 telemetry.addLine("Relic Engaged");
+                relic();
+                if(gamepad1.right_bumper) {
+                    relicGang = false;
+                }
             }else {
                 telemetry.addLine("Relic Disengaged");
-
+                flip();
+                moveLift();
             }
             telemetry.addData("elbow servo:", elbowServo.getPosition());
 
             nom();
-            flip();
             wall();
             moveRobot();
-            moveLift();
             pushBack();
-            relic();
             telemetry.update();
             idle();
         }
@@ -278,26 +280,23 @@ public class BaseChassis extends LinearOpMode {
          }                                //all go to their starting positions
      }
     public void relic() {
-        if (relicGang) {
-
-            if (Math.abs(gamepad2.right_stick_y) > .2) {
-                relicArm.setPower(Range.clip(gamepad2.right_stick_y, -1, 1));
-            }else{
-                relicArm.setPower(0);
-            }
-             if (gamepad2.y) {
-                elbowServo.setPosition(ELBOW_UP);
-             } else if (gamepad2.a) {
-                 elbowServo.setPosition(ELBOW_DOWN);
-             } else if (gamepad2.x) {
-                handServo.setPosition(.8);
-            } else if (gamepad2.b) {
-                handServo.setPosition(.4);
-            } else if(gamepad2.right_bumper) {
-                 elbowServo.setPosition(elbowServo.getPosition() - .001);
-             } else if(gamepad2.left_bumper) {
-                 elbowServo.setPosition(elbowServo.getPosition() + .001);
-             }
+        if (Math.abs(gamepad2.right_stick_y) > .2) {
+            relicArm.setPower(Range.clip(gamepad2.right_stick_y, -1, 1));
+        }else{
+            relicArm.setPower(0);
+        }
+        if (gamepad2.y) {
+            elbowServo.setPosition(ELBOW_UP);
+        } else if (gamepad2.a) {
+            elbowServo.setPosition(ELBOW_DOWN);
+        } else if (gamepad2.x) {
+            handServo.setPosition(.8);
+        } else if (gamepad2.b) {
+            handServo.setPosition(.3);
+        } else if(gamepad2.right_bumper) {
+            elbowServo.setPosition(elbowServo.getPosition() - .001);
+        } else if(gamepad2.left_bumper) {
+            elbowServo.setPosition(elbowServo.getPosition() + .001);
         }
     }
 
@@ -315,7 +314,6 @@ public class BaseChassis extends LinearOpMode {
 
 
     public void flip () {
-        if(!relicGang) {
             telemetry.addLine("running flip()");
             telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
             telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
@@ -336,13 +334,13 @@ public class BaseChassis extends LinearOpMode {
                 leftBoxServo.setPosition(BOX_LEFT_UP + .1);//GAMEPAD2
                 rightBoxServo.setPosition(BOX_RIGHT_UP - .1);
             }
-            if (gamepad1.left_stick_button) {
+            if (gamepad1.left_bumper) {
                 relicGang = true;
                 wallServo.setPosition(.3);
                 liftIn.setPosition(.3);
 
             }
-        }
+
     }
     public void wall() {
         if (wallout) {                                   //OPENING EXPANSE SEQUENCE
