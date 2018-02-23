@@ -32,7 +32,6 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             jewel(false);
             sleep(600);
 
-
             driveforTime(-.5, 1200);
             sleep(200);
             turn(-0.8, 480);
