@@ -64,6 +64,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     static double BOX_LEFT_DOWN = .1;
     static final double BOX_RIGHT_UP = .34;
     static final double BOX_LEFT_UP = .61;
+    static final double ELBOW_UP = .1;
 
     double nomPower = 0.95;
     boolean canSeeJewel = false;

@@ -48,10 +48,10 @@ public class BaseChassis extends LinearOpMode {
     static final double NOM_BACKWARD_POWER = -1;
     static final double BOX_RIGHT_DOWN = .34;
     static final double BOX_LEFT_DOWN = .61;
-    static double BOX_RIGHT_UP = .84;
-    static double BOX_LEFT_UP = .1;
+    static final double BOX_RIGHT_UP = .84;
+    static final double BOX_LEFT_UP = .1;
     static final double Push_Back_Power = 1;
-    static final double ELBOW_UP = .2;
+    static final double ELBOW_UP = .1;
     static final double ELBOW_DOWN = .58;
     static final double JEWEL_UP_POS = 0.6;
 
@@ -118,7 +118,7 @@ public class BaseChassis extends LinearOpMode {
         liftIn.setPosition(.9);             //Relic Blocker
         elbowServo.setPosition(ELBOW_UP);         //Relic arm up
         sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
-        wallServo.setPosition(.7);          //Wall servo out
+        wallServo.setPosition(.78);          //Wall servo out
         liftIn.setPosition(.9);             //Relic Blocker
 
         while (opModeIsActive()) {
@@ -136,6 +136,11 @@ public class BaseChassis extends LinearOpMode {
                 telemetry.addLine("Relic Disengaged");
                 flip();
                 moveLift();
+                if (gamepad1.left_bumper) {
+                    relicGang = true;
+                    wallServo.setPosition(.3);
+                    liftIn.setPosition(.3);
+                }
             }
             telemetry.addData("elbow servo:", elbowServo.getPosition());
 
@@ -313,41 +318,35 @@ public class BaseChassis extends LinearOpMode {
                                         //SERVOS
 
 
-    public void flip () {
-            telemetry.addLine("running flip()");
-            telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
-            telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
-            if (gamepad2.y) {                                         //GAMEPAD2
-                leftBoxServo.setPosition(BOX_LEFT_DOWN);
-                rightBoxServo.setPosition(BOX_RIGHT_DOWN);
-            } else if (gamepad2.a) {                                  //GAMEPAD2
-                leftBoxServo.setPosition(BOX_LEFT_UP);
-                rightBoxServo.setPosition(BOX_RIGHT_UP);
-            }
-            if (gamepad2.b && leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP) {
-                leftBoxServo.setPosition(leftBoxServo.getPosition() - .01);//GAMEPAD2
-                rightBoxServo.setPosition(rightBoxServo.getPosition() + .01);
+    public void flip() {
+        telemetry.addLine("running flip()");
+        telemetry.addLine("Box Servo Left: " + leftBoxServo.getPosition());
+        telemetry.addLine("Box Servo Right: " + rightBoxServo.getPosition());
+        if (gamepad2.y) {                                         //GAMEPAD2
+            leftBoxServo.setPosition(BOX_LEFT_DOWN);
+            rightBoxServo.setPosition(BOX_RIGHT_DOWN);
+        } else if (gamepad2.a) {                                  //GAMEPAD2
+            leftBoxServo.setPosition(BOX_LEFT_UP);
+            rightBoxServo.setPosition(BOX_RIGHT_UP);
+        }
+        if (gamepad2.b && leftBoxServo.getPosition() > BOX_LEFT_UP && rightBoxServo.getPosition() < BOX_RIGHT_UP) {
+            leftBoxServo.setPosition(leftBoxServo.getPosition() - .01);//GAMEPAD2
+            rightBoxServo.setPosition(rightBoxServo.getPosition() + .01);
 //            } else if (gamepad2.x && leftBoxServo.getPosition() < BOX_LEFT_DOWN && rightBoxServo.getPosition() > BOX_RIGHT_DOWN) {
 //                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
 //                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
-            }else if(gamepad2.x){
-                leftBoxServo.setPosition(BOX_LEFT_UP + .1);//GAMEPAD2
-                rightBoxServo.setPosition(BOX_RIGHT_UP - .1);
-            }
-            if (gamepad1.left_bumper) {
-                relicGang = true;
-                wallServo.setPosition(.3);
-                liftIn.setPosition(.3);
-
-            }
-
+        } else if (gamepad2.x) {
+            leftBoxServo.setPosition(BOX_LEFT_UP + .1);//GAMEPAD2
+            rightBoxServo.setPosition(BOX_RIGHT_UP - .1);
+        }
     }
+
     public void wall() {
         if (wallout) {                                   //OPENING EXPANSE SEQUENCE
             liftIn.setPosition(.9);             //Relic Blocker
 //            elbowServo.setPosition(ELBOW_UP);        //Relic arm up
             sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
-            wallServo.setPosition(.7);          //Wall servo out
+            wallServo.setPosition(.78);          //Wall servo out
             wallout = false;
         }
     }

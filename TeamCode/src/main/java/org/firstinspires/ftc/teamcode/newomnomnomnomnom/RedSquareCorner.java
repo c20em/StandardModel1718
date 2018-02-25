@@ -20,9 +20,9 @@ public class RedSquareCorner extends BaseAutoFunctions {
         waitForStart();
 
         liftIn.setPosition(.9);             //Relic Blocker
-        elbowServo.setPosition(.2);         //Relic arm up
+        elbowServo.setPosition(ELBOW_UP);         //Relic arm up
         sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
-        wallServo.setPosition(.3);          //Wall servo out
+        wallServo.setPosition(.78);          //Wall servo out
 
         while(opModeIsActive()) {
             telemetry.addLine("made it this far");
@@ -36,7 +36,7 @@ public class RedSquareCorner extends BaseAutoFunctions {
             ////////////////////
 
             //Drive to Cryptobox
-            driveforTime(-.5, 1200);
+            driveforTime(-.5, 1100);
             sleep(200);
             turn(0.8, 480);
             sleep(300);
@@ -56,7 +56,8 @@ public class RedSquareCorner extends BaseAutoFunctions {
             flipIn();
             sleep(1000);
             driveforTime(-.3, 500);
-            strafeforTime(-5,100);
+            sleep(300);
+            strafeforTime(-.5,300);
             sleep(200);
             driveforTime(-.3, 500);
             sleep(200);
@@ -68,17 +69,24 @@ public class RedSquareCorner extends BaseAutoFunctions {
             ////////////////////
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
+            NomNomNom.setPower(-1);
+            sleep(400);
             nomDriveForTime(.7, 1500);
             sleep(100);
+            nom();
+            sleep(300);
             nomDriveForTime(-.7, 800);
             sleep(100);
-            nomDriveForTime(.2, 800);
-            sleep(100);
-            nomDriveForTime(-.4, 500);
+            nom();
+            sleep(300);
+            nomDriveForTime(.3, 800);
+            nom();
+            sleep(300);
+            nomDriveForTime(-.4, 1000);
             //Copped first glyph?? ⚆ _ ⚆
 
             //get into position for second placement
-            strafeforTime(-.6, 500);
+            strafeforTime(.8, 400);
 
             //SERVO flip out SEQUENCE
             driveforTime(-.4, 500);        //align with box .....?
