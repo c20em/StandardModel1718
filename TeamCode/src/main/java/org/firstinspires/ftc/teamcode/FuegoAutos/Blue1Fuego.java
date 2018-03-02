@@ -21,6 +21,7 @@ public class Blue1Fuego extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         omnom = new FuegoRobot();
+        omnom.init(this);
         omnom.initPositions();
         waitForStart();
 

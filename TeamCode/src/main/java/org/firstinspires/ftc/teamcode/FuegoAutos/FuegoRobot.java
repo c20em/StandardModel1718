@@ -66,13 +66,19 @@ public class FuegoRobot {
     Servo wallServo = null;
     CRServo pushBackServoLeft = null;
     CRServo pushBackServoRight = null;
-    ColorSensor colorSensor;
-    Servo jewelServo;
+    ColorSensor colorSensor = null;
+    Servo jewelServo = null;
+    Servo jewelTurnServo = null;
 
     //POSITION VARIABLES
     static final double JEWEL_DOWN_POS = 0.0;
     static final double JEWEL_MID_POS = 0.2;
     static final double JEWEL_UP_POS = 0.6;
+
+    static final double JEWEL_TURNCW_POS = 0.0;
+    static final double JEWEL_TURNMID_POS = 0.5;
+    static final double JEWEL_TURNCCW_POS = 0.99;
+
 
     static double BOX_RIGHT_DOWN = .84;
     static double BOX_LEFT_DOWN = .1;
@@ -87,6 +93,7 @@ public class FuegoRobot {
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
+
 
     public void init(LinearOpMode o){
         //SYSTEM THINGS
@@ -110,6 +117,7 @@ public class FuegoRobot {
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
         jewelServo = hardwareMap.get(Servo.class, "jewel_servo");
+        jewelTurnServo = hardwareMap.get(Servo.class, "jewelTurnServo");
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -288,22 +296,16 @@ public class FuegoRobot {
 
         //knock off correct jewel
         if(jewelBlue){
-            if(teamBlue) turnAngleCW(15);
-            if(!teamBlue) turnAngleCCW(15);
+            if(teamBlue) jewelTurnServo.setPosition(JEWEL_TURNCW_POS);
+            if(!teamBlue) jewelTurnServo.setPosition(JEWEL_TURNCCW_POS);
         } else if (!jewelBlue){
-            if(teamBlue) turnAngleCCW(15);
-            if(!teamBlue) turnAngleCW(15);
+            if(teamBlue) jewelTurnServo.setPosition(JEWEL_TURNCCW_POS);
+            if(!teamBlue) jewelTurnServo.setPosition(JEWEL_TURNCW_POS);
         }
         delay(200);
 
         //turn back
-        if(!jewelBlue){
-            if(teamBlue) turnAngleCW(15);
-            if(!teamBlue) turnAngleCCW(15);
-        } else if (jewelBlue){
-            if(teamBlue) turnAngleCCW(15);
-            if(!teamBlue) turnAngleCW(15);
-        }
+        jewelTurnServo.setPosition(JEWEL_TURNMID_POS);
     }
 
     public void delay(int time) {
