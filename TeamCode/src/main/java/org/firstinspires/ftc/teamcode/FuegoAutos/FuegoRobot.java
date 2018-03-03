@@ -87,7 +87,6 @@ public class FuegoRobot {
     static final double ELBOW_UP = .1;
 
     double nomPower = 0.95;
-    boolean canSeeJewel = false;
 
     //GYRO THINGS
     BNO055IMU imu;
@@ -144,8 +143,6 @@ public class FuegoRobot {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         //COLORSENSOR MAYBE VUFORIA THINGS
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        sensorDistance = hardwareMap.get(DistanceSensor.class, "colorSensor");
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
     }
@@ -282,8 +279,8 @@ public class FuegoRobot {
         for (int i = 0; i < 40; i++) {
             if (colorSensor.red() > colorSensor.blue()) red++;
             if (colorSensor.red() < colorSensor.blue()) blue++;
-            telemetry.update();
         }
+        telemetry.addLine("read color");
 
         //decide which color we see
         if(blue>red){
@@ -293,6 +290,7 @@ public class FuegoRobot {
             jewelBlue=false;
             telemetry.addData("redWins!", red);
         }
+        telemetry.update();
 
         //knock off correct jewel
         if(jewelBlue){
