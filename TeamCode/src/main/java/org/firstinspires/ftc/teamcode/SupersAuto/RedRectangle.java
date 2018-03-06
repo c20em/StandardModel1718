@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.ArchAuto3;
+package org.firstinspires.ftc.teamcode.SupersAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
@@ -9,9 +8,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name = "Red Rectangle Corner", group = "Autonomous")
-@Disabled
-public class RedRectangleCorner extends BaseAutoFunctions {
+@Autonomous(name = "Red Rectangle", group = "Autonomous")
+public class RedRectangle extends SupersBaseFunctions {
 
     @Override
     public void runOpMode() throws InterruptedException {

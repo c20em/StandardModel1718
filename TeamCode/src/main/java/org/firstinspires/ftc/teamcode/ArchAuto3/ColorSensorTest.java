@@ -29,10 +29,12 @@
 package org.firstinspires.ftc.teamcode.ArchAuto3;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
-@Autonomous(name="Color Sensor ", group = "Sensor")
+@Autonomous(name="Color Sensor  f ", group = "Sensor")
+@Disabled
 public class ColorSensorTest extends LinearOpMode {
 
     public ColorSensor colorSensor;

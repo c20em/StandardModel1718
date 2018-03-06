@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-abstract class SuperBaseFunctions extends LinearOpMode {
+abstract class SupersBaseFunctions extends LinearOpMode {
 
     /*
     initializing motors, servos, and sensors
@@ -477,6 +477,5 @@ abstract class SuperBaseFunctions extends LinearOpMode {
         telemetry.update();
         return vuMark;
     }
-
 
 }

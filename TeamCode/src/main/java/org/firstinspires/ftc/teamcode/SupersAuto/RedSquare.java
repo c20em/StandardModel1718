@@ -1,18 +1,17 @@
-package org.firstinspires.ftc.teamcode.ArchAuto3;
+package org.firstinspires.ftc.teamcode.SupersAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name="Blue Square Corner", group="Autonomous")
-@Disabled
-public class BlueSquareCorner extends BaseAutoFunctions {
+@Autonomous(name="Red Square", group="Autonomous")
+public class RedSquare extends SupersBaseFunctions {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         declare();
         initVuforia();
         waitForStart();
@@ -26,39 +25,41 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             telemetry.addLine("made it this far");
             telemetry.update();
 
-            jewel(true);
+            getPicto();
+
+            jewel(false);
             sleep(600);
 
-            ////////////////////t0fp
-            //GO FOR FIRST GLYPH:::::::::::::::;;;f>x/,////////b//b////sss     sss ssb                              aabab   a                                                                                                ,b               k.
+            ////////////////////
+            //GO FOR FIRST GLYPH
             ////////////////////
 
             //Drive to Cryptobox
-            driveforTime(0.5, 1200); // would change this for vuforia`
+            driveforTime(-.5, 1100);
             sleep(200);
-            turn(0.8, 450);
+            turn(0.8, 480);
             sleep(300);
 
             //SERVO flip out SEQUENCE
-            driveforTime(-.7, 800);        //align with box .....?
+            driveforTime(-.4, 500);        //align with box .....?
             sleep(300);
-            driveforTime(.4, 500);
+            driveforTime(.4, 300);
             sleep(200);
-            turn(.4, 200);
-            sleep(200);
+
             flipOut();
             sleep(1000);
-            driveforTime(.3, 200);
-            driveforTime(-.3, 1000);
+            driveforTime(-.3, 400);
             sleep(200);
             driveforTime(.4, 400);
             sleep(200);
-            strafeforTime(.5,400);
-            sleep(200);
-            driveforTime(-.3, 1000);
-            sleep(200);
             flipIn();
-
+            sleep(1000);
+            driveforTime(-.3, 500);
+            sleep(300);
+            strafeforTime(-.5,300);
+            sleep(200);
+            driveforTime(-.3, 500);
+            sleep(200);
 
 
 
@@ -67,48 +68,49 @@ public class BlueSquareCorner extends BaseAutoFunctions {
             ////////////////////
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
-            NomNomNom.setPower(-.8);
-            sleep(300);
-            nomDriveForTime(.6, 1500);
+            NomNomNom.setPower(-1);
+            sleep(400);
+            nomDriveForTime(.7, 1500);
             sleep(100);
             nom();
-            sleep(600);
-            driveforTime(-.4, 2000);
+            sleep(300);
+            nomDriveForTime(-.7, 800);
             sleep(100);
-            driveforTime(.2, 1000);
-            sleep(100);
-            driveforTime(-.4, 700);
+            nom();
+            sleep(300);
+            nomDriveForTime(.3, 800);
+            nom();
+            sleep(300);
+            nomDriveForTime(-.4, 1000);
             //Copped first glyph?? ⚆ _ ⚆
-            stopNom();
 
             //get into position for second placement
-            strafeforTime(0.6, 800);
+            strafeforTime(.8, 400);
 
             //SERVO flip out SEQUENCE
-            driveforTime(-.4, 1000);        //align with box .....?
+            driveforTime(-.4, 500);        //align with box .....?
             sleep(300);
-            driveforTime(.4, 500);
+            driveforTime(.4, 300);
             sleep(200);
 
             flipOut();
-            sleep(500);
+            sleep(1000);
+            driveforTime(-.3, 400);
+            sleep(200);
+            driveforTime(.4, 400);
+            sleep(200);
             flipIn();
             sleep(1000);
-            driveforTime(-.3, 600);
-            sleep(200);
-            driveforTime(.4, 500);
-            sleep(1000);
-            driveforTime(-.3, 800);
+            driveforTime(-.3, 500);
             NomNomNom.setPower(-1);
             sleep(200);
-            strafeforTime(-5,200);
+            strafeforTime(-5,100);
             sleep(200);
             driveforTime(-.3, 500);
             sleep(200);
-            stopNom();
 
             //release!
-            driveforTime(-.6, 600);
+            driveforTime(.3, 200);
 
 
             break;

@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.ArchAuto3;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Created by student on 2/16/18.
  */
 
 @Autonomous(name="Red Square Corner", group="Autonomous")
+@Disabled
 public class RedSquareCorner extends BaseAutoFunctions {
 
     @Override

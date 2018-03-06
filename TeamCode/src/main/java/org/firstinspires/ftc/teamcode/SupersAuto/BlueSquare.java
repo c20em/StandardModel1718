@@ -1,15 +1,14 @@
-package org.firstinspires.ftc.teamcode.ArchAuto3;
+package org.firstinspires.ftc.teamcode.SupersAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name="Blue Square Corner", group="Autonomous")
-@Disabled
-public class BlueSquareCorner extends BaseAutoFunctions {
+@Autonomous(name="Blue Square", group="Autonomous")
+
+public class BlueSquare extends SupersBaseFunctions {
 
     @Override
     public void runOpMode() throws InterruptedException {
