@@ -51,14 +51,16 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     CRServo pushBackServoRight = null;
     ColorSensor colorSensor;
     Servo jewelServo;
+    Servo jewelSideServo;
 
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
 
     static final double JEWEL_DOWN_POS = 0.0;
-    static final double JEWEL_MID_POS = 0.2;
-    static final double JEWEL_UP_POS = 0.6;
+    static final double JEWEL_UP_POS = 1;
+
+    static final double SIDE_JEWEL_NEUTRAL_POS = 0.6;
 
     static double BOX_RIGHT_DOWN = .84;
     static double BOX_LEFT_DOWN = .1;
@@ -93,6 +95,7 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
         jewelServo = hardwareMap.get(Servo.class, "jewel_servo");
+        jewelSideServo = hardwareMap.get(Servo.class, "jewel_side_servo");
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -212,13 +215,13 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     }
 
     public void jewel(boolean blue) throws InterruptedException {
+        jewelSideServo.setPosition(SIDE_JEWEL_NEUTRAL_POS);
+        sleep(400);
         jewelServo.setPosition(JEWEL_DOWN_POS);
-        sleep(800);
         telemetry.addData("Blue:", colorSensor.blue());
         telemetry.addData("Red:", colorSensor.red());
         telemetry.update();
-        double turn = 0;
-        sleep(800);
+        sleep(1000);
 
         boolean isB = isBlue();
 
@@ -226,24 +229,37 @@ abstract class BaseAutoFunctions extends LinearOpMode {
             if(canSeeJewel) {
                 telemetry.addLine("Gonna hit ...   BLUE!");
                 telemetry.update();
-                turn = -0.3;
+                jewelSideServo.setPosition(jewelSideServo.getPosition()+.08);
+                sleep(1000);  //return to position and go up
+                jewelSideServo.setPosition(jewelSideServo.getPosition()-.08);
+                sleep(100);
+                jewelServo.setPosition(JEWEL_UP_POS);
+
+
+
             }
         } else if((blue && !isB) || (!blue && isB)) {
             if(canSeeJewel) {
                 telemetry.addLine("Gonna hit ...   RED!");
                 telemetry.update();
-                turn = 0.3;
+                jewelSideServo.setPosition(jewelSideServo.getPosition()-.08);
+                sleep(1000);  //return to position and go up
+                jewelSideServo.setPosition(jewelSideServo.getPosition()+.08);
+                sleep(100);
+                jewelServo.setPosition(JEWEL_UP_POS);
+
+
             }
         } else if (!canSeeJewel) {
             telemetry.addLine("Cannot see jewel ...   oh shucks :(");
             telemetry.update();
-            turn = 0;
         }
+        telemetry.addLine("starting side servo");
+        telemetry.update();
+        sleep(3000);
 
-        turn(turn);
-        sleep(200);
         jewelServo.setPosition(JEWEL_UP_POS);
-        turn(-turn);
+
         sleep(200);
         turn(0);
     }

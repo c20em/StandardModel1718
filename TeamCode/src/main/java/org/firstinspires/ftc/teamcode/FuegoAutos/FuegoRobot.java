@@ -144,8 +144,8 @@ public class FuegoRobot {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         //COLORSENSOR MAYBE VUFORIA THINGS
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        sensorDistance = hardwareMap.get(DistanceSensor.class, "colorSensor");
+        //colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        //sensorDistance = hardwareMap.get(DistanceSensor.class, "colorSensor");
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
     }
