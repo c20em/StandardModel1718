@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.newomnomnomnomnom;
+package org.firstinspires.ftc.teamcode.ArchAuto3;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Created by student on 2/18/18.
