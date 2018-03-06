@@ -68,16 +68,14 @@ public class FuegoRobot {
     CRServo pushBackServoRight = null;
     ColorSensor colorSensor = null;
     Servo jewelServo = null;
-    Servo jewelTurnServo = null;
+    Servo jewelSideServo = null;
 
     //POSITION VARIABLES
-    static final double JEWEL_DOWN_POS = 0.0;
-    static final double JEWEL_MID_POS = 0.2;
-    static final double JEWEL_UP_POS = 0.6;
+    static final double JEWEL_DOWN_POS = 0.2;
 
-    static final double JEWEL_TURNCW_POS = 0.0;
-    static final double JEWEL_TURNMID_POS = 0.5;
-    static final double JEWEL_TURNCCW_POS = 0.99;
+    static final double JEWEL_TURNCCW_POS = .68;
+    static final double JEWEL_TURNMID_POS = .59;
+    static final double JEWEL_TURNCW_POS = .5;
 
 
     static double BOX_RIGHT_DOWN = .84;
@@ -116,7 +114,7 @@ public class FuegoRobot {
         pushBackServoRight = hardwareMap.get(CRServo.class, "push_back_servo_right");
         pushBackServoLeft = hardwareMap.get(CRServo.class, "push_back_servo_left");
         jewelServo = hardwareMap.get(Servo.class, "jewel_servo");
-        jewelTurnServo = hardwareMap.get(Servo.class, "jewelTurnServo");
+        jewelSideServo = hardwareMap.get(Servo.class, "jewel_side_servo");
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -272,6 +270,7 @@ public class FuegoRobot {
 
     public void jewel(boolean teamBlue) throws InterruptedException {
         boolean jewelBlue;
+        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
         jewelServo.setPosition(JEWEL_DOWN_POS);
         //read color
         int red = 0;
@@ -290,20 +289,22 @@ public class FuegoRobot {
             jewelBlue=false;
             telemetry.addData("redWins!", red);
         }
+        telemetry.addData("blue: ", blue);
+        telemetry.addData("red: ", red);
         telemetry.update();
 
         //knock off correct jewel
         if(jewelBlue){
-            if(teamBlue) jewelTurnServo.setPosition(JEWEL_TURNCW_POS);
-            if(!teamBlue) jewelTurnServo.setPosition(JEWEL_TURNCCW_POS);
+            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
+            if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
         } else if (!jewelBlue){
-            if(teamBlue) jewelTurnServo.setPosition(JEWEL_TURNCCW_POS);
-            if(!teamBlue) jewelTurnServo.setPosition(JEWEL_TURNCW_POS);
+            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
+            if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
         }
-        delay(200);
+        delay(1000);
 
         //turn back
-        jewelTurnServo.setPosition(JEWEL_TURNMID_POS);
+        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
     }
 
     public void delay(int time) {

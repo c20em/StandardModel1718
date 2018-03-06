@@ -30,7 +30,7 @@ public class BlueRectangleCorner extends BaseAutoFunctions {
             sleep(200);
             turn(.8, 900);
             sleep(200);
-            encoderStrafeLeft(.9, 400, false);
+            //strafeLeft(.9, 400, false);
             sleep(200);
             driveforTime(-.5, 1000);
             sleep(200);

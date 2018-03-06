@@ -68,6 +68,10 @@ abstract class BaseAutoFunctions extends LinearOpMode {
     static final double BOX_LEFT_UP = .61;
     static final double ELBOW_UP = .1;
 
+    static final double JEWEL_TURNCCW_POS = .68;
+    static final double JEWEL_TURNMID_POS = .59;
+    static final double JEWEL_TURNCW_POS = .5;
+
     double nomPower = 0.95;
     boolean canSeeJewel = false;
 
@@ -213,81 +217,46 @@ abstract class BaseAutoFunctions extends LinearOpMode {
         StopDriving();
         stopNom();
     }
-
-    public void jewel(boolean blue) throws InterruptedException {
-        jewelSideServo.setPosition(SIDE_JEWEL_NEUTRAL_POS);
-        sleep(400);
+    public void jewel(boolean teamBlue) throws InterruptedException {
+        boolean jewelBlue;
+        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
+        sleep(100);
         jewelServo.setPosition(JEWEL_DOWN_POS);
-        telemetry.addData("Blue:", colorSensor.blue());
-        telemetry.addData("Red:", colorSensor.red());
+        //read color
+        int red = 0;
+        int blue = 0;
+        for (int i = 0; i < 40; i++) {
+            if (colorSensor.red() > colorSensor.blue()) red++;
+            if (colorSensor.red() < colorSensor.blue()) blue++;
+        }
+        telemetry.addLine("read color");
+
+        //decide which color we see
+        if(blue>red){
+            jewelBlue= true;
+            telemetry.addData("blueWins!", blue);
+        } else {
+            jewelBlue=false;
+            telemetry.addData("redWins!", red);
+        }
+        telemetry.addData("blue: ", blue);
+        telemetry.addData("red: ", red);
         telemetry.update();
+
+        //knock off correct jewel
+        if(jewelBlue){
+            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
+            if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
+        } else if (!jewelBlue){
+            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
+            if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
+        }
         sleep(1000);
 
-        boolean isB = isBlue();
-
-        if((blue && isB) || (!blue && !isB)) {
-            if(canSeeJewel) {
-                telemetry.addLine("Gonna hit ...   BLUE!");
-                telemetry.update();
-                jewelSideServo.setPosition(jewelSideServo.getPosition()+.08);
-                sleep(1000);  //return to position and go up
-                jewelSideServo.setPosition(jewelSideServo.getPosition()-.08);
-                sleep(100);
-                jewelServo.setPosition(JEWEL_UP_POS);
-
-
-
-            }
-        } else if((blue && !isB) || (!blue && isB)) {
-            if(canSeeJewel) {
-                telemetry.addLine("Gonna hit ...   RED!");
-                telemetry.update();
-                jewelSideServo.setPosition(jewelSideServo.getPosition()-.08);
-                sleep(1000);  //return to position and go up
-                jewelSideServo.setPosition(jewelSideServo.getPosition()+.08);
-                sleep(100);
-                jewelServo.setPosition(JEWEL_UP_POS);
-
-
-            }
-        } else if (!canSeeJewel) {
-            telemetry.addLine("Cannot see jewel ...   oh shucks :(");
-            telemetry.update();
-        }
-        telemetry.addLine("starting side servo");
-        telemetry.update();
-        sleep(3000);
-
+        //turn back
+        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
+        sleep(100);
         jewelServo.setPosition(JEWEL_UP_POS);
-
-        sleep(200);
-        turn(0);
-    }
-
-    public void jewelTime(boolean blue) throws InterruptedException {
-//        jewelServo.setPosition(JEWEL_DOWN_POS);
-//        sleep(800);
-//        telemetry.addData("Blue:", colorSensor.blue());
-//        telemetry.addData("Red:", colorSensor.red());
-//        telemetry.update();
-//        double turn = 0;
-//        sleep(800);
-//
-//
-//        if(colorSensor.blue()>colorSensor.red()) {
-//            telemetry.addLine("Blue!");
-//            turn = -0.3;
-//        }
-//        else if(colorSensor.blue()<colorSensor.red()) {
-//            telemetry.addLine("Red!");
-//
-//        }
-//
-//        turn(turn);
-//        sleep(200);
-//        jewelServo.setPosition(JEWEL_UP_POS);
-//        turn(-turn);
-//        sleep(200);
     }
 
     public boolean isBlue() throws InterruptedException {

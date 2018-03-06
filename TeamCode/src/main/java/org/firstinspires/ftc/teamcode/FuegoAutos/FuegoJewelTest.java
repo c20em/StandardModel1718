@@ -24,11 +24,13 @@ public class FuegoJewelTest extends LinearOpMode {
         omnom.init(this);
         waitForStart();
         omnom.initPositions();
+        while(opModeIsActive()) {
+            telemetry.addLine("made it this far");
+            telemetry.update();
 
-        telemetry.addLine("made it this far");
-        telemetry.update();
+            //run jewel stuff
+                omnom.jewel(false);
 
-        //run jewel stuff
-        omnom.jewel(true);
+        }
     }
 }
