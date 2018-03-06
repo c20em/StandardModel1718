@@ -15,7 +15,7 @@ public class BlueRectangleCorner extends BaseAutoFunctions {
         declare();
         waitForStart();
 
-        liftIn.setPosition(.9);             //Relic Blocker
+        liftIn.setPosition(.9);                                          //Relic Blocker
         elbowServo.setPosition(ELBOW_UP);         //Relic arm up
         sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
         wallServo.setPosition(.3);          //Wall servo out
