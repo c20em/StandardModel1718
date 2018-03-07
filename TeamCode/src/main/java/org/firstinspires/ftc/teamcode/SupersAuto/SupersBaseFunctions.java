@@ -405,11 +405,11 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     public void placeGlyphSequence(){
         flipOut();
         sleep(600);
-        flipIn();
-        sleep(300);
         driveforTime(-.3, 900);
         sleep(300);
         driveforTime(.3, 800);
+        sleep(300);
+        flipIn();
         sleep(300);
         driveforTime(-.3, 800);
     }
