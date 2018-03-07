@@ -25,7 +25,7 @@ public class BlueSquare extends SupersBaseFunctions {
             telemetry.addLine("made it this far");
             telemetry.update();
 
-            jewel(true);
+            jewelSequence(true);
             sleep(600);
 
             ////////////////////t0fp
