@@ -14,7 +14,13 @@ public class RedSquare extends SupersBaseFunctions {
 
         declare();
         initVuforia();
+        initGyro();
         waitForStart();
+
+        turnAngle(90);
+        sleep(1000);
+        turnAngle(90);
+        sleep(1000);
 
         liftIn.setPosition(.9);             //Relic Blocker
         elbowServo.setPosition(ELBOW_UP);         //Relic arm up

@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  */
 
 @Autonomous(name="Blue 1 Fuego", group="Autonomous")
-
+@Disabled
 public class Blue1Fuego extends LinearOpMode {
     FuegoRobot omnom;
 

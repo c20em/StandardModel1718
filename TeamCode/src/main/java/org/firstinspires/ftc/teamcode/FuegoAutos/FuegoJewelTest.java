@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  */
 
 @Autonomous(name="Jewel Test Fuego", group="Autonomous")
-
+@Disabled
 public class FuegoJewelTest extends LinearOpMode {
     FuegoRobot omnom;
     @Override

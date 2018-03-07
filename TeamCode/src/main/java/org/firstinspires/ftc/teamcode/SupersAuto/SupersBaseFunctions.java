@@ -16,6 +16,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -118,18 +121,10 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         imu.initialize(parameters);
     }
 
+
     public void initVuforia() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-        parameters.vuforiaLicenseKey = "Aeba4Qn/////AAAAGahNOxzreUE8nItPWzsrOlF7uoyrR/qbjue3kUmhxZcfZMSd5MRyEY+3uEoVA+gpQGz5KyP3wEjBxSOAb4+FBYMZ+QblFU4byMG4+aiI+GeeBA+RatQXVzSduRBdniCW4qehTnwS204KTUMXg1ioPvUlbYQmqM5aPMx/2xnYN1b+htNBWV0Bc8Vkyspa0NNgz7PzF1gozlCIc9FgzbzNYoOMhqSG+jhKf47SZQxD6iEAtj5iAkWBvJwFDLr/EfDfPr3BIA6Cpb4xaDc0t4Iz5wJ/p4oLRiEJaLoE/noCcWFjLmPcw9ccwYXThtjC+7u0DsMX+r+1dMikBCZCWWkLzEyjWzy3pOOR3exNRYGZ0vzr";
-
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        relicTemplate = relicTrackables.get(0);
-        relicTrackables.activate();
     }
 
     public void strafeforTime(double power, int time) throws InterruptedException {
@@ -325,133 +320,6 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         BackRightDrive.setPower(0);
     }
 
-    //WITH ENCODER DRIVE METHODS
-    //THESE ARE SHITTT DONT USE THESE
-
-
-    //                ༼ つ ◕_◕ ༽つ    ༼ つ ◕_◕ ༽つ     ༼ つ ◕_◕ ༽つ
-
-    //                         move along nothing to see here
-    public void encoderDriveForwards(double drivePower, int distance, boolean nom){
-
-        // reset the encoders
-        FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FrontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BackRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // set to the target (distance)
-        FrontLeftDrive.setTargetPosition(distance);
-        BackLeftDrive.setTargetPosition(distance);
-        FrontRightDrive.setTargetPosition(distance);
-        BackRightDrive.setTargetPosition(distance);
-
-        // set to RUN_TO_POSITION mode
-        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        drive(drivePower);
-
-        while (FrontLeftDrive.isBusy() && BackLeftDrive.isBusy() && FrontRightDrive.isBusy() && BackRightDrive.isBusy()){
-            // waiting until the target position is reached
-            // if asked for nom, run nom while moving
-            if(nom)nom();
-        }
-        // stop driving
-        StopDriving();
-        stopNom();
-
-        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void encoderDriveBackwards(double drivePower, int distance, boolean nom){
-        encoderDriveForwards(-drivePower, -distance, nom);
-    }
-
-    public void encoderTurnLeft(double drivePower, int distance, boolean nom){
-        // reset the encoders
-        FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FrontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BackRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // set to the target (distance)
-        FrontLeftDrive.setTargetPosition(distance);
-        BackLeftDrive.setTargetPosition(distance);
-        FrontRightDrive.setTargetPosition(-distance);
-        BackRightDrive.setTargetPosition(-distance);
-
-        // set to RUN_TO_POSITION mode
-        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        turn(drivePower);
-
-        while (FrontLeftDrive.isBusy() && BackLeftDrive.isBusy() && FrontRightDrive.isBusy() && BackRightDrive.isBusy()){
-            // waiting until the target position is reached
-            // if asked for nom, run nom while moving
-            if(nom)nom();
-        }
-        // stop driving
-        StopDriving();
-        stopNom();
-
-        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void encoderTurnRight(double drivePower, int distance, boolean nom){
-        encoderTurnLeft(-drivePower, -distance, nom);
-    }
-
-    public void encoderStrafeRight(double drivePower, int distance, boolean nom){
-        // reset the encoders
-        FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FrontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BackRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // set to the target (distance)
-        FrontLeftDrive.setTargetPosition(distance);
-        BackLeftDrive.setTargetPosition(-distance);
-        FrontRightDrive.setTargetPosition(-distance);
-        BackRightDrive.setTargetPosition(distance);
-
-        // set to RUN_TO_POSITION mode
-        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FrontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        strafe(drivePower);
-
-        while (FrontLeftDrive.isBusy() && BackLeftDrive.isBusy() && FrontRightDrive.isBusy() && BackRightDrive.isBusy()){
-            // waiting until the target position is reached
-            // if asked for nom, run nom while moving
-            if(nom)nom();
-        }
-        // stop driving
-        StopDriving();
-        stopNom();
-
-        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void encoderStrafeLeft(double drivePower, int distance, boolean nom) {
-        encoderStrafeRight(-drivePower, -distance, nom);
-    }
     public RelicRecoveryVuMark getPicto() { //function to figure out which column it is
         OpenGLMatrix lastLocation = null;
 
@@ -477,5 +345,73 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         telemetry.update();
         return vuMark;
     }
+
+    double currentAngle() {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+    }
+
+    public void turnAngle(double angle){
+        if(angle > 0) turnAngleCW(angle);
+        if(angle < 0) turnAngleCCW(-angle);
+    }
+
+    public void turnAngleCW(double angle) {
+        double startingAngle = currentAngle();
+        while ((getAngleDiff(startingAngle, currentAngle()) < angle -4)&&opModeIsActive()) {
+            double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (angle * 2));
+            telemetry.addData("difference", difference);
+            telemetry.update();
+            if (difference > .15) turn(difference);
+            else turn(.22);
+            telemetry.addData("I BROKE",opModeIsActive());
+            telemetry.update();
+        }
+        StopDriving();
+    }
+
+
+    public void turnAngleCCW(double angle) {
+        while(opModeIsActive()) {
+            double startingAngle = currentAngle();
+            while (getAngleDiff(startingAngle, currentAngle()) < angle -4) {
+                double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (angle * 2));
+                telemetry.addData("difference", difference);
+                telemetry.update();
+                if (difference > .15) turn(-difference);
+                else turn(-.22);
+                if(!opModeIsActive()){
+                    telemetry.addData("I BROKE",opModeIsActive());
+                    telemetry.update();
+                    break;
+                }
+            }
+            StopDriving();
+            break;
+        }
+    }
+
+    public double getAngleDiff(double angle1, double angle2) {
+        if(Math.abs(angle1 - angle2) < 180.0)
+            return Math.abs(angle1-angle2);
+        else if(angle1 > angle2)
+        {
+            angle1 -= 360;
+            return Math.abs(angle2-angle1);
+        }
+        else
+        {
+            angle2 -= 360;
+            return Math.abs(angle1-angle2);
+        }
+    }
+
+    //WITH ENCODER DRIVE METHODS
+    //THESE ARE SHITTT DONT USE THESE
+
+
+    //                ༼ つ ◕_◕ ༽つ    ༼ つ ◕_◕ ༽つ     ༼ つ ◕_◕ ༽つ
+
+    //                         move along nothing to see here
 
 }
