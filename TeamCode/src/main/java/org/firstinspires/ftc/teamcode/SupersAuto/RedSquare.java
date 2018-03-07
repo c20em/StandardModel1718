@@ -31,23 +31,17 @@ public class RedSquare extends SupersBaseFunctions {
             //Run Jewel sequence
             jewelSequence(false);
 
-            ////////////////////
-            //GO FOR FIRST GLYPH
-            ////////////////////
-
             //Drive to Cryptobox
             driveforTime(-0.5, 1150);
 
             //Turn and drive to correct column
+            turnAngle(90);
             turnToColumnSequence(column);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
             returntoCenterSequence(column);
-            ////////////////////
-            //FIRST GLYPH PLACED!
-            ////////////////////
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
             getNewGlyphSquareSequence();

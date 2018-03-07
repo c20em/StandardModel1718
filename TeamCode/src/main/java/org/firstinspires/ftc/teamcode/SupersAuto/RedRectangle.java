@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name = "Red Rectangle", group = "Autonomous")
+@Autonomous(name="Red Square", group="Autonomous")
 public class RedRectangle extends SupersBaseFunctions {
 
     @Override
@@ -16,42 +16,47 @@ public class RedRectangle extends SupersBaseFunctions {
 
         declare();
         initVuforia();
+        initGyro();
         waitForStart();
 
-        liftIn.setPosition(.9);             //Relic Blocker
-        sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
-        wallServo.setPosition(.3);          //Wall servo out
+        setStartAngle();
+        servoStartSequence();
 
-        while (opModeIsActive()) {
+        while(opModeIsActive()) {
             telemetry.addLine("made it this far");
             telemetry.update();
-            RelicRecoveryVuMark hi = pictograph();
-            telemetry.addData("vuMark:", hi);
-            telemetry.update();
 
+            RelicRecoveryVuMark column = getPicto();
+
+            //Run Jewel sequence
             jewelSequence(false);
-            sleep(600);
+
+            //Drive to Cryptobox
             driveforTime(-.6, 600);
             sleep(500);
             strafeforTime(.8, 700);
-            sleep(200);
-            driveforTime(-.5, 1000);
-            sleep(200);
-            driveforTime(.3, 600);
-            sleep(200);
-            turn(.3, 200);
-            sleep(200);
-            flipOut();
-            driveforTime(-.3, 500);
-            sleep(200);
-            driveforTime(.3, 400);
-            sleep(200);
-            strafeforTime(.8, 200);
-            sleep(100);
-            flipIn();
-            sleep(200);
-            driveforTime(-.3, 700);
-            driveforTime(.5, 200);
+
+            //Turn and drive to correct column
+            turnAngle(90);
+            turnToColumnSequence(column);
+
+            //SERVO flip out SEQUENCE
+            placeGlyphSequence();
+
+            returntoCenterSequence(column);
+
+            //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
+            getNewGlyphRectangleSequence(1);
+            // ⚆ _ ⚆
+
+            //get into position for second placement
+            turnToSecondColumnSequence(column);
+
+            //SERVO flip out SEQUENCE
+            placeGlyphJankSequence();
+
+            //move back out
+            nomDriveForTime(.4, 200);
 
             break;
         }

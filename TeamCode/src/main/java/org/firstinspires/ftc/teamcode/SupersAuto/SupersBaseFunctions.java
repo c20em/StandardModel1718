@@ -428,7 +428,6 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
     public void turnToColumnSequence(RelicRecoveryVuMark column){
         turnAngle(currentAngle() - veryStartAngle);
-        turnAngle(90);
 
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
@@ -490,4 +489,25 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         nomDriveForTime(-.4, 1000);
         driveforTime(-0.5, 500);
     }
+
+    public void getNewGlyphRectangleSequence(int direction) throws InterruptedException {
+        NomNomNom.setPower(-1);
+        sleep(400);
+        strafeforTime(direction*.8, 700);
+        nomDriveForTime(.4, 2000);
+        sleep(100);
+        nom();
+        sleep(300);
+        nomDriveForTime(-.4, 1000);
+        sleep(100);
+        nom();
+        sleep(300);
+        nomDriveForTime(.3, 800);
+        nom();
+        sleep(300);
+        nomDriveForTime(-.4, 1000);
+        driveforTime(-0.5, 500);
+        strafeforTime(direction*-.8, 700);
+    }
+
 }
