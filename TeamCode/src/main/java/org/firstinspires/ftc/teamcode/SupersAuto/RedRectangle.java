@@ -29,7 +29,7 @@ public class RedRectangle extends SupersBaseFunctions {
             telemetry.addData("vuMark:", hi);
             telemetry.update();
 
-            jewel(false);
+            jewelSequence(false);
             sleep(600);
             driveforTime(-.6, 600);
             sleep(500);

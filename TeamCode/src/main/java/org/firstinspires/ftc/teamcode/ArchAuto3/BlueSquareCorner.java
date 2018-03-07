@@ -16,7 +16,6 @@ public class BlueSquareCorner extends BaseAutoFunctions {
         declare();
         initVuforia();
         waitForStart();
-
         liftIn.setPosition(.9);             //Relic Blocker
         elbowServo.setPosition(ELBOW_UP);         //Relic arm up
         sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.SupersAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 /**
  * Created by student on 2/16/18.
  */
@@ -17,114 +19,50 @@ public class RedSquare extends SupersBaseFunctions {
         initGyro();
         waitForStart();
 
-        turnAngle(90);
-        sleep(1000);
-        turnAngle(90);
-        sleep(1000);
-
-        liftIn.setPosition(.9);             //Relic Blocker
-        elbowServo.setPosition(ELBOW_UP);         //Relic arm up
-        sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
-        wallServo.setPosition(.78);          //Wall servo out
+        setStartAngle();
+        servoStartSequence();
 
         while(opModeIsActive()) {
             telemetry.addLine("made it this far");
             telemetry.update();
 
-            getPicto();
+            RelicRecoveryVuMark column = getPicto();
 
-            jewel(false);
-            sleep(600);
+            //Run Jewel sequence
+            jewelSequence(false);
 
             ////////////////////
             //GO FOR FIRST GLYPH
             ////////////////////
 
             //Drive to Cryptobox
-            driveforTime(-.5, 1100);
-            sleep(200);
-            turn(0.8, 480);
-            sleep(300);
+            driveforTime(-0.5, 1150);
+
+            //Turn and drive to correct column
+            turnToColumnSequence(column);
 
             //SERVO flip out SEQUENCE
-            driveforTime(-.4, 500);        //align with box .....?
-            sleep(300);
-            driveforTime(.4, 300);
-            sleep(200);
+            placeGlyphSequence();
 
-            flipOut();
-            sleep(1000);
-            driveforTime(-.3, 400);
-            sleep(200);
-            driveforTime(.4, 400);
-            sleep(200);
-            flipIn();
-            sleep(1000);
-            driveforTime(-.3, 500);
-            sleep(300);
-            strafeforTime(-.5,300);
-            sleep(200);
-            driveforTime(-.3, 500);
-            sleep(200);
-
-
-
+            returntoCenterSequence(column);
             ////////////////////
             //FIRST GLYPH PLACED!
             ////////////////////
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
-            NomNomNom.setPower(-1);
-            sleep(400);
-            nomDriveForTime(.7, 1500);
-            sleep(100);
-            nom();
-            sleep(300);
-            nomDriveForTime(-.7, 800);
-            sleep(100);
-            nom();
-            sleep(300);
-            nomDriveForTime(.3, 800);
-            nom();
-            sleep(300);
-            nomDriveForTime(-.4, 1000);
-            //Copped first glyph?? ⚆ _ ⚆
+            getNewGlyphSquareSequence();
+            // ⚆ _ ⚆
 
             //get into position for second placement
-            strafeforTime(.8, 400);
+            turnToSecondColumnSequence(column);
 
             //SERVO flip out SEQUENCE
-            driveforTime(-.4, 500);        //align with box .....?
-            sleep(300);
-            driveforTime(.4, 300);
-            sleep(200);
+            placeGlyphJankSequence();
 
-            flipOut();
-            sleep(1000);
-            driveforTime(-.3, 400);
-            sleep(200);
-            driveforTime(.4, 400);
-            sleep(200);
-            flipIn();
-            sleep(1000);
-            driveforTime(-.3, 500);
-            NomNomNom.setPower(-1);
-            sleep(200);
-            strafeforTime(-5,100);
-            sleep(200);
-            driveforTime(-.3, 500);
-            sleep(200);
-
-            //release!
-            driveforTime(.3, 200);
-
+            //move back out
+            nomDriveForTime(.4, 200);
 
             break;
-
-
-
-
-
         }
     }
 }

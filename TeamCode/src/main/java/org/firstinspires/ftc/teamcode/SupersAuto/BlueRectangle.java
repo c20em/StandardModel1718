@@ -23,7 +23,7 @@ public class BlueRectangle extends SupersBaseFunctions {
             telemetry.addLine("made it this far");
             telemetry.update();
 
-            jewel(true);
+            jewelSequence(true);
             sleep(600);
             driveforTime(.6, 600);
             sleep(200);

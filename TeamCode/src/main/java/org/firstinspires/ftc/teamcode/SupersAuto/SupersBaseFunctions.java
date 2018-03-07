@@ -50,6 +50,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
     //servo final double positions
     static final double JEWEL_DOWN_POS = 0.0;
+    static final double JEWEL_MID_POS = .9;
     static final double JEWEL_UP_POS = 1;
     static final double SIDE_JEWEL_NEUTRAL_POS = 0.6;
     static double BOX_RIGHT_DOWN = .84;
@@ -57,9 +58,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     static final double BOX_RIGHT_UP = .34;
     static final double BOX_LEFT_UP = .61;
     static final double ELBOW_UP = .1;
-    static final double JEWEL_TURNCCW_POS = .68;
+    static final double JEWEL_TURNCCW_POS = .80;
     static final double JEWEL_TURNMID_POS = .59;
-    static final double JEWEL_TURNCW_POS = .5;
+    static final double JEWEL_TURNCW_POS = .38;
 
     //vuforia
     OpenGLMatrix lastLocation = null;
@@ -69,9 +70,11 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     VuforiaTrackable relicTemplate = null;
 
     //other things
-    double nomPower = 0.95;
+    double nomPower = -0.95;
     boolean canSeeJewel = false;
     ElapsedTime clock = new ElapsedTime();
+    public double veryStartAngle;
+    static final double COLUMN_TURN_ANGLE = 13;
 
     //*************************************INITIALIZATION FUNCTIONS*********************************
 
@@ -147,7 +150,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         StopDriving();
     }
 
-    public void driveforTime(double power, int time)throws InterruptedException{
+    public void driveforTime(double power, int time){
         drive(power);
         sleep(time);
         StopDriving();
@@ -200,18 +203,11 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         drive(power);
     }
 
-    public void nomDriveForTime(double power, int time)throws InterruptedException{
+    public void nomDriveForTime(double power, int time){
         nomDrive(power);
         sleep(time);
         StopDriving();
         stopNom();
-    }
-
-    public void delay(int milliseconds) throws InterruptedException {
-        clock.reset();
-        while(clock.milliseconds() < milliseconds) {
-            telemetry.addLine("sleepyy");
-        }
     }
 
     public void turn(double turn){
@@ -226,82 +222,6 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         BackLeftDrive.setPower(0);
         FrontRightDrive.setPower(0);
         BackRightDrive.setPower(0);
-    }
-
-    //************************************JEWEL FUNCTIONS*******************************************
-
-    public void jewel(boolean teamBlue) throws InterruptedException {
-        boolean jewelBlue;
-        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
-        sleep(100);
-        jewelServo.setPosition(JEWEL_DOWN_POS);
-        //read color
-        int red = 0;
-        int blue = 0;
-        for (int i = 0; i < 40; i++) {
-            if (colorSensor.red() > colorSensor.blue()) red++;
-            if (colorSensor.red() < colorSensor.blue()) blue++;
-        }
-        telemetry.addLine("read color");
-
-        //decide which color we see
-        if(blue>red){
-            jewelBlue= true;
-            telemetry.addData("blueWins!", blue);
-        } else {
-            jewelBlue=false;
-            telemetry.addData("redWins!", red);
-        }
-        telemetry.addData("blue: ", blue);
-        telemetry.addData("red: ", red);
-        telemetry.update();
-
-        //knock off correct jewel
-        if(jewelBlue){
-            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
-            if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
-        } else if (!jewelBlue){
-            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
-            if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
-        }
-        sleep(1000);
-
-        //turn back
-        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
-        sleep(100);
-        jewelServo.setPosition(JEWEL_UP_POS);
-    }
-
-    public boolean isBlue() throws InterruptedException {
-        telemetry.addData("Red:", colorSensor.red());
-        telemetry.addData("Blue:", colorSensor.blue());
-        telemetry.update();
-
-        colorSensor.enableLed(true);
-        sleep(200);
-        clock.reset();
-        int red = 0;
-        int blue = 0;
-        while(clock.milliseconds() < 800) {
-            red = colorSensor.red();
-            blue = colorSensor.blue();
-        }
-        if (red < blue) {
-            telemetry.addLine("SEES BLUE");
-            telemetry.update();
-            colorSensor.enableLed(false);
-            canSeeJewel = true;
-            return true;
-        } else if(red > blue) {
-            telemetry.addLine("SEES RED");
-            telemetry.update();
-            colorSensor.enableLed(false);
-            canSeeJewel = true;
-            return false;
-        }else{
-            canSeeJewel = false;
-            return false;
-        }
     }
 
     //**********************************VUFORIA FUNCTIONS*******************************************
@@ -328,7 +248,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         double vuStartTime = getRuntime();
-        while (getRuntime() - vuStartTime < 3) {
+        while ((getRuntime() - vuStartTime < 1.5)&&opModeIsActive()) {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
         telemetry.addData("column", vuMark);
@@ -429,5 +349,145 @@ abstract class SupersBaseFunctions extends LinearOpMode {
             angle2 -= 360;
             return Math.abs(angle1-angle2);
         }
+    }
+
+    public void setStartAngle(){
+        veryStartAngle = currentAngle();
+    }
+
+    //*******************************SEQUENCE MOTION FUNCTIONS******************************************
+    public void jewelSequence(boolean teamBlue) throws InterruptedException {
+        boolean jewelBlue;
+        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
+        sleep(100);
+        jewelServo.setPosition(JEWEL_MID_POS);
+        sleep(350);
+        jewelServo.setPosition(JEWEL_DOWN_POS);
+        //read color
+        int red = 0;
+        int blue = 0;
+        for (int i = 0; i < 40; i++) {
+            if (colorSensor.red() > colorSensor.blue()) red++;
+            if (colorSensor.red() < colorSensor.blue()) blue++;
+        }
+        telemetry.addLine("read color");
+
+        //decide which color we see
+        if(blue>red){
+            jewelBlue= true;
+            telemetry.addData("blueWins!", blue);
+        } else {
+            jewelBlue=false;
+            telemetry.addData("redWins!", red);
+        }
+        telemetry.addData("blue: ", blue);
+        telemetry.addData("red: ", red);
+        telemetry.update();
+
+        //knock off correct jewel
+        jewelServo.setPosition(JEWEL_DOWN_POS+.07);
+        if(jewelBlue){
+            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
+            else if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
+        } else if (!jewelBlue){
+            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
+            else if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
+        }
+        sleep(200);
+
+        //turn back
+        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
+        sleep(100);
+        jewelServo.setPosition(JEWEL_UP_POS);
+        sleep(600);
+    }
+
+    public void placeGlyphSequence(){
+        flipOut();
+        sleep(600);
+        flipIn();
+        sleep(300);
+        driveforTime(-.3, 900);
+        sleep(300);
+        driveforTime(.3, 800);
+        sleep(300);
+        driveforTime(-.3, 800);
+    }
+
+    public void placeGlyphJankSequence(){
+        flipOut();
+        sleep(600);
+        flipIn();
+        sleep(300);
+        driveforTime(-.3, 900);
+    }
+
+    public void servoStartSequence(){
+        liftIn.setPosition(.9);             //Relic Blocker//Relic arm up
+    }
+
+    public void turnToColumnSequence(RelicRecoveryVuMark column){
+        turnAngle(currentAngle() - veryStartAngle);
+        turnAngle(90);
+
+        //TURN TO THE CORRECT COLUMN
+        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w right value
+        }
+
+        sleep(200);
+        driveforTime(-.5,400);
+        sleep(300);
+    }
+
+    public void turnToSecondColumnSequence(RelicRecoveryVuMark column){
+        turnAngle(currentAngle() - (veryStartAngle-90));
+
+        //TURN TO THE CORRECT COLUMN
+        if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w left value
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
+        }
+
+        sleep(200);
+        driveforTime(-.5,400);
+        sleep(300);
+    }
+
+    public void returntoCenterSequence(RelicRecoveryVuMark column){
+        driveforTime(.5,400);
+        sleep(300);
+
+        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w left value
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
+        }
+
+        turnAngle(currentAngle() - (veryStartAngle-90));
+
+    }
+
+    public void getNewGlyphSquareSequence(){
+        NomNomNom.setPower(-1);
+        sleep(400);
+        nomDriveForTime(.4, 2000);
+        sleep(100);
+        nom();
+        sleep(300);
+        nomDriveForTime(-.4, 1000);
+        sleep(100);
+        nom();
+        sleep(300);
+        nomDriveForTime(.3, 800);
+        nom();
+        sleep(300);
+        nomDriveForTime(-.4, 1000);
+        driveforTime(-0.5, 500);
     }
 }

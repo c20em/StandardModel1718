@@ -51,7 +51,7 @@ public class BaseChassis extends LinearOpMode {
     static final double Push_Back_Power = 1;
     static final double ELBOW_UP = .366;
     static final double ELBOW_DOWN = .78;
-    static final double JEWEL_UP_POS = 0.6;
+    static final double JEWEL_UP_POS = 1;
 
 
 
