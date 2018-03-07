@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.SupersAuto;
 
-/**
- * Created by student on 2/15/18.
- */
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -27,10 +23,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 abstract class SupersBaseFunctions extends LinearOpMode {
 
-    /*
-    initializing motors, servos, and sensors
-     */
+    //***********************************HARDWARE INSTANTIATIONS************************************
 
+    //motor + servos
     DcMotor FrontLeftDrive = null;
     DcMotor FrontRightDrive = null;
     DcMotor BackLeftDrive = null;
@@ -48,37 +43,40 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     Servo jewelServo;
     Servo jewelSideServo;
 
+    //imu
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
 
+    //servo final double positions
     static final double JEWEL_DOWN_POS = 0.0;
     static final double JEWEL_UP_POS = 1;
-
     static final double SIDE_JEWEL_NEUTRAL_POS = 0.6;
-
     static double BOX_RIGHT_DOWN = .84;
     static double BOX_LEFT_DOWN = .1;
     static final double BOX_RIGHT_UP = .34;
     static final double BOX_LEFT_UP = .61;
     static final double ELBOW_UP = .1;
-
     static final double JEWEL_TURNCCW_POS = .68;
     static final double JEWEL_TURNMID_POS = .59;
     static final double JEWEL_TURNCW_POS = .5;
 
-    double nomPower = 0.95;
-    boolean canSeeJewel = false;
-
+    //vuforia
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia;
     VuforiaLocalizer.Parameters parameters = null;
     VuforiaTrackables relicTrackables = null;
     VuforiaTrackable relicTemplate = null;
 
+    //other things
+    double nomPower = 0.95;
+    boolean canSeeJewel = false;
     ElapsedTime clock = new ElapsedTime();
 
+    //*************************************INITIALIZATION FUNCTIONS*********************************
+
     public void declare() {
+        //motor and servo declarations
         FrontLeftDrive = hardwareMap.get(DcMotor.class, "front_left");
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
@@ -96,12 +94,14 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         jewelServo = hardwareMap.get(Servo.class, "jewel_servo");
         jewelSideServo = hardwareMap.get(Servo.class, "jewel_side_servo");
 
+        //motor direction behavior
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         NomNomNom.setDirection(DcMotor.Direction.REVERSE);
 
+        //motor zero power behavior
         FrontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -121,11 +121,12 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         imu.initialize(parameters);
     }
 
-
     public void initVuforia() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
     }
+
+    //***************************************MOTION FUNCTIONS***************************************
 
     public void strafeforTime(double power, int time) throws InterruptedException {
         strafe(power);
@@ -170,6 +171,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         leftBoxServo.setPosition(BOX_LEFT_UP);
         rightBoxServo.setPosition(BOX_RIGHT_UP);
     }
+
     public void flipIn(){
         leftBoxServo.setPosition(BOX_LEFT_DOWN);
         rightBoxServo.setPosition(BOX_RIGHT_DOWN);
@@ -204,6 +206,30 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         StopDriving();
         stopNom();
     }
+
+    public void delay(int milliseconds) throws InterruptedException {
+        clock.reset();
+        while(clock.milliseconds() < milliseconds) {
+            telemetry.addLine("sleepyy");
+        }
+    }
+
+    public void turn(double turn){
+        FrontLeftDrive.setPower(turn);
+        BackLeftDrive.setPower(turn);
+        FrontRightDrive.setPower(-turn);
+        BackRightDrive.setPower(-turn);
+    }
+
+    public void StopDriving(){
+        FrontLeftDrive.setPower(0);
+        BackLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        BackRightDrive.setPower(0);
+    }
+
+    //************************************JEWEL FUNCTIONS*******************************************
+
     public void jewel(boolean teamBlue) throws InterruptedException {
         boolean jewelBlue;
         jewelSideServo.setPosition(JEWEL_TURNMID_POS);
@@ -278,47 +304,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         }
     }
 
-    //      we've got the vision     ( ⚆ _ ⚆ )
-    public RelicRecoveryVuMark pictograph() {
-        double startTime = getRuntime() * 1000;
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
-        if(vuMark != RelicRecoveryVuMark.UNKNOWN) {
-            return vuMark;
-        } else {
-            while(startTime - getRuntime() < 2000) {
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                if(vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                    return vuMark;
-                }
-            }
-        }
-        return vuMark;
-    }
-
-
-    //DELAY
-    public void delay(int milliseconds) throws InterruptedException {
-        clock.reset();
-        while(clock.milliseconds() < milliseconds) {
-            telemetry.addLine("sleepyy");
-        }
-    }
-
-
-    public void turn(double turn){
-        FrontLeftDrive.setPower(turn);
-        BackLeftDrive.setPower(turn);
-        FrontRightDrive.setPower(-turn);
-        BackRightDrive.setPower(-turn);
-    }
-
-    public void StopDriving(){
-        FrontLeftDrive.setPower(0);
-        BackLeftDrive.setPower(0);
-        FrontRightDrive.setPower(0);
-        BackRightDrive.setPower(0);
-    }
+    //**********************************VUFORIA FUNCTIONS*******************************************
 
     public RelicRecoveryVuMark getPicto() { //function to figure out which column it is
         OpenGLMatrix lastLocation = null;
@@ -326,7 +312,11 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         VuforiaLocalizer vuforia;
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        parameters.vuforiaLicenseKey = "Aeba4Qn/////AAAAGahNOxzreUE8nItPWzsrOlF7uoyrR/qbjue3kUmhxZcfZMSd5MRyEY+3uEoVA+gpQGz5KyP3wEjBxSOAb4+FBYMZ+QblFU4byMG4+aiI+GeeBA+RatQXVzSduRBdniCW4qehTnwS204KTUMXg1ioPvUlbYQmqM5aPMx/2xnYN1b+htNBWV0Bc8Vkyspa0NNgz7PzF1gozlCIc9FgzbzNYoOMhqSG+jhKf47SZQxD6iEAtj5iAkWBvJwFDLr/EfDfPr3BIA6Cpb4xaDc0t4Iz5wJ/p4oLRiEJaLoE/noCcWFjLmPcw9ccwYXThtjC+7u0DsMX+r+1dMikBCZCWWkLzEyjWzy3pOOR3exNRYGZ0vzr";
+        parameters.vuforiaLicenseKey = "Aeba4Qn/////AAAAGahNOxzreUE8nItPWzsrOlF7uoyrR/qbjue3kUmhxZcfZMSd5MRyE" +
+                "Y+3uEoVA+gpQGz5KyP3wEjBxSOAb4+FBYMZ+QblFU4byMG4+aiI+GeeBA+RatQXVzSduRBdniCW4qehTnwS204KTUMXg1" +
+                "ioPvUlbYQmqM5aPMx/2xnYN1b+htNBWV0Bc8Vkyspa0NNgz7PzF1gozlCIc9FgzbzNYoOMhqSG+jhKf47SZQxD6iEAtj5" +
+                "iAkWBvJwFDLr/EfDfPr3BIA6Cpb4xaDc0t4Iz5wJ/p4oLRiEJaLoE/noCcWFjLmPcw9ccwYXThtjC+7u0DsMX+r+1dMikB" +
+                "CZCWWkLzEyjWzy3pOOR3exNRYGZ0vzr";
 
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK; //look through back camera
         vuforia = ClassFactory.createVuforiaLocalizer(parameters);
@@ -344,6 +334,42 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         telemetry.addData("column", vuMark);
         telemetry.update();
         return vuMark;
+    }
+
+    public RelicRecoveryVuMark pictograph() {
+        double startTime = getRuntime() * 1000;
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        if(vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            return vuMark;
+        } else {
+            while(startTime - getRuntime() < 2000) {
+                vuMark = RelicRecoveryVuMark.from(relicTemplate);
+                if(vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                    return vuMark;
+                }
+            }
+        }
+        return vuMark;
+    }
+
+    //******************************GYRO + TURNING FUNCTIONS****************************************
+
+    public void strafeforTimeGyro(double power, int time) throws InterruptedException {
+        double startingAngle = currentAngle();
+        double startingTime = getRuntime();
+        while(opModeIsActive()&&((getRuntime()-startingTime)*1000<time)){
+            strafeGyro(power,currentAngle()-startingAngle);
+        }
+        StopDriving();
+    }
+
+    public void strafeGyro(double power, double error) {
+        double errorMultiplier = 1;
+        FrontLeftDrive.setPower(power + error*errorMultiplier);
+        BackLeftDrive.setPower(-power + error*errorMultiplier);
+        FrontRightDrive.setPower(-power + error*errorMultiplier);
+        BackRightDrive.setPower(power + error*errorMultiplier);
     }
 
     double currentAngle() {
@@ -369,7 +395,6 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         }
         StopDriving();
     }
-
 
     public void turnAngleCCW(double angle) {
         while(opModeIsActive()) {
@@ -405,13 +430,4 @@ abstract class SupersBaseFunctions extends LinearOpMode {
             return Math.abs(angle1-angle2);
         }
     }
-
-    //WITH ENCODER DRIVE METHODS
-    //THESE ARE SHITTT DONT USE THESE
-
-
-    //                ༼ つ ◕_◕ ༽つ    ༼ つ ◕_◕ ༽つ     ༼ つ ◕_◕ ༽つ
-
-    //                         move along nothing to see here
-
 }
