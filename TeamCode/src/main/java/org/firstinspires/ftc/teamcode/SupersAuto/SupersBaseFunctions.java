@@ -1,17 +1,17 @@
-package org.firstinspires.ftc.teamcode.FuegoAutos;
+package org.firstinspires.ftc.teamcode.SupersAuto;
 
-import android.app.Activity;
-import android.view.View;
+/**
+ * Created by student on 2/15/18.
+ */
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -20,39 +20,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-import java.util.Locale;
+abstract class SupersBaseFunctions extends LinearOpMode {
 
-/*
-    welcome to the holy grail for all fuego autos
- */
+    /*
+    initializing motors, servos, and sensors
+     */
 
-public class FuegoRobot {
-
-    //COLOR SENSOR VARIABLES
-    float hsvValues[] = {0F, 0F, 0F};
-    final float values[] = hsvValues;
-    final double SCALE_FACTOR = 255;
-    DistanceSensor sensorDistance;
-
-
-    //SYSTEM VARIABLES
-    ElapsedTime clock = new ElapsedTime();
-    RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
-    private LinearOpMode opMode;
-    private HardwareMap hardwareMap;
-    private Telemetry telemetry;
-    private ElapsedTime runtime = new ElapsedTime();
-
-    //MOTOR VARIABLES AND THINGS
     DcMotor FrontLeftDrive = null;
     DcMotor FrontRightDrive = null;
     DcMotor BackLeftDrive = null;
@@ -66,17 +44,18 @@ public class FuegoRobot {
     Servo wallServo = null;
     CRServo pushBackServoLeft = null;
     CRServo pushBackServoRight = null;
-    ColorSensor colorSensor = null;
-    Servo jewelServo = null;
-    Servo jewelSideServo = null;
+    ColorSensor colorSensor;
+    Servo jewelServo;
+    Servo jewelSideServo;
 
-    //POSITION VARIABLES
-    static final double JEWEL_DOWN_POS = 0.2;
+    BNO055IMU imu;
+    Orientation angles;
+    Acceleration gravity;
 
-    static final double JEWEL_TURNCCW_POS = .68;
-    static final double JEWEL_TURNMID_POS = .59;
-    static final double JEWEL_TURNCW_POS = .5;
+    static final double JEWEL_DOWN_POS = 0.0;
+    static final double JEWEL_UP_POS = 1;
 
+    static final double SIDE_JEWEL_NEUTRAL_POS = 0.6;
 
     static double BOX_RIGHT_DOWN = .84;
     static double BOX_LEFT_DOWN = .1;
@@ -84,21 +63,22 @@ public class FuegoRobot {
     static final double BOX_LEFT_UP = .61;
     static final double ELBOW_UP = .1;
 
+    static final double JEWEL_TURNCCW_POS = .68;
+    static final double JEWEL_TURNMID_POS = .59;
+    static final double JEWEL_TURNCW_POS = .5;
+
     double nomPower = 0.95;
+    boolean canSeeJewel = false;
 
-    //GYRO THINGS
-    BNO055IMU imu;
-    Orientation angles;
-    Acceleration gravity;
+    OpenGLMatrix lastLocation = null;
+    VuforiaLocalizer vuforia;
+    VuforiaLocalizer.Parameters parameters = null;
+    VuforiaTrackables relicTrackables = null;
+    VuforiaTrackable relicTemplate = null;
 
+    ElapsedTime clock = new ElapsedTime();
 
-    public void init(LinearOpMode o){
-        //SYSTEM THINGS
-        opMode = o;
-        hardwareMap = opMode.hardwareMap;
-        telemetry = opMode.telemetry;
-
-        //HARDWARE THINGS
+    public void declare() {
         FrontLeftDrive = hardwareMap.get(DcMotor.class, "front_left");
         FrontRightDrive = hardwareMap.get(DcMotor.class, "front_right");
         BackLeftDrive = hardwareMap.get(DcMotor.class, "back_left");
@@ -127,8 +107,9 @@ public class FuegoRobot {
         BackRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         NomNomNom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
 
-        //GYRO THINGS
+    public void initGyro() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -138,35 +119,17 @@ public class FuegoRobot {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-
-        //COLORSENSOR MAYBE VUFORIA THINGS
-        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
     }
 
-    public void idle(){
-        opMode.idle();
-    }
 
-    public boolean opModeIsActive(){
-        return opMode.opModeIsActive();
-    }
-
-    public double getRuntime(){
-        return opMode.getRuntime();
-    }
-
-    public void initPositions(){
-        liftIn.setPosition(.9);             //Relic Blocker
-        elbowServo.setPosition(ELBOW_UP);    //Relic arm up
-        delay(1000);                         //breif pause so that wall servo does not interfere with relic arm release
-        wallServo.setPosition(.78);          //Wall servo out
+    public void initVuforia() {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
     }
 
     public void strafeforTime(double power, int time) throws InterruptedException {
         strafe(power);
-        delay(time);
+        sleep(time);
         StopDriving();
     }
 
@@ -179,28 +142,14 @@ public class FuegoRobot {
 
     public void turn(double power, int time) throws InterruptedException{
         turn(power);
-        delay(time);
+        sleep(time);
         StopDriving();
     }
 
-    public void driveforTime(double power, int time){
+    public void driveforTime(double power, int time)throws InterruptedException{
         drive(power);
-        delay(time);
+        sleep(time);
         StopDriving();
-    }
-
-    public void turn(double turn){
-        FrontLeftDrive.setPower(turn);
-        BackLeftDrive.setPower(turn);
-        FrontRightDrive.setPower(-turn);
-        BackRightDrive.setPower(-turn);
-    }
-
-    public void StopDriving(){
-        FrontLeftDrive.setPower(0);
-        BackLeftDrive.setPower(0);
-        FrontRightDrive.setPower(0);
-        BackRightDrive.setPower(0);
     }
 
     public void drive(double power) {
@@ -213,7 +162,7 @@ public class FuegoRobot {
 
     public void lift(double liftpower, int time) throws InterruptedException{
         lift.setPower(liftpower);
-        delay(time);
+        sleep(time);
         lift.setPower(0);
     }
 
@@ -221,7 +170,6 @@ public class FuegoRobot {
         leftBoxServo.setPosition(BOX_LEFT_UP);
         rightBoxServo.setPosition(BOX_RIGHT_UP);
     }
-
     public void flipIn(){
         leftBoxServo.setPosition(BOX_LEFT_DOWN);
         rightBoxServo.setPosition(BOX_RIGHT_DOWN);
@@ -229,7 +177,7 @@ public class FuegoRobot {
 
     public void nomforTime(int time) throws InterruptedException {
         nom();
-        delay(time);
+        sleep(time);
         stopNom();
     }
 
@@ -252,25 +200,14 @@ public class FuegoRobot {
 
     public void nomDriveForTime(double power, int time)throws InterruptedException{
         nomDrive(power);
-        delay(time);
+        sleep(time);
         StopDriving();
         stopNom();
     }
-
-    public void placeGlyphSequence(){
-        flipOut();
-        delay(300);
-        driveforTime(-.4, 800);
-        flipIn();
-        driveforTime(.4, 800);
-        flipOut();
-        delay(300);
-        driveforTime(-.4, 800);
-    }
-
     public void jewel(boolean teamBlue) throws InterruptedException {
         boolean jewelBlue;
         jewelSideServo.setPosition(JEWEL_TURNMID_POS);
+        sleep(100);
         jewelServo.setPosition(JEWEL_DOWN_POS);
         //read color
         int red = 0;
@@ -301,16 +238,86 @@ public class FuegoRobot {
             if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
             if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
         }
-        delay(1000);
+        sleep(1000);
 
         //turn back
         jewelSideServo.setPosition(JEWEL_TURNMID_POS);
+        sleep(100);
+        jewelServo.setPosition(JEWEL_UP_POS);
     }
 
-    public void delay(int time) {
-        double delayStartTime = clock.milliseconds();
-        while (clock.milliseconds() - delayStartTime < time) {
+    public boolean isBlue() throws InterruptedException {
+        telemetry.addData("Red:", colorSensor.red());
+        telemetry.addData("Blue:", colorSensor.blue());
+        telemetry.update();
+
+        colorSensor.enableLed(true);
+        sleep(200);
+        clock.reset();
+        int red = 0;
+        int blue = 0;
+        while(clock.milliseconds() < 800) {
+            red = colorSensor.red();
+            blue = colorSensor.blue();
         }
+        if (red < blue) {
+            telemetry.addLine("SEES BLUE");
+            telemetry.update();
+            colorSensor.enableLed(false);
+            canSeeJewel = true;
+            return true;
+        } else if(red > blue) {
+            telemetry.addLine("SEES RED");
+            telemetry.update();
+            colorSensor.enableLed(false);
+            canSeeJewel = true;
+            return false;
+        }else{
+            canSeeJewel = false;
+            return false;
+        }
+    }
+
+    //      we've got the vision     ( ⚆ _ ⚆ )
+    public RelicRecoveryVuMark pictograph() {
+        double startTime = getRuntime() * 1000;
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        if(vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            return vuMark;
+        } else {
+            while(startTime - getRuntime() < 2000) {
+                vuMark = RelicRecoveryVuMark.from(relicTemplate);
+                if(vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                    return vuMark;
+                }
+            }
+        }
+        return vuMark;
+    }
+
+
+    //DELAY
+    public void delay(int milliseconds) throws InterruptedException {
+        clock.reset();
+        while(clock.milliseconds() < milliseconds) {
+            telemetry.addLine("sleepyy");
+        }
+    }
+
+
+    public void turn(double turn){
+        FrontLeftDrive.setPower(turn);
+        BackLeftDrive.setPower(turn);
+        FrontRightDrive.setPower(-turn);
+        BackRightDrive.setPower(-turn);
+    }
+
+    public void StopDriving(){
+        FrontLeftDrive.setPower(0);
+        BackLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        BackRightDrive.setPower(0);
     }
 
     public RelicRecoveryVuMark getPicto() { //function to figure out which column it is
@@ -334,7 +341,8 @@ public class FuegoRobot {
         while (getRuntime() - vuStartTime < 3) {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
-
+        telemetry.addData("column", vuMark);
+        telemetry.update();
         return vuMark;
     }
 
@@ -343,28 +351,44 @@ public class FuegoRobot {
         return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
     }
 
+    public void turnAngle(double angle){
+        if(angle > 0) turnAngleCW(angle);
+        if(angle < 0) turnAngleCCW(-angle);
+    }
+
     public void turnAngleCW(double angle) {
         double startingAngle = currentAngle();
-        while(getAngleDiff(startingAngle,currentAngle())<angle){
-            double difference = ((angle-getAngleDiff(startingAngle,currentAngle()))/(angle*4));
-            telemetry.addData("difference",difference);
+        while ((getAngleDiff(startingAngle, currentAngle()) < angle -4)&&opModeIsActive()) {
+            double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (angle * 2));
+            telemetry.addData("difference", difference);
             telemetry.update();
-            if(difference > .15) turn(difference);
-            else turn(.15);
+            if (difference > .15) turn(difference);
+            else turn(.22);
+            telemetry.addData("I BROKE",opModeIsActive());
+            telemetry.update();
         }
         StopDriving();
     }
 
+
     public void turnAngleCCW(double angle) {
-        double startingAngle = currentAngle();
-        while(getAngleDiff(startingAngle,currentAngle())<angle){
-            double difference = ((angle-getAngleDiff(startingAngle,currentAngle()))/(angle*4));
-            telemetry.addData("difference",difference);
-            telemetry.update();
-            if(difference > .15) turn(-difference);
-            else turn(-.15);
+        while(opModeIsActive()) {
+            double startingAngle = currentAngle();
+            while (getAngleDiff(startingAngle, currentAngle()) < angle -4) {
+                double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (angle * 2));
+                telemetry.addData("difference", difference);
+                telemetry.update();
+                if (difference > .15) turn(-difference);
+                else turn(-.22);
+                if(!opModeIsActive()){
+                    telemetry.addData("I BROKE",opModeIsActive());
+                    telemetry.update();
+                    break;
+                }
+            }
+            StopDriving();
+            break;
         }
-        StopDriving();
     }
 
     public double getAngleDiff(double angle1, double angle2) {
@@ -381,5 +405,13 @@ public class FuegoRobot {
             return Math.abs(angle1-angle2);
         }
     }
+
+    //WITH ENCODER DRIVE METHODS
+    //THESE ARE SHITTT DONT USE THESE
+
+
+    //                ༼ つ ◕_◕ ༽つ    ༼ つ ◕_◕ ༽つ     ༼ つ ◕_◕ ༽つ
+
+    //                         move along nothing to see here
 
 }

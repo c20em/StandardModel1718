@@ -15,42 +15,46 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  */
 
 @Autonomous(name="Blue 1 Fuego", group="Autonomous")
-
+@Disabled
 public class Blue1Fuego extends LinearOpMode {
     FuegoRobot omnom;
+
     @Override
     public void runOpMode() throws InterruptedException {
+        waitForStart();
         omnom = new FuegoRobot();
         omnom.init(this);
-        omnom.initPositions();
-        waitForStart();
 
-        telemetry.addLine("made it this far");
-        telemetry.update();
+        while (opModeIsActive()) {
+            omnom.initPositions();
 
-        //get vuforia column
-        omnom.column = omnom.getPicto();
+            telemetry.addLine("made it this far");
+            telemetry.update();
 
-        //run jewel stuff
-        omnom.jewel(true);
-        sleep(600);
+            //get vuforia column
+            omnom.column = omnom.getPicto();
 
-        //MOVE TO THE CORRECT COLUMN
-//        if (omnom.column == RelicRecoveryVuMark.CENTER || omnom.column == RelicRecoveryVuMark.UNKNOWN) {
-//            omnom.driveforTime(0.5, 1200); //fill w center value
-//        } else if (omnom.column == RelicRecoveryVuMark.LEFT) {
-//            omnom.driveforTime(0.5, 1200); //fill w left value
-//        } else if (omnom.column == RelicRecoveryVuMark.RIGHT) {
-//            omnom.driveforTime(0.5, 1200);//fill w right value
-//        } else  omnom.driveforTime(0.5, 1200);
-//
-//        sleep(200);
-//        omnom.turnAngleCW(90);
-//        sleep(300);
-//        omnom.driveforTime(.7, 800);
+            //run jewel stuff
+            omnom.jewel(true);
+            sleep(600);
 
-        //place the first glyph
-        omnom.placeGlyphSequence();
+            //MOVE TO THE CORRECT COLUMN
+            if (omnom.column == RelicRecoveryVuMark.CENTER || omnom.column == RelicRecoveryVuMark.UNKNOWN) {
+                omnom.driveforTime(0.5, 1200); //fill w center value
+            } else if (omnom.column == RelicRecoveryVuMark.LEFT) {
+                omnom.driveforTime(0.5, 1200); //fill w left value
+            } else if (omnom.column == RelicRecoveryVuMark.RIGHT) {
+                omnom.driveforTime(0.5, 1200);//fill w right value
+            } else omnom.driveforTime(0.5, 1200);
 
+            sleep(200);
+            omnom.turnAngleCW(90);
+            sleep(300);
+            omnom.driveforTime(.7, 800);
+
+            //place the first glyph
+            omnom.placeGlyphSequence();
+
+        }
     }
 }
