@@ -74,7 +74,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     boolean canSeeJewel = false;
     ElapsedTime clock = new ElapsedTime();
     public double veryStartAngle;
-    static final double COLUMN_TURN_ANGLE = 13;
+    static final double COLUMN_TURN_ANGLE = 15;
 
     //*************************************INITIALIZATION FUNCTIONS*********************************
 
@@ -426,9 +426,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         liftIn.setPosition(.9);             //Relic Blocker//Relic arm up
     }
 
-    public void turnToColumnSequence(RelicRecoveryVuMark column){
+    public void turnToColumnSequence(RelicRecoveryVuMark column, int turn){
         turnAngle(currentAngle() - veryStartAngle);
-
+        turnAngle(turn);
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
         } else if (column == RelicRecoveryVuMark.LEFT) {
@@ -473,21 +473,21 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void getNewGlyphSquareSequence(){
-        NomNomNom.setPower(-1);
-        sleep(400);
-        nomDriveForTime(.4, 2000);
+//        NomNomNom.setPower(-1);
+//        sleep(400);
+        nomDriveForTime(.9, 300);
         sleep(100);
-        nom();
-        sleep(300);
-        nomDriveForTime(-.4, 1000);
+//        nom();
+//        sleep(500);
+        nomDriveForTime(-.9, 300);
         sleep(100);
-        nom();
-        sleep(300);
         nomDriveForTime(.3, 800);
+        sleep(100);
+        nomDriveForTime(.3, 800);
+        sleep(100);
         nom();
         sleep(300);
-        nomDriveForTime(-.4, 1000);
-        driveforTime(-0.5, 500);
+        nomDriveForTime(-.3, 1000);
     }
 
     public void getNewGlyphRectangleSequence(int direction) throws InterruptedException {

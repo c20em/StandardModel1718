@@ -32,11 +32,10 @@ public class RedSquare extends SupersBaseFunctions {
             jewelSequence(false);
 
             //Drive to Cryptobox
-            driveforTime(-0.5, 1150);
+            driveforTime(-0.5, 1050);
 
             //Turn and drive to correct column
-            turnAngle(90);
-            turnToColumnSequence(column);
+            turnToColumnSequence(column, 90);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();

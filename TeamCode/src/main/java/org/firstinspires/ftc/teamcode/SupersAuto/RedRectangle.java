@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name="Red Square", group="Autonomous")
+@Autonomous(name="Red Rectangle", group="Autonomous")
 public class RedRectangle extends SupersBaseFunctions {
 
     @Override
@@ -37,8 +37,7 @@ public class RedRectangle extends SupersBaseFunctions {
             strafeforTime(.8, 700);
 
             //Turn and drive to correct column
-            turnAngle(90);
-            turnToColumnSequence(column);
+            turnToColumnSequence(column,0);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();

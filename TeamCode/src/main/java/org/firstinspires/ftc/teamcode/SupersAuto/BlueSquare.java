@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name="Red Square", group="Autonomous")
+@Autonomous(name="Blue Square", group="Autonomous")
 public class BlueSquare extends SupersBaseFunctions {
 
     @Override
@@ -35,9 +35,7 @@ public class BlueSquare extends SupersBaseFunctions {
             driveforTime(0.5, 1150);
 
             //Turn and drive to correct column
-
-            turnAngle(-90);
-            turnToColumnSequence(column);
+            turnToColumnSequence(column,-90);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
