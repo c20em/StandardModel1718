@@ -114,9 +114,8 @@ public class BaseChassis extends LinearOpMode {
         waitForStart();
         runtime.reset();
         liftIn.setPosition(.9);             //Relic Blocker
-//        elbowServo.setPosition(ELBOW_UP);         //Relic arm up
-        sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
-        wallServo.setPosition(.5);          //Wall servo out
+        sleep(1000);                         //brief pause so that wall servo does not interfere with relic arm release
+        wallServo.setPosition(.4);          //Wall servo out
         liftIn.setPosition(.9);             //Relic Blocker
 
         while (opModeIsActive()) {
@@ -335,8 +334,8 @@ public class BaseChassis extends LinearOpMode {
 //                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
 //                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
         } else if (gamepad2.x) {
-            leftBoxServo.setPosition(BOX_LEFT_UP + .1);//GAMEPAD2
-            rightBoxServo.setPosition(BOX_RIGHT_UP - .1);
+            leftBoxServo.setPosition(BOX_LEFT_UP + .2);//GAMEPAD2
+            rightBoxServo.setPosition(BOX_RIGHT_UP - .2);
         }
     }
 
@@ -345,7 +344,7 @@ public class BaseChassis extends LinearOpMode {
             liftIn.setPosition(.9);             //Relic Blocker
 //            elbowServo.setPosition(ELBOW_UP);        //Relic arm up
             sleep(1000);                         //breif pause so that wall servo does not interfere with relic arm release
-            wallServo.setPosition(.5);          //Wall servo out
+            wallServo.setPosition(.4);          //Wall servo out
             wallout = false;
         }
     }

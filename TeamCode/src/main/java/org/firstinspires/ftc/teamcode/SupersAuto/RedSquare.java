@@ -21,6 +21,7 @@ public class RedSquare extends SupersBaseFunctions {
 
         setStartAngle();
         servoStartSequence();
+        wallServo.setPosition(.4);
 
         while(opModeIsActive()) {
             telemetry.addLine("made it this far");
@@ -53,7 +54,7 @@ public class RedSquare extends SupersBaseFunctions {
             placeGlyphJankSequence();
 
             //move back out
-            nomDriveForTime(.4, 200);
+            nomDriveForTime(.6, 200);
 
             break;
         }

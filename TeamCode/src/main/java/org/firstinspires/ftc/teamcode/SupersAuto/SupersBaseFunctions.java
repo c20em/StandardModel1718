@@ -49,7 +49,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     Acceleration gravity;
 
     //servo final double positions
-    static final double JEWEL_DOWN_POS = 0.0;
+    static final double JEWEL_DOWN_POS = 0.40;
     static final double JEWEL_MID_POS = .9;
     static final double JEWEL_UP_POS = 1;
     static final double SIDE_JEWEL_NEUTRAL_POS = 0.6;
@@ -367,8 +367,8 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         int red = 0;
         int blue = 0;
         for (int i = 0; i < 40; i++) {
-            if (colorSensor.red() > colorSensor.blue()) red++;
-            if (colorSensor.red() < colorSensor.blue()) blue++;
+            if (colorSensor.red()  > colorSensor.blue() && colorSensor.red() >.1) red++;
+            if (colorSensor.red() < colorSensor.blue()&& colorSensor.blue() >.1) blue++;
         }
         telemetry.addLine("read color");
 
@@ -385,13 +385,13 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         telemetry.update();
 
         //knock off correct jewel
-        jewelServo.setPosition(JEWEL_DOWN_POS+.07);
+
         if(jewelBlue){
-            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
-            else if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
+            if(teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()-.12);
+            else if(!teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()+.12);
         } else if (!jewelBlue){
-            if(teamBlue) jewelSideServo.setPosition(JEWEL_TURNCCW_POS);
-            else if(!teamBlue) jewelSideServo.setPosition(JEWEL_TURNCW_POS);
+            if(teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()+.12);
+            else if(!teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()-.12);
         }
         sleep(200);
 
@@ -410,16 +410,18 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         driveforTime(.3, 800);
         sleep(300);
         flipIn();
-        sleep(300);
-        driveforTime(-.3, 800);
+//        sleep(300);
+//        driveforTime(-.3, 800);
     }
 
     public void placeGlyphJankSequence(){
+        nomDriveForTime(.3, 400);
+
+        sleep(200);
         flipOut();
         sleep(600);
         flipIn();
         sleep(300);
-        driveforTime(-.3, 900);
     }
 
     public void servoStartSequence(){
@@ -443,13 +445,16 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void turnToSecondColumnSequence(RelicRecoveryVuMark column){
+        nomDriveForTime(-.3, 700);
+        sleep(200);
+        nomDriveForTime(.3, 600);
         turnAngle(currentAngle() - (veryStartAngle-90));
 
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
             turnAngle(COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
+            turnAngle(-COLUMN_TURN_ANGLE+3);//fill w right value
         }
 
         sleep(200);
@@ -475,15 +480,15 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     public void getNewGlyphSquareSequence(){
 //        NomNomNom.setPower(-1);
 //        sleep(400);
-        nomDriveForTime(.9, 300);
+        nom();
         sleep(100);
-//        nom();
-//        sleep(500);
-        nomDriveForTime(-.9, 300);
+        nomDriveForTime(.9, 800);
         sleep(100);
-        nomDriveForTime(.3, 800);
+        nomDriveForTime(-.9, 800);
         sleep(100);
-        nomDriveForTime(.3, 800);
+        nomDriveForTime(.3, 1000);
+        sleep(100);
+        nomDriveForTime(-.3, 1000);
         sleep(100);
         nom();
         sleep(300);
