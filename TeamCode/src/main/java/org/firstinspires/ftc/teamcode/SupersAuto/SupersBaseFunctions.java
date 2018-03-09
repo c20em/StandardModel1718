@@ -452,7 +452,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            turnAngle(COLUMN_TURN_ANGLE);//fill w left value
+            turnAngle(COLUMN_TURN_ANGLE-3 );//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
             turnAngle(-COLUMN_TURN_ANGLE+3);//fill w right value
         }
