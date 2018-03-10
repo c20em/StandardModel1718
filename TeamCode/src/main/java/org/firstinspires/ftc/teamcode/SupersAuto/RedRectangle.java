@@ -32,7 +32,7 @@ public class RedRectangle extends SupersBaseFunctions {
             jewelSequence(false);
 
             //Drive to Cryptobox
-            driveforTime(-.6, 600);
+            driveforTime(-.5, 766);
             sleep(500);
             strafeforTime(.8, 700);
 

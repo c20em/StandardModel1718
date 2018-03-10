@@ -49,9 +49,13 @@ public class BaseChassis extends LinearOpMode {
     static final double BOX_RIGHT_UP = .84;
     static final double BOX_LEFT_UP = .1;
     static final double Push_Back_Power = 1;
+    static final double JEWEL_UP_POS = 1;
     static final double ELBOW_UP = .366;
     static final double ELBOW_DOWN = .78;
-    static final double JEWEL_UP_POS = 1;
+    static final double RELIC_HAND_CLOSE = .88;
+    static final double RELIC_HAND_OPEN = .52;
+
+
 
 
 
@@ -61,6 +65,7 @@ public class BaseChassis extends LinearOpMode {
     static final double NOM_POWER = 1;
     boolean wallout = false;
     boolean relicGang = false;
+    boolean clawGrip = false;
 
     controllerPos previousDrive = controllerPos.ZERO;
 
@@ -136,11 +141,10 @@ public class BaseChassis extends LinearOpMode {
                 if (gamepad1.left_bumper) {
                     relicGang = true;
                     wallServo.setPosition(0);
-                    sleep(2000);
+                    sleep(1000);
                     elbowServo.setPosition(.3);
-                    sleep(400);
-                    elbowServo.setPosition(.5);
-
+                    sleep(100);
+                    wallServo.setPosition(.5);
                     liftIn.setPosition(.1);
                 }
             }
@@ -166,14 +170,14 @@ public class BaseChassis extends LinearOpMode {
 
     public void moveRobot() {
         double drive = -gamepad1.left_stick_y;
-    double turn = -gamepad1.right_stick_x/1.2;
+    double turn = -gamepad1.right_stick_x/2.2;
 
         if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
-            Drive(drive);
+            Drive(drive, turn);
         } else if(drive < -0.25 && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_BACK;
-            Drive(drive);
+            Drive(drive, turn);
         } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_RIGHT;
             Strafe(-1);
@@ -182,10 +186,10 @@ public class BaseChassis extends LinearOpMode {
             Strafe(1);
         }  else if(turn > 0.25 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_RIGHT;
-            turn(turn);
+            turn(turn*2);
         } else if(turn < -0.25 &&(previousDrive == controllerPos.TURN_LEFT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_LEFT;
-            turn(turn);
+            turn(turn*2);
         }
         else {
             previousDrive = controllerPos.ZERO;
@@ -222,16 +226,20 @@ public class BaseChassis extends LinearOpMode {
 
     }
     //DRIVING FOWARADS/BACKWARDS/TURNING
-    public void Drive(double drive) {
+    public void Drive(double drive, double turnPower) {
         double drivePower = drive;
 
         drivePower = readjustMotorPower(drivePower);
         drivePower = Range.clip(drivePower, -1.0, 1.0);
 
-        FrontLeftDrive.setPower(drivePower);
-        BackLeftDrive.setPower(drivePower);
-        FrontRightDrive.setPower(drivePower);
-        BackRightDrive.setPower(drivePower);
+        FrontLeftDrive.setPower(drivePower + turnPower);
+        BackLeftDrive.setPower(drivePower + turnPower);
+        FrontRightDrive.setPower(drivePower - turnPower);
+        BackRightDrive.setPower(drivePower - turnPower);
+
+        ///////////////////////////////////////////////////////////////////////////
+
+
 
         telemetry.addData("Motors", "drive power (%.2f)", drivePower);
     }
@@ -293,13 +301,20 @@ public class BaseChassis extends LinearOpMode {
         }else{
             relicArm.setPower(0);
         }
-       if (gamepad2.a) {
-            handServo.setPosition(.88); //relic arm close
-        } else if (gamepad2.y) {
-            handServo.setPosition(.45);
-        } else if(gamepad2.right_bumper) {
+
+       if (gamepad2.left_bumper && !clawGrip) {
+            handServo.setPosition(RELIC_HAND_CLOSE); //relic hand close
+           sleep(200);
+           clawGrip = true;
+        } else if (gamepad2.left_bumper && clawGrip) {
+           handServo.setPosition(RELIC_HAND_OPEN); //relic hand open
+           sleep(200);
+           clawGrip = false;
+        }
+
+        if(gamepad2.right_stick_y > .1) {
             elbowServo.setPosition(elbowServo.getPosition() - .002);
-        } else if(gamepad2.left_bumper) {
+        } else if(gamepad2.right_stick_y < -.1) {
             elbowServo.setPosition(elbowServo.getPosition() + .002);
         }
     }
@@ -312,10 +327,7 @@ public class BaseChassis extends LinearOpMode {
              return 0;
          }
      }
-
-
                                         //SERVOS
-
 
     public void flip() {
         telemetry.addLine("running flip()");

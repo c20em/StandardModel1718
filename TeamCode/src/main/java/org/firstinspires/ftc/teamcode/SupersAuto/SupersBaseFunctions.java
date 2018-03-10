@@ -180,14 +180,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         rightBoxServo.setPosition(BOX_RIGHT_DOWN);
     }
 
-    public void nomforTime(int time) throws InterruptedException {
-        nom();
-        sleep(time);
-        stopNom();
-    }
 
-    public void nom() {
-        NomNomNom.setPower(nomPower);
+    public void nom (int nomDirection) {
+        NomNomNom.setPower(nomPower * nomDirection);
         pushBackServoLeft.setPower(-1);
         pushBackServoRight.setPower(1);
     }
@@ -199,7 +194,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void nomDrive(double power) {
-        nom();
+        nom(1);
         drive(power);
     }
 
@@ -480,17 +475,19 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     public void getNewGlyphSquareSequence(){
 //        NomNomNom.setPower(-1);
 //        sleep(400);
-        nom();
+        nom(1);
+        sleep(200);
+        nom(-1);
+        sleep(200);
+        nomDriveForTime(.7, 500);
         sleep(100);
-        nomDriveForTime(.9, 800);
-        sleep(100);
-        nomDriveForTime(-.9, 800);
+        nomDriveForTime(-.4, 800);
         sleep(100);
         nomDriveForTime(.3, 1000);
         sleep(100);
         nomDriveForTime(-.3, 1000);
         sleep(100);
-        nom();
+        nom(1);
         sleep(300);
         nomDriveForTime(-.3, 1000);
     }
@@ -501,14 +498,14 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         strafeforTime(direction*.8, 700);
         nomDriveForTime(.4, 2000);
         sleep(100);
-        nom();
+        nom(1);
         sleep(300);
         nomDriveForTime(-.4, 1000);
         sleep(100);
-        nom();
+        nom(1);
         sleep(300);
         nomDriveForTime(.3, 800);
-        nom();
+        nom(1);
         sleep(300);
         nomDriveForTime(-.4, 1000);
         driveforTime(-0.5, 500);

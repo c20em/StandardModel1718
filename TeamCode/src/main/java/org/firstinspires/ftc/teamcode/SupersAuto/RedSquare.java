@@ -54,7 +54,7 @@ public class RedSquare extends SupersBaseFunctions {
             placeGlyphJankSequence();
 
             //move back out
-            nomDriveForTime(.6, 200);
+            nomDriveForTime(.4, 200);
 
             break;
         }
