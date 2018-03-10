@@ -40,7 +40,7 @@ public class BlueSquare extends SupersBaseFunctions {
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
-            returntoCenterSequence(column);
+            returntoCenterSequence(column, true);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
             getNewGlyphSquareSequence();

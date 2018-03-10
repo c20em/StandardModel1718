@@ -42,7 +42,7 @@ public class BlueRectangle extends SupersBaseFunctions {
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
-            returntoCenterSequence(column);
+            returntoCenterSequence(column, false);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
             getNewGlyphRectangleSequence(-1);

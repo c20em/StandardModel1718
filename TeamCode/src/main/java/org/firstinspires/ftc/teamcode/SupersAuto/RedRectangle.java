@@ -32,9 +32,9 @@ public class RedRectangle extends SupersBaseFunctions {
             jewelSequence(false);
 
             //Drive to Cryptobox
-            driveforTime(-.5, 766);
+            driveforTime(-.6, 600);
             sleep(500);
-            strafeforTime(.8, 700);
+            strafeforTime(.8, 600);
 
             //Turn and drive to correct column
             turnToColumnSequence(column,0);
@@ -42,7 +42,7 @@ public class RedRectangle extends SupersBaseFunctions {
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
-            returntoCenterSequence(column);
+            returntoCenterSequence(column, false);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
             getNewGlyphRectangleSequence(1);

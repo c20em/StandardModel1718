@@ -52,8 +52,8 @@ public class BaseChassis extends LinearOpMode {
     static final double JEWEL_UP_POS = 1;
     static final double ELBOW_UP = .366;
     static final double ELBOW_DOWN = .78;
-    static final double RELIC_HAND_CLOSE = .88;
-    static final double RELIC_HAND_OPEN = .52;
+    static final double RELIC_HAND_CLOSE = .45;
+    static final double RELIC_HAND_OPEN = .65;
 
 
 
@@ -142,7 +142,7 @@ public class BaseChassis extends LinearOpMode {
                     relicGang = true;
                     wallServo.setPosition(0);
                     sleep(1000);
-                    elbowServo.setPosition(.3);
+                    elbowServo.setPosition(.4);
                     sleep(100);
                     wallServo.setPosition(.5);
                     liftIn.setPosition(.1);
@@ -165,13 +165,13 @@ public class BaseChassis extends LinearOpMode {
 
 
     //DRIVER CONTROL
-                                         //MOTORS
+    //MOTORS
 
 
     public void moveRobot() {
         double drive = -gamepad1.left_stick_y;
         double diagonalDrive = -gamepad1.left_stick_x;
-    double turn = -gamepad1.right_stick_x/1.2;
+        double turn = -gamepad1.right_stick_x/1.2;
 
         if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
@@ -227,30 +227,64 @@ public class BaseChassis extends LinearOpMode {
 
     }
     //DRIVING FOWARADS/BACKWARDS/TURNING
-    public void Drive(double drive, double diagonalPower) {
-        double drivePower = drive;
 
+    public void Drive(double y, double x){
+        double FL = y;
+        double FR = y;
+        double BL = y;
+        double BR = y;
+        if(y>0&&x>0){
+            FR-=(x);
+            BL-=(x);
+        }
+        else if (y>0&&x<0) {
+            FL-=(x);
+            BR-=(x);
+        }
+        else if (y<0&&x>0){
+            FR-=(x);
+            BL-=(x);
+        }
+        else if (y<0&&x<0){
+            FL-=(x);
+            BR=(x);
+        }
+        FrontLeftDrive.setPower(FL);
+        FrontRightDrive.setPower(FR);
+        BackLeftDrive.setPower(BL);
+        BackRightDrive.setPower(BR);
+    }
 
+    public void Drive2(double drivePower, double diagonalPower) {
         drivePower = readjustMotorPower(drivePower);
         drivePower = Range.clip(drivePower, -1.0, 1.0);
+        diagonalPower = Range.clip(diagonalPower, -1.0, 1.0);
 
-        if(diagonalPower>.15) {
-            FrontLeftDrive.setPower(drivePower  + diagonalPower);
+
+        // -1 -.9 -.15 0 .15 .9 1
+
+        if (diagonalPower >= .15 && diagonalPower <= .9) {
+            FrontLeftDrive.setPower(drivePower - diagonalPower);
             BackLeftDrive.setPower(drivePower);
             FrontRightDrive.setPower(drivePower);
-            BackRightDrive.setPower(drivePower + diagonalPower);
-        } else if(diagonalPower<-.15) {
+            BackRightDrive.setPower(drivePower - diagonalPower);
+        } else if (diagonalPower <= -.15 && diagonalPower >= -.9) {
             FrontLeftDrive.setPower(drivePower);
-            BackLeftDrive.setPower(drivePower + diagonalPower);
-            FrontRightDrive.setPower(drivePower + diagonalPower);
+            BackLeftDrive.setPower(drivePower - diagonalPower);
+            FrontRightDrive.setPower(drivePower - diagonalPower);
             BackRightDrive.setPower(drivePower);
+        } else if (diagonalPower < -.9) {
+            Strafe(-1);
+        } else if (diagonalPower > .9) {
+            Strafe(1);
+        } else if (diagonalPower < .15 && diagonalPower > -.15) {
+            FrontLeftDrive.setPower(drivePower);
+            BackLeftDrive.setPower(drivePower);
+            FrontRightDrive.setPower(drivePower);
+            BackRightDrive.setPower(drivePower); //can make this an else
         }
-
-        ///////////////////////////////////////////////////////////////////////////
-
-
-
         telemetry.addData("Motors", "drive power (%.2f)", drivePower);
+        telemetry.update();
     }
     public void turn(double turn){
         double Rpower = turn;
@@ -268,42 +302,40 @@ public class BaseChassis extends LinearOpMode {
         BackRightDrive.setPower(Rpower);
     }
 
-     public void moveLift() {
-         double LiftPower;
-         if(gamepad2.right_bumper) {                    //GAMEPAD2
-             LiftPower = 1;
-         } else if (gamepad2.left_bumper) {             //GAMEPAD2
-             LiftPower = -1;
-         } else {
-             LiftPower = 0;
-         }
-         lift.setPower(LiftPower);
-     }
+    public void moveLift() {
+        double LiftPower;
+        if(gamepad2.right_bumper) {                    //GAMEPAD2
+            LiftPower = 1;
+        } else if (gamepad2.left_bumper) {             //GAMEPAD2
+            LiftPower = -1;
+        } else {
+            LiftPower = 0;
+        }
+        lift.setPower(LiftPower);
+    }
 
+    public void nom() {
+        double nomfoward = gamepad1.right_trigger;
+        double nombackward = gamepad1.left_trigger;
+        nomfoward = Range.clip(nomfoward, 0, 1);
+        nombackward = Range.clip(nombackward, 0, 1);
 
-     public void nom() {
-         double nomfoward = gamepad1.right_trigger;
-         double nombackward = gamepad1.left_trigger;
-         nomfoward = Range.clip(nomfoward, 0, 1);
-         nombackward = Range.clip(nombackward, 0, 1);
+        if(nomfoward > 0.2) {
+            NomNomNom.setPower(nomfoward);
+            telemetry.addLine("nomnomfoward" + nomfoward);
+        }
+        else if(nombackward > 0.2) {
+            NomNomNom.setPower(-nombackward);
+            telemetry.addLine("nomnombackward" + nombackward);
+        }
+        else {
+            NomNomNom.setPower(0);
+        }
 
-         if(nomfoward > .2) {
-             NomNomNom.setPower(NOM_FORWARD_POWER);
-             telemetry.addLine("nomnomfoward" + nomfoward);
-         }
-         else if(nombackward > 0.2) {
-             NomNomNom.setPower(NOM_BACKWARD_POWER);
-             telemetry.addLine("nomnombackward" + nombackward);
-         }
-         else {
-             NomNomNom.setPower(0);
-               telemetry.addLine("no nom :(");
-         }
-
-         if(gamepad1.right_stick_button) {                 //Backup teleop control in case we do not run auto for some reason
-             wallout = true;              //when wallout=true the relic arm servo, the wall servo, and the liftIn servo will
-         }                                //all go to their starting positions
-     }
+        if(gamepad1.right_stick_button) {                 //Backup teleop control in case we do not run auto for some reason
+            wallout = true;              //when wallout=true the relic arm servo, the wall servo, and the liftIn servo will
+        }                                //all go to their starting positions
+    }
     public void relic() {
         if (Math.abs(gamepad2.left_stick_y) > .2) {
             relicArm.setPower(Range.clip(gamepad2.left_stick_y, -1, 1));
@@ -311,32 +343,32 @@ public class BaseChassis extends LinearOpMode {
             relicArm.setPower(0);
         }
 
-       if (gamepad2.left_bumper && !clawGrip) {
+        if (gamepad2.left_bumper && !clawGrip) {
             handServo.setPosition(RELIC_HAND_CLOSE); //relic hand close
-           sleep(200);
-           clawGrip = true;
+            sleep(200);
+            clawGrip = true;
         } else if (gamepad2.left_bumper && clawGrip) {
-           handServo.setPosition(RELIC_HAND_OPEN); //relic hand open
-           sleep(200);
-           clawGrip = false;
+            handServo.setPosition(RELIC_HAND_OPEN); //relic hand open
+            sleep(200);
+            clawGrip = false;
         }
 
-        if(gamepad2.right_stick_y > .1) {
+        if(gamepad2.y) {
             elbowServo.setPosition(elbowServo.getPosition() - .002);
-        } else if(gamepad2.right_stick_y < -.1) {
+        } else if(gamepad2.a) {
             elbowServo.setPosition(elbowServo.getPosition() + .002);
         }
     }
 
-     //KEEPS MOTORS FROM STALLING
-     public double readjustMotorPower(double motorPower) {
-         if (Math.abs(motorPower) >= 0.3) {
-             return motorPower;
-         } else {
-             return 0;
-         }
-     }
-                                        //SERVOS
+    //KEEPS MOTORS FROM STALLING
+    public double readjustMotorPower(double motorPower) {
+        if (Math.abs(motorPower) >= 0.3) {
+            return motorPower;
+        } else {
+            return 0;
+        }
+    }
+    //SERVOS
 
     public void flip() {
         telemetry.addLine("running flip()");

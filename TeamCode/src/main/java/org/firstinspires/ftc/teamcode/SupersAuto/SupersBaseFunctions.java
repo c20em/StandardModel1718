@@ -457,7 +457,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void returntoCenterSequence(RelicRecoveryVuMark column){
+    public void returntoCenterSequence(RelicRecoveryVuMark column, boolean isSquare){
         driveforTime(.5,400);
         sleep(300);
 
@@ -467,8 +467,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         } else if (column == RelicRecoveryVuMark.RIGHT) {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
         }
-
-        turnAngle(currentAngle() - (veryStartAngle-90));
+        if(isSquare) {
+            turnAngle(currentAngle() - (veryStartAngle - 90));
+        }
 
     }
 
@@ -481,7 +482,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(200);
         nomDriveForTime(.7, 500);
         sleep(100);
-        nomDriveForTime(-.4, 800);
+        nomDriveForTime(-.9, 800);
         sleep(100);
         nomDriveForTime(.3, 1000);
         sleep(100);
@@ -508,6 +509,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         nom(1);
         sleep(300);
         nomDriveForTime(-.4, 1000);
+        sleep(100);
         driveforTime(-0.5, 500);
         strafeforTime(direction*-.8, 700);
     }
