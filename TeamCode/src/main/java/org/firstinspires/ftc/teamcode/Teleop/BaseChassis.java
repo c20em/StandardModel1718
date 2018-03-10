@@ -170,14 +170,15 @@ public class BaseChassis extends LinearOpMode {
 
     public void moveRobot() {
         double drive = -gamepad1.left_stick_y;
-    double turn = -gamepad1.right_stick_x/2.2;
+        double diagonalDrive = -gamepad1.left_stick_x;
+    double turn = -gamepad1.right_stick_x/1.2;
 
         if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
-            Drive(drive, turn);
+            Drive(drive, diagonalDrive);
         } else if(drive < -0.25 && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_BACK;
-            Drive(drive, turn);
+            Drive(drive, diagonalDrive);
         } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.STRAFE_RIGHT;
             Strafe(-1);
@@ -186,10 +187,10 @@ public class BaseChassis extends LinearOpMode {
             Strafe(1);
         }  else if(turn > 0.25 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_RIGHT;
-            turn(turn*2);
+            turn(turn);
         } else if(turn < -0.25 &&(previousDrive == controllerPos.TURN_LEFT || previousDrive == controllerPos.ZERO)){
             previousDrive = controllerPos.TURN_LEFT;
-            turn(turn*2);
+            turn(turn);
         }
         else {
             previousDrive = controllerPos.ZERO;
@@ -226,16 +227,24 @@ public class BaseChassis extends LinearOpMode {
 
     }
     //DRIVING FOWARADS/BACKWARDS/TURNING
-    public void Drive(double drive, double turnPower) {
+    public void Drive(double drive, double diagonalPower) {
         double drivePower = drive;
+
 
         drivePower = readjustMotorPower(drivePower);
         drivePower = Range.clip(drivePower, -1.0, 1.0);
 
-        FrontLeftDrive.setPower(drivePower + turnPower);
-        BackLeftDrive.setPower(drivePower + turnPower);
-        FrontRightDrive.setPower(drivePower - turnPower);
-        BackRightDrive.setPower(drivePower - turnPower);
+        if(diagonalPower>.15) {
+            FrontLeftDrive.setPower(drivePower  + diagonalPower);
+            BackLeftDrive.setPower(drivePower);
+            FrontRightDrive.setPower(drivePower);
+            BackRightDrive.setPower(drivePower + diagonalPower);
+        } else if(diagonalPower<-.15) {
+            FrontLeftDrive.setPower(drivePower);
+            BackLeftDrive.setPower(drivePower + diagonalPower);
+            FrontRightDrive.setPower(drivePower + diagonalPower);
+            BackRightDrive.setPower(drivePower);
+        }
 
         ///////////////////////////////////////////////////////////////////////////
 
