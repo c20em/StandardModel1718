@@ -439,11 +439,12 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void turnToSecondColumnSequence(RelicRecoveryVuMark column){
+    public void turnToSecondColumnSequence(RelicRecoveryVuMark column, boolean square){
         nomDriveForTime(-.3, 700);
         sleep(200);
         nomDriveForTime(.3, 600);
-        turnAngle(currentAngle() - (veryStartAngle-90));
+        if(square) turnAngle(currentAngle() - (veryStartAngle-90));
+        else turn(currentAngle()-veryStartAngle);
 
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
@@ -494,23 +495,29 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void getNewGlyphRectangleSequence(int direction) throws InterruptedException {
-        NomNomNom.setPower(-1);
-        sleep(400);
+        nom(1);
+        sleep(100);
+        nom(-1);
         strafeforTime(direction*.8, 700);
-        nomDriveForTime(.4, 2000);
+        sleep(100);
+        turn(currentAngle()-veryStartAngle);
+        sleep(100);
+        nomDriveForTime(.7, 500);
+        sleep(100);
+        nomDriveForTime(-.9, 600);
+        sleep(100);
+        nomDriveForTime(.3, 1000);
+        sleep(100);
+        turn(currentAngle()-veryStartAngle);
+        sleep(100);
+        nomDriveForTime(-.3, 800);
         sleep(100);
         nom(1);
         sleep(300);
-        nomDriveForTime(-.4, 1000);
+        nomDriveForTime(-.3, 600);
         sleep(100);
-        nom(1);
-        sleep(300);
-        nomDriveForTime(.3, 800);
-        nom(1);
-        sleep(300);
-        nomDriveForTime(-.4, 1000);
+        turn(currentAngle()-veryStartAngle);
         sleep(100);
-        driveforTime(-0.5, 500);
         strafeforTime(direction*-.8, 700);
     }
 

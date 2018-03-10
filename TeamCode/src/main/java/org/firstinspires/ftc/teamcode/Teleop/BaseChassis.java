@@ -173,25 +173,12 @@ public class BaseChassis extends LinearOpMode {
         double diagonalDrive = -gamepad1.left_stick_x;
         double turn = -gamepad1.right_stick_x/1.2;
 
-        if(drive > 0.25 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
-            previousDrive = controllerPos.DRIVE_FOWARD;
-            Drive(drive, diagonalDrive);
-        } else if(drive < -0.25 && (previousDrive == controllerPos.DRIVE_BACK || previousDrive == controllerPos.ZERO)) {
-            previousDrive = controllerPos.DRIVE_BACK;
-            Drive(drive, diagonalDrive);
-        } else if(gamepad1.dpad_right && (previousDrive == controllerPos.STRAFE_RIGHT || previousDrive == controllerPos.ZERO)) {
-            previousDrive = controllerPos.STRAFE_RIGHT;
-            Strafe(-1);
-        } else if(gamepad1.dpad_left && (previousDrive == controllerPos.STRAFE_LEFT || previousDrive == controllerPos.ZERO)) {
-            previousDrive = controllerPos.STRAFE_LEFT;
-            Strafe(1);
-        }  else if(turn > 0.25 &&(previousDrive == controllerPos.TURN_RIGHT || previousDrive == controllerPos.ZERO)){
-            previousDrive = controllerPos.TURN_RIGHT;
-            turn(turn);
-        } else if(turn < -0.25 &&(previousDrive == controllerPos.TURN_LEFT || previousDrive == controllerPos.ZERO)){
-            previousDrive = controllerPos.TURN_LEFT;
-            turn(turn);
-        }
+        if(drive > .1) Drive(drive,diagonalDrive);
+        else if(drive < .1) Drive(drive,diagonalDrive);
+        else if(diagonalDrive>.1)  Strafe(-1);
+        else if(diagonalDrive>.1)  Strafe(1);
+        else if(turn > .25) turn(turn);
+        else if(turn < -.25) turn(turn);
         else {
             previousDrive = controllerPos.ZERO;
             FrontLeftDrive.setPower(0);
@@ -199,7 +186,6 @@ public class BaseChassis extends LinearOpMode {
             FrontRightDrive.setPower(0);
             BackRightDrive.setPower(0);
         }
-
     }
 
     //STRAFING CONTROL
@@ -264,19 +250,10 @@ public class BaseChassis extends LinearOpMode {
             FR-=(2*x);
             BL-=(2*x);
         }
-
-        if(y==0){
-            FrontLeftDrive.setPower(x);
-            FrontRightDrive.setPower(-x);
-            BackLeftDrive.setPower(-x);
-            BackRightDrive.setPower(x);
-        }
-        else {
-            FrontLeftDrive.setPower(FL);
-            FrontRightDrive.setPower(FR);
-            BackLeftDrive.setPower(BL);
-            BackRightDrive.setPower(BR);
-        }
+        FrontLeftDrive.setPower(FL);
+        FrontRightDrive.setPower(FR);
+        BackLeftDrive.setPower(BL);
+        BackRightDrive.setPower(BR);
     }
 
     public void Drive2(double drivePower, double diagonalPower) {

@@ -49,7 +49,7 @@ public class BlueRectangle extends SupersBaseFunctions {
             // ⚆ _ ⚆
 
             //get into position for second placement
-            turnToSecondColumnSequence(column);
+            turnToSecondColumnSequence(column, false);
 
             //SERVO flip out SEQUENCE
             placeGlyphJankSequence();

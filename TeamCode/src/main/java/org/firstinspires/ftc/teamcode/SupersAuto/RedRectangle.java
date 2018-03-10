@@ -34,7 +34,7 @@ public class RedRectangle extends SupersBaseFunctions {
             //Drive to Cryptobox
             driveforTime(-.6, 600);
             sleep(500);
-            strafeforTime(.8, 600);
+            strafeforTime(.8, 400);
 
             //Turn and drive to correct column
             turnToColumnSequence(column,0);
@@ -49,7 +49,7 @@ public class RedRectangle extends SupersBaseFunctions {
             // ⚆ _ ⚆
 
             //get into position for second placement
-            turnToSecondColumnSequence(column);
+            turnToSecondColumnSequence(column, false);
 
             //SERVO flip out SEQUENCE
             placeGlyphJankSequence();
