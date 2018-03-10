@@ -229,30 +229,54 @@ public class BaseChassis extends LinearOpMode {
     //DRIVING FOWARADS/BACKWARDS/TURNING
 
     public void Drive(double y, double x){
-        double FL = y;
-        double FR = y;
-        double BL = y;
-        double BR = y;
+        x = -x;
+        double FL = 0;
+        double FR = 0;
+        double BL = 0;
+        double BR = 0;
+
+        if(y>0) {
+            FL = 1;
+            FR = 1;
+            BL = 1;
+            BR = 1;
+        }
+        else if(y<0){
+            FL = -1;
+            FR = -1;
+            BL = -1;
+            BR = -1;
+        }
+
         if(y>0&&x>0){
-            FR-=(x);
-            BL-=(x);
+            FR-=(2*x);
+            BL-=(2*x);
         }
         else if (y>0&&x<0) {
-            FL-=(x);
-            BR-=(x);
+            FL+=(2*x);
+            BR+=(2*x);
         }
         else if (y<0&&x>0){
-            FR-=(x);
-            BL-=(x);
+            FL+=(2*x);
+            BR+=(2*x);
         }
         else if (y<0&&x<0){
-            FL-=(x);
-            BR=(x);
+            FR-=(2*x);
+            BL-=(2*x);
         }
-        FrontLeftDrive.setPower(FL);
-        FrontRightDrive.setPower(FR);
-        BackLeftDrive.setPower(BL);
-        BackRightDrive.setPower(BR);
+
+        if(y==0){
+            FrontLeftDrive.setPower(x);
+            FrontRightDrive.setPower(-x);
+            BackLeftDrive.setPower(-x);
+            BackRightDrive.setPower(x);
+        }
+        else {
+            FrontLeftDrive.setPower(FL);
+            FrontRightDrive.setPower(FR);
+            BackLeftDrive.setPower(BL);
+            BackRightDrive.setPower(BR);
+        }
     }
 
     public void Drive2(double drivePower, double diagonalPower) {
@@ -286,6 +310,7 @@ public class BaseChassis extends LinearOpMode {
         telemetry.addData("Motors", "drive power (%.2f)", drivePower);
         telemetry.update();
     }
+
     public void turn(double turn){
         double Rpower = turn;
         double Lpower = -turn;
