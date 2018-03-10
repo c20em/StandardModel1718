@@ -135,7 +135,12 @@ public class BaseChassis extends LinearOpMode {
                 moveLift();
                 if (gamepad1.left_bumper) {
                     relicGang = true;
-                    wallServo.setPosition(.1);
+                    wallServo.setPosition(0);
+                    sleep(2000);
+                    elbowServo.setPosition(.3);
+                    sleep(400);
+                    elbowServo.setPosition(.5);
+
                     liftIn.setPosition(.1);
                 }
             }
@@ -283,23 +288,19 @@ public class BaseChassis extends LinearOpMode {
          }                                //all go to their starting positions
      }
     public void relic() {
-        if (Math.abs(gamepad2.right_stick_y) > .2) {
-            relicArm.setPower(Range.clip(gamepad2.right_stick_y, -1, 1));
+        if (Math.abs(gamepad2.left_stick_y) > .2) {
+            relicArm.setPower(Range.clip(gamepad2.left_stick_y, -1, 1));
         }else{
             relicArm.setPower(0);
         }
-        if (gamepad2.y) {
-            elbowServo.setPosition(ELBOW_UP);
-        } else if (gamepad2.a) {
-            elbowServo.setPosition(ELBOW_DOWN);
-        } else if (gamepad2.x) {
-            handServo.setPosition(.8);
-        } else if (gamepad2.b) {
+       if (gamepad2.a) {
+            handServo.setPosition(.88); //relic arm close
+        } else if (gamepad2.y) {
             handServo.setPosition(.45);
         } else if(gamepad2.right_bumper) {
-            elbowServo.setPosition(elbowServo.getPosition() - .001);
+            elbowServo.setPosition(elbowServo.getPosition() - .002);
         } else if(gamepad2.left_bumper) {
-            elbowServo.setPosition(elbowServo.getPosition() + .001);
+            elbowServo.setPosition(elbowServo.getPosition() + .002);
         }
     }
 
@@ -334,8 +335,8 @@ public class BaseChassis extends LinearOpMode {
 //                leftBoxServo.setPosition(leftBoxServo.getPosition() + .01);//GAMEPAD2
 //                rightBoxServo.setPosition(rightBoxServo.getPosition() - .01);
         } else if (gamepad2.x) {
-            leftBoxServo.setPosition(BOX_LEFT_UP + .2);//GAMEPAD2
-            rightBoxServo.setPosition(BOX_RIGHT_UP - .2);
+            leftBoxServo.setPosition(BOX_LEFT_UP + .12);//GAMEPAD2
+            rightBoxServo.setPosition(BOX_RIGHT_UP - .12);
         }
     }
 
