@@ -58,14 +58,14 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     static final double BOX_RIGHT_UP = .34;
     static final double BOX_LEFT_UP = .61;
     static final double ELBOW_UP = .1;
-    static final double JEWEL_TURNCCW_POS = .80;
-    static final double JEWEL_TURNMID_POS = .59;
-    static final double JEWEL_TURNCW_POS = .38;
+    static final double JEWEL_TURNCW_POS = .80;
+    static final double JEWEL_TURNMID_POS = .63;
+    static final double JEWEL_TURNCCW_POS = .38;
 
     //vuforia
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia;
-    VuforiaLocalizer.Parameters parameters = null;
+    VuforiaLocalizer.Parameters vufParameters = null;
     VuforiaTrackables relicTrackables = null;
     VuforiaTrackable relicTemplate = null;
 
@@ -126,7 +126,44 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
     public void initVuforia() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        vufParameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        // OR...  Do Not Activate the Camera Monitor View, to save power
+        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        /*
+         * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
+         * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
+         * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
+         * web site at https://developer.vuforia.com/license-manager.
+         *
+         * Vuforia license keys are always 380 characters long, and look as if they contain mostly
+         * random data. As an example, here is a example of a fragment of a valid key:
+         *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
+         * Once you've obtained a license key, copy the string from the Vuforia web site
+         * and paste it in to your code onthe next line, between the double quotes.
+         */
+        vufParameters.vuforiaLicenseKey = "Aeba4Qn/////AAAAGahNOxzreUE8nItPWzsrOlF7uoyrR/qbjue3kUmhxZcfZMSd5MRyEY+3uEoVA+gpQGz5KyP3wEjBxSOAb4+FBYMZ+QblFU4byMG4+aiI+GeeBA+RatQXVzSduRBdniCW4qehTnwS204KTUMXg1ioPvUlbYQmqM5aPMx/2xnYN1b+htNBWV0Bc8Vkyspa0NNgz7PzF1gozlCIc9FgzbzNYoOMhqSG+jhKf47SZQxD6iEAtj5iAkWBvJwFDLr/EfDfPr3BIA6Cpb4xaDc0t4Iz5wJ/p4oLRiEJaLoE/noCcWFjLmPcw9ccwYXThtjC+7u0DsMX+r+1dMikBCZCWWkLzEyjWzy3pOOR3exNRYGZ0vzr";
+
+        /*
+         * We also indicate which camera on the RC that we wish to use.
+         * Here we chose the back (HiRes) camera (for greater range), but
+         * for a competition robot, the front camera might be more convenient.
+         */
+        vufParameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(vufParameters);
+
+        /**
+         * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
+         * in this data set: all three of the VuMarks in the game were created from this one template,
+         * but differ in their instance id information.
+         * @see VuMarkInstanceId
+         */
+        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+        relicTrackables.activate();
+        telemetry.addData("relic", "activated");
     }
 
     //***************************************MOTION FUNCTIONS***************************************
@@ -221,32 +258,23 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
     //**********************************VUFORIA FUNCTIONS*******************************************
 
-    public RelicRecoveryVuMark getPicto() { //function to figure out which column it is
-        OpenGLMatrix lastLocation = null;
-
-        VuforiaLocalizer vuforia;
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = "Aeba4Qn/////AAAAGahNOxzreUE8nItPWzsrOlF7uoyrR/qbjue3kUmhxZcfZMSd5MRyE" +
-                "Y+3uEoVA+gpQGz5KyP3wEjBxSOAb4+FBYMZ+QblFU4byMG4+aiI+GeeBA+RatQXVzSduRBdniCW4qehTnwS204KTUMXg1" +
-                "ioPvUlbYQmqM5aPMx/2xnYN1b+htNBWV0Bc8Vkyspa0NNgz7PzF1gozlCIc9FgzbzNYoOMhqSG+jhKf47SZQxD6iEAtj5" +
-                "iAkWBvJwFDLr/EfDfPr3BIA6Cpb4xaDc0t4Iz5wJ/p4oLRiEJaLoE/noCcWFjLmPcw9ccwYXThtjC+7u0DsMX+r+1dMikB" +
-                "CZCWWkLzEyjWzy3pOOR3exNRYGZ0vzr";
-
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK; //look through back camera
-        vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-        relicTrackables.activate();
-
+    public RelicRecoveryVuMark getPicto() {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        double vuStartTime = getRuntime();
-        while ((getRuntime() - vuStartTime < 1.5)&&opModeIsActive()) {
-            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            telemetry.addData("Mark",vuMark);
+            telemetry.update();
+            return vuMark;
         }
-        telemetry.addData("column", vuMark);
+        clock.reset();
+        while (clock.milliseconds() < 2000) {
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                telemetry.addData("Mark",vuMark);
+                telemetry.update();
+                return vuMark;
+            }
+        }
+        telemetry.addData("Mark",vuMark);
         telemetry.update();
         return vuMark;
     }
@@ -402,7 +430,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(600);
         driveforTime(-.3, 900);
         sleep(300);
-        driveforTime(.3, 800);
+        driveforTime(.3, 400);
         sleep(300);
         flipIn();
 //        sleep(300);
@@ -459,7 +487,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void returntoCenterSequence(RelicRecoveryVuMark column, boolean isSquare){
-        driveforTime(.5,400);
+//        driveforTime(.5,400);
         sleep(300);
 
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
@@ -498,27 +526,27 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         nom(1);
         sleep(100);
         nom(-1);
-        strafeforTime(direction*.8, 700);
+        strafeforTime(direction*.8, 600);
         sleep(100);
         turn(currentAngle()-veryStartAngle);
         sleep(100);
-        nomDriveForTime(.7, 500);
+        nomDriveForTime(.7, 800);
         sleep(100);
-        nomDriveForTime(-.9, 600);
-        sleep(100);
-        nomDriveForTime(.3, 1000);
+        nomDriveForTime(-.7, 800);
         sleep(100);
         turn(currentAngle()-veryStartAngle);
         sleep(100);
-        nomDriveForTime(-.3, 800);
+        nomDriveForTime(.3, 1350);
+        sleep(100);
+        nomDriveForTime(-.3, 1300);
+        sleep(100);
+        turn(currentAngle()-veryStartAngle);
         sleep(100);
         nom(1);
-        sleep(300);
-        nomDriveForTime(-.3, 600);
         sleep(100);
         turn(currentAngle()-veryStartAngle);
         sleep(100);
-        strafeforTime(direction*-.8, 700);
+        strafeforTime(direction*-.8, 800);
     }
 
 }

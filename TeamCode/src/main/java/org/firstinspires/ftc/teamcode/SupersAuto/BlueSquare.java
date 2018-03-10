@@ -21,6 +21,7 @@ public class BlueSquare extends SupersBaseFunctions {
 
         setStartAngle();
         servoStartSequence();
+        wallServo.setPosition(.4);
 
         while(opModeIsActive()) {
             telemetry.addLine("made it this far");
@@ -32,10 +33,10 @@ public class BlueSquare extends SupersBaseFunctions {
             jewelSequence(true);
 
             //Drive to Cryptobox
-            driveforTime(0.5, 1150);
+            driveforTime(0.5, 1050);
 
             //Turn and drive to correct column
-            turnToColumnSequence(column, 90);
+            turnToColumnSequence(column, -90);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();

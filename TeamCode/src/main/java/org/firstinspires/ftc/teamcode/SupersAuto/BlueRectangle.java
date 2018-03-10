@@ -32,12 +32,12 @@ public class BlueRectangle extends SupersBaseFunctions {
             jewelSequence(true);
 
             //Drive to Cryptobox
-            driveforTime(-.5, 766);
+            driveforTime(.6, 600);
             sleep(500);
-            strafeforTime(-.8, 700);
+            strafeforTime(-.8, 400);
 
             //Turn and drive to correct column
-            turnToColumnSequence(column, 0);
+            turnToColumnSequence(column,0);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
