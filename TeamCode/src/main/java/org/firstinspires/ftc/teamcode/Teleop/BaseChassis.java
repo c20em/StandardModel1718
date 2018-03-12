@@ -374,9 +374,9 @@ public class BaseChassis extends LinearOpMode {
         }
 
         if(gamepad2.y) {
-            elbowServo.setPosition(.1);
+            elbowServo.setPosition(.1); //elbow up
         } else if(gamepad2.a) {
-            elbowServo.setPosition(.57);
+            elbowServo.setPosition(.57); //elbow down
         }
     }
 
