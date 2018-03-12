@@ -23,8 +23,6 @@ public class RedRectangle extends SupersBaseFunctions {
         servoStartSequence();
 
         while(opModeIsActive()) {
-            telemetry.addLine("made it this far");
-            telemetry.update();
 
             RelicRecoveryVuMark column = getPicto();
 
@@ -34,7 +32,7 @@ public class RedRectangle extends SupersBaseFunctions {
             //Drive to Cryptobox
             driveforTime(-.6, 500);
             sleep(500);
-            strafeforTime(.8, 400);
+            strafeforTime(.8, 450);
 
             //Turn and drive to correct column
             turnToColumnSequence(column,0);
