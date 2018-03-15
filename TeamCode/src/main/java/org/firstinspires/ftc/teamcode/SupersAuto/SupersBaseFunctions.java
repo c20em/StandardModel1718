@@ -387,12 +387,12 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         jewelSideServo.setPosition(JEWEL_TURNMID_POS);
         sleep(100);
         jewelServo.setPosition(JEWEL_MID_POS);
-        sleep(350);
+        sleep(500);
         jewelServo.setPosition(JEWEL_DOWN_POS);
         //read color
         int red = 0;
         int blue = 0;
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 50; i++) {
             if (colorSensor.red()  > colorSensor.blue() && colorSensor.red() >.1) red++;
             if (colorSensor.red() < colorSensor.blue()&& colorSensor.blue() >.1) blue++;
         }
@@ -603,11 +603,13 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void turnToColumnAbbySequence(RelicRecoveryVuMark column, int turn) throws InterruptedException {
+        //IT NEEDS TO STRAFE LESS
+        //ON THE FIRST GLYPH IT PACED IT TOO SHORT
         turnAngle(currentAngle() - veryStartAngle);
         turnAngle(turn);
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            strafeforTime(-.9, 500);
+            strafeforTime(-.9, 350);
             turnAngle(-COLUMN_TURN_ANGLE-6);
         } else if (column == RelicRecoveryVuMark.LEFT) {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
@@ -620,17 +622,26 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void turnToSecondColumnAbbySequence(RelicRecoveryVuMark column, boolean square){
+    public void turnToSecondColumnAbbySequence(RelicRecoveryVuMark column, boolean square) throws InterruptedException {
+        //ON THE SECOND GLYPH IT WAS TOO CLOSE TO THE BALANCING STONE!!! 3/16/18 ON 9:13PM
+
         nomDriveForTime(-.3, 700);
         sleep(200);
         nomDriveForTime(.3, 600);
-        if(square) turnAngle(currentAngle() - (veryStartAngle-90));
+        if(square){
+            turnAngle(currentAngle() - (veryStartAngle-90));
+            strafeforTime(.8,100);
+        }
         else turn(currentAngle()-veryStartAngle);
 
         //TURN TO THE CORRECT COLUMN
-        if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+        if (column == RelicRecoveryVuMark.LEFT) {
+            strafeforTime(-.8,500); // WE WANT THIS TO STRAFE LESS
             turnAngle(COLUMN_TURN_ANGLE);//fill w left value
+        } else if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w center value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
+            strafeforTime(.6,100);
             turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
         }
 

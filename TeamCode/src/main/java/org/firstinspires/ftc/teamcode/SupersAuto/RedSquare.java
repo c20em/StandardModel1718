@@ -33,7 +33,7 @@ public class RedSquare extends SupersBaseFunctions {
             jewelSequence(false);
 
             //Drive to Cryptobox
-            driveforTime(-0.5, 1200);
+            driveforTime(-0.5, 1000);
 
             //Turn and drive to correct column
             turnToColumnAbbySequence(column, 90);
@@ -50,14 +50,17 @@ public class RedSquare extends SupersBaseFunctions {
             strafeforTime(.3,300);
 
             //get into position for second placement
-            turnToSecondColumnSequence(column, true);
+            //turnToSecondColumnSequence(column, true);
+            turnToSecondColumnAbbySequence(column, true);
 
-            driveforTime(.5,200);
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
-            //move back out
-            nomDriveForTime(.4, 200);
+            driveforTime(.8,200);
+
+//
+//            //move back out
+//            nomDriveForTime(.4, 200);
 
             break;
         }
