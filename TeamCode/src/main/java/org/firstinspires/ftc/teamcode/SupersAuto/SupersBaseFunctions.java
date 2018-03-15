@@ -323,8 +323,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         double angle = rawAngle % 360;
         if(angle == 0) return;
         else if(angle > 0 && angle < 180) turnAngleCW(angle);
-        else if (angle < -180) turnAngleCW(angle);
-        else turnAngleCCW(-angle);
+        else if (angle < -180) turnAngleCW(angle+360);
+        else if(angle < 0 && angle > -180) turnAngleCCW(-angle);
+        else turnAngleCCW(360-angle);
     }
 
     public void turnAngleCW(double angle) {
