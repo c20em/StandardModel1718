@@ -489,9 +489,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void turnToSecondColumnSequence(RelicRecoveryVuMark column, boolean square) throws InterruptedException {
-        nomDriveForTime(-.3, 700);
-        sleep(200);
-        nomDriveForTime(.3, 600);
+        nomDriveForTime(-.3, 700); //?
+        sleep(200); //?
+        nomDriveForTime(.3, 600);  //?
         if(square){
             turnAngle(currentAngle() - (veryStartAngle-90));
             strafeforTime(.8,100);
@@ -608,14 +608,15 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void turnToSecondColumnAbbySequence(RelicRecoveryVuMark column, boolean square) throws InterruptedException {
+    public void turnToSecondColumnAbbySequence(RelicRecoveryVuMark column, boolean square, boolean isBlue) throws InterruptedException {
         //ON THE SECOND GLYPH IT WAS TOO CLOSE TO THE BALANCING STONE!!! 3/16/18 ON 9:13PM
 
         nomDriveForTime(-.3, 700);
         sleep(200);
         nomDriveForTime(.3, 600);
         if(square){
-            turnAngle(currentAngle() - (veryStartAngle-90));
+            if(!isBlue)turnAngle(currentAngle() - (veryStartAngle-90));
+            if(isBlue)turnAngle(currentAngle() - (veryStartAngle+90));
             strafeforTime(.8,100);
         }
         else turn(currentAngle()-veryStartAngle);
