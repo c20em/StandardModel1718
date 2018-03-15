@@ -502,16 +502,19 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void turnToSecondColumnSequence(RelicRecoveryVuMark column, boolean square){
+    public void turnToSecondColumnSequence(RelicRecoveryVuMark column, boolean square) throws InterruptedException {
         nomDriveForTime(-.3, 700);
         sleep(200);
         nomDriveForTime(.3, 600);
-        if(square) turnAngle(currentAngle() - (veryStartAngle-90));
+        if(square){
+            turnAngle(currentAngle() - (veryStartAngle-90));
+            strafeforTime(.8,100);
+        }
         else turn(currentAngle()-veryStartAngle);
 
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            turnAngle(COLUMN_TURN_ANGLE);//fill w left value
+            turnAngle(COLUMN_TURN_ANGLE+6);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
         }
@@ -597,6 +600,43 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(100);
         strafeforTime(direction*-.8, 600); //strafes to put in cryptobox
         nom(0);
+    }
+
+    public void turnToColumnAbbySequence(RelicRecoveryVuMark column, int turn) throws InterruptedException {
+        turnAngle(currentAngle() - veryStartAngle);
+        turnAngle(turn);
+        //TURN TO THE CORRECT COLUMN
+        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            strafeforTime(-.9, 500);
+            turnAngle(-COLUMN_TURN_ANGLE-6);
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w right value
+        }
+
+        sleep(200);
+        driveforTime(-.5,400);
+        sleep(300);
+    }
+
+    public void turnToSecondColumnAbbySequence(RelicRecoveryVuMark column, boolean square){
+        nomDriveForTime(-.3, 700);
+        sleep(200);
+        nomDriveForTime(.3, 600);
+        if(square) turnAngle(currentAngle() - (veryStartAngle-90));
+        else turn(currentAngle()-veryStartAngle);
+
+        //TURN TO THE CORRECT COLUMN
+        if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w left value
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
+        }
+
+        sleep(200);
+        driveforTime(-.5,400);
+        sleep(300);
     }
 
 }
