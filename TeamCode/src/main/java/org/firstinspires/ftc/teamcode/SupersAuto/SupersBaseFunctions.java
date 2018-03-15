@@ -319,15 +319,18 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
     }
 
-    public void turnAngle(double angle){
-        if(angle > 0) turnAngleCW(angle);
-        if(angle < 0) turnAngleCCW(-angle);
+    public void turnAngle(double rawAngle){
+        double angle = rawAngle % 360;
+        if(angle == 0) return;
+        else if(angle > 0 && angle < 180) turnAngleCW(angle);
+        else if (angle < -180) turnAngleCW(angle);
+        else turnAngleCCW(-angle);
     }
 
     public void turnAngleCW(double angle) {
         double startingAngle = currentAngle();
         while ((getAngleDiff(startingAngle, currentAngle()) < angle -4)&&opModeIsActive()) {
-            double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (angle * 2));
+            double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (180));
             telemetry.addData("difference", difference);
             telemetry.update();
             if (difference > .15) turn(difference);
@@ -342,7 +345,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         while(opModeIsActive()) {
             double startingAngle = currentAngle();
             while (getAngleDiff(startingAngle, currentAngle()) < angle -4) {
-                double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (angle * 2));
+                double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (180));
                 telemetry.addData("difference", difference);
                 telemetry.update();
                 if (difference > .15) turn(-difference);
