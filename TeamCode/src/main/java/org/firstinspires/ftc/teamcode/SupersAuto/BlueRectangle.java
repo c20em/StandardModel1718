@@ -33,23 +33,21 @@ public class BlueRectangle extends SupersBaseFunctions {
 
             //Drive to Cryptobox
             driveforTime(.6, 680);
-            sleep(500);
-            turnAngle(90);
-            sleep(50);
-            turnAngle(90);
+            sleep(100);
+            turnAngle(180);
             sleep(50);
             strafeforTime(-.8, 450);
 
             //Turn and drive to correct column
-            blueTurnToColumnSequence(column,0);
+            turnToColumnSequence(column,0);
 
             //SERVO flip out SEQUENCE
-            //placeGlyphSequence();
+            placeGlyphSequence();
 
-            //returntoCenterSequence(column, false);
+            returntoCenterSequence(column, false);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
-            //getNewGlyphRectangleSequence(-1);
+            getNewGlyphRectangleSequence(-1);
             // ⚆ _ ⚆
 
             //get into position for second placement

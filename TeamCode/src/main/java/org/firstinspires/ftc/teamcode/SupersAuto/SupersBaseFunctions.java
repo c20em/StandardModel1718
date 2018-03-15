@@ -488,24 +488,6 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void blueTurnToColumnSequence(RelicRecoveryVuMark column, int turn) throws InterruptedException {
-        turnAngle(currentAngle() - (veryStartAngle));
-        turnAngle(turn);
-        //TURN TO THE CORRECT COLUMN
-        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            strafeforTime(-.9, 400);
-            turnAngle(-COLUMN_TURN_ANGLE);
-        } else if (column == RelicRecoveryVuMark.LEFT) {
-            turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
-        } else if (column == RelicRecoveryVuMark.RIGHT) {
-            turnAngle(COLUMN_TURN_ANGLE);//fill w right value
-        }
-
-        sleep(200);
-        driveforTime(-.5,400);
-        sleep(300);
-    }
-
     public void turnToSecondColumnSequence(RelicRecoveryVuMark column, boolean square) throws InterruptedException {
         nomDriveForTime(-.3, 700);
         sleep(200);
@@ -570,7 +552,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         nom(-1);
         sleep(100); //delays
         nom(1);
-        strafeforTime(direction*.8, 400); //strafes left to set up
+        strafeforTime(direction*.8, 400); //strafes to set up
         sleep(100);
         turnAngle(currentAngle()-veryStartAngle); //resets angle every time
         sleep(100);
