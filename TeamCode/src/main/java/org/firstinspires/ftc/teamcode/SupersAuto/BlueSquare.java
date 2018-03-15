@@ -36,7 +36,7 @@ public class BlueSquare extends SupersBaseFunctions {
             driveforTime(0.5, 1050);
 
             //Turn and drive to correct column
-            turnToColumnSequence(column, -90);
+            turnToColumnSequence(column, 90);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
@@ -51,9 +51,7 @@ public class BlueSquare extends SupersBaseFunctions {
             turnToSecondColumnSequence(column, true);
 
             //SERVO flip out SEQUENCE
-            placeGlyphJankSequence();
-
-            //move back out
+            placeGlyphSequence();
             nomDriveForTime(.4, 200);
 
             break;

@@ -23,39 +23,43 @@ public class BlueRectangle extends SupersBaseFunctions {
         servoStartSequence();
 
         while(opModeIsActive()) {
-            telemetry.addLine("made it this far");
-            telemetry.update();
 
             RelicRecoveryVuMark column = getPicto();
 
             //Run Jewel sequence
             jewelSequence(true);
 
+            veryStartAngle = (veryStartAngle + 180)%360;
+
             //Drive to Cryptobox
-            driveforTime(.6, 600);
+            driveforTime(.6, 680);
             sleep(500);
-            strafeforTime(-.8, 400);
+            turnAngle(90);
+            sleep(50);
+            turnAngle(90);
+            sleep(50);
+            strafeforTime(-.8, 450);
 
             //Turn and drive to correct column
-            turnToColumnSequence(column,0);
+            blueTurnToColumnSequence(column,0);
 
             //SERVO flip out SEQUENCE
-            placeGlyphSequence();
+            //placeGlyphSequence();
 
-            returntoCenterSequence(column, false);
+            //returntoCenterSequence(column, false);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
-            getNewGlyphRectangleSequence(-1);
+            //getNewGlyphRectangleSequence(-1);
             // ⚆ _ ⚆
 
             //get into position for second placement
-            turnToSecondColumnSequence(column, false);
+            //turnToSecondColumnSequence(column, false);
 
             //SERVO flip out SEQUENCE
-            placeGlyphJankSequence();
+            //placeSpaciousGlyphSequence();
 
             //move back out
-            nomDriveForTime(.4, 200);
+            //nomDriveForTime(.4, 200);
 
             break;
         }

@@ -217,7 +217,6 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         rightBoxServo.setPosition(BOX_RIGHT_DOWN);
     }
 
-
     public void nom (int nomDirection) {
         NomNomNom.setPower(nomPower * nomDirection);
         pushBackServoLeft.setPower(-1);
@@ -378,6 +377,10 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         veryStartAngle = currentAngle();
     }
 
+    public void faceCryptoRectangle(){
+        turn(currentAngle()-veryStartAngle);
+    }
+
     //*******************************SEQUENCE MOTION FUNCTIONS******************************************
     public void jewelSequence(boolean teamBlue) throws InterruptedException {
         boolean jewelBlue;
@@ -389,7 +392,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         //read color
         int red = 0;
         int blue = 0;
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 60; i++) {
             if (colorSensor.red()  > colorSensor.blue() && colorSensor.red() >.1) red++;
             if (colorSensor.red() < colorSensor.blue()&& colorSensor.blue() >.1) blue++;
         }
@@ -426,36 +429,68 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void placeGlyphSequence(){
+        driveforTime(.3,200);
         flipOut();
-        sleep(600);
-        driveforTime(-.3, 900);
-        sleep(300);
-        driveforTime(.3, 400);
-        sleep(300);
+        sleep(800);
+        driveforTime(-.3,700); //200 to negate the above and then drives 500
+        sleep(200);
+        driveforTime(.3, 500);
+        sleep(200);
+        driveforTime(-.3, 600); //pushes in final time
+        sleep(200);
+        driveforTime(.3, 500); //leaves
+        sleep(200);
         flipIn();
+        sleep(100);
 //        sleep(300);
 //        driveforTime(-.3, 800);
     }
 
-    public void placeGlyphJankSequence(){
-        nomDriveForTime(.3, 400);
-
-        sleep(200);
+    public void placeSpaciousGlyphSequence(){
+        driveforTime(.6,200);
         flipOut();
-        sleep(600);
+        sleep(800);
+        driveforTime(-.3,700); //200 to negate the above and then drives 500
+        sleep(200);
+        driveforTime(.3, 500);
+        sleep(200);
+        driveforTime(-.5, 600); //pushes in final time
+        sleep(200);
+        driveforTime(.5, 500); //leaves
+        sleep(200);
         flipIn();
-        sleep(300);
+        sleep(100);
     }
 
     public void servoStartSequence(){
         liftIn.setPosition(.9);             //Relic Blocker//Relic arm up
     }
 
-    public void turnToColumnSequence(RelicRecoveryVuMark column, int turn){
+    public void turnToColumnSequence(RelicRecoveryVuMark column, int turn) throws InterruptedException {
         turnAngle(currentAngle() - veryStartAngle);
         turnAngle(turn);
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            strafeforTime(-.9, 400);
+            turnAngle(-COLUMN_TURN_ANGLE);
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w right value
+        }
+
+        sleep(200);
+        driveforTime(-.5,400);
+        sleep(300);
+    }
+
+    public void blueTurnToColumnSequence(RelicRecoveryVuMark column, int turn) throws InterruptedException {
+        turnAngle(currentAngle() - (veryStartAngle));
+        turnAngle(turn);
+        //TURN TO THE CORRECT COLUMN
+        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            strafeforTime(-.9, 400);
+            turnAngle(-COLUMN_TURN_ANGLE);
         } else if (column == RelicRecoveryVuMark.LEFT) {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
@@ -476,9 +511,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            turnAngle(COLUMN_TURN_ANGLE-3 );//fill w left value
+            turnAngle(COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            turnAngle(-COLUMN_TURN_ANGLE+3);//fill w right value
+            turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
         }
 
         sleep(200);
@@ -486,11 +521,13 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void returntoCenterSequence(RelicRecoveryVuMark column, boolean isSquare){
-//        driveforTime(.5,400);
+    public void returntoCenterSequence(RelicRecoveryVuMark column, boolean isSquare) throws InterruptedException {
         sleep(300);
 
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            turnAngle(COLUMN_TURN_ANGLE);
+            sleep(100);
+            strafeforTime(.9, 400);
         } else if (column == RelicRecoveryVuMark.LEFT) {
             turnAngle(COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
@@ -499,6 +536,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         if(isSquare) {
             turnAngle(currentAngle() - (veryStartAngle - 90));
         }
+        else turnAngle(currentAngle()-veryStartAngle);
 
     }
 
@@ -509,44 +547,56 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(200);
         nom(-1);
         sleep(200);
-        nomDriveForTime(.7, 500);
+        nomDriveForTime(.7, 1000);
         sleep(100);
-        nomDriveForTime(-.9, 800);
+        nomDriveForTime(-.3, 300);
         sleep(100);
-        nomDriveForTime(.3, 1000);
+        nomDriveForTime(.3, 300);
         sleep(100);
-        nomDriveForTime(-.3, 1000);
+        nomDriveForTime(-.7, 1000);
         sleep(100);
         nom(1);
         sleep(300);
-        nomDriveForTime(-.3, 1000);
     }
 
     public void getNewGlyphRectangleSequence(int direction) throws InterruptedException {
-        nom(1);
-        sleep(100);
         nom(-1);
-        strafeforTime(direction*.8, 600);
-        sleep(100);
-        turn(currentAngle()-veryStartAngle);
-        sleep(100);
-        nomDriveForTime(.7, 800);
-        sleep(100);
-        nomDriveForTime(-.7, 800);
-        sleep(100);
-        turn(currentAngle()-veryStartAngle);
-        sleep(100);
-        nomDriveForTime(.3, 1350);
-        sleep(100);
-        nomDriveForTime(-.3, 1300);
-        sleep(100);
-        turn(currentAngle()-veryStartAngle);
-        sleep(100);
+        sleep(100); //delays
         nom(1);
+        strafeforTime(direction*.8, 400); //strafes left to set up
         sleep(100);
-        turn(currentAngle()-veryStartAngle);
+        turnAngle(currentAngle()-veryStartAngle); //resets angle every time
         sleep(100);
-        strafeforTime(direction*-.8, 800);
+        driveforTime(.6, 1200); //goes forward first time
+        sleep(100);
+        turnAngle(currentAngle()-(veryStartAngle-(45*direction))); //turns 45 degrees
+        sleep(100);
+        driveforTime(.3, 300); //goes forward to get blocks
+        sleep(300);
+        driveforTime(-.3, 300); //goes backwards
+        sleep(100);
+        turnAngle(currentAngle()-(veryStartAngle-(45*direction))); //resets the 45 degree angle
+        sleep(100);
+        driveforTime(.6, 300); //goes forward
+        sleep(300);
+        driveforTime(-.6, 300); //backs up
+        sleep(100);
+        turnAngle(currentAngle()-veryStartAngle); //resets to straight (aligned w crypto)
+        sleep(100);
+        driveforTime(-.6, 1200); //goes backward
+//        sleep(100);
+//        turnAngle(currentAngle()-veryStartAngle);
+//        sleep(100);
+//        nomDriveForTime(.3, 2800); //goes forward to try again
+//        sleep(100);
+//        turnAngle(currentAngle()-veryStartAngle);
+//        sleep(100);
+//        nomDriveForTime(-.3, 1900); //drives back a final time
+        sleep(100);
+        turnAngle(currentAngle()-veryStartAngle); //resets to straight
+        sleep(100);
+        strafeforTime(direction*-.8, 600); //strafes to put in cryptobox
+        nom(0);
     }
 
 }

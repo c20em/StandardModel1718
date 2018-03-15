@@ -51,7 +51,7 @@ public class RedSquare extends SupersBaseFunctions {
             turnToSecondColumnSequence(column, true);
 
             //SERVO flip out SEQUENCE
-            placeGlyphJankSequence();
+            placeGlyphSequence();
 
             //move back out
             nomDriveForTime(.4, 200);

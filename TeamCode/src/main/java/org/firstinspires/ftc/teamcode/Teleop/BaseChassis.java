@@ -60,7 +60,6 @@ public class BaseChassis extends LinearOpMode {
     static final double NOM_POWER = 1;
     boolean wallout = false;
     boolean relicGang = false;
-    boolean clawGrip = false;
 
     controllerPos previousDrive = controllerPos.ZERO;
 
@@ -363,20 +362,18 @@ public class BaseChassis extends LinearOpMode {
             relicArm.setPower(0);
         }
 
-        if (gamepad2.left_bumper && !clawGrip) {
+        if (gamepad2.left_bumper) {
             handServo.setPosition(RELIC_HAND_CLOSE); //relic hand close
             sleep(200);
-            clawGrip = true;
-        } else if (gamepad2.left_bumper && clawGrip) {
+        } else if (gamepad2.right_bumper) {
             handServo.setPosition(RELIC_HAND_OPEN); //relic hand open
             sleep(200);
-            clawGrip = false;
         }
 
         if(gamepad2.y) {
             elbowServo.setPosition(.1); //elbow up
         } else if(gamepad2.a) {
-            elbowServo.setPosition(.57); //elbow down
+            elbowServo.setPosition(.585); //elbow down
         }
     }
 
