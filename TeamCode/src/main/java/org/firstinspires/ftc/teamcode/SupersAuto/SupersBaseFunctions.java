@@ -726,16 +726,14 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         nomDriveForTime(.3, 600);
 
         turnAngle(currentAngle() - (veryStartAngle-startOffset));
-        strafeforTime(.8,100);
-
+        strafeforTime(-1,400);
+        sleep(50);
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.LEFT) {
-            strafeforTime(-.8,500); // WE WANT THIS TO STRAFE LESS
             turnAngle(COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
             turnAngle(COLUMN_TURN_ANGLE);//fill w center value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            strafeforTime(-1,400);
             turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
         }
 
