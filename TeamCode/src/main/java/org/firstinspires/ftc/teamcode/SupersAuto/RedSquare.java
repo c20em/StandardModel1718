@@ -41,7 +41,7 @@ public class RedSquare extends SupersBaseFunctions {
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
-            returntoCenterSequence(column, true);
+            returntoCenterSequence(column,90);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
             getNewGlyphSquareSequence();
@@ -51,7 +51,7 @@ public class RedSquare extends SupersBaseFunctions {
 
             //get into position for second placement
             //turnToSecondColumnSequence(column, true);
-            turnToSecondColumnAbbySequence(column, true);
+            turnToSecondColumnAbbySequence(column, 90);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();

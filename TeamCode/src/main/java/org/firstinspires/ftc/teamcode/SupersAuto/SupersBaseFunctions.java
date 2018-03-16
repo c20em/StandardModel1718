@@ -49,7 +49,8 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     Acceleration gravity;
 
     //servo final double positions
-    static final double JEWEL_DOWN_POS = 0.40;
+    static final double JEWEL_DOWN_POS = 0.3;
+    static final double JEWEL_DOWNMID_POS = 0.6;
     static final double JEWEL_MID_POS = .9;
     static final double JEWEL_UP_POS = 1;
     static final double SIDE_JEWEL_NEUTRAL_POS = 0.6;
@@ -59,7 +60,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     static final double BOX_LEFT_UP = .61;
     static final double ELBOW_UP = .1;
     static final double JEWEL_TURNCW_POS = .80;
-    static final double JEWEL_TURNMID_POS = .63;
+    static final double JEWEL_TURNMID_POS = .73;
     static final double JEWEL_TURNCCW_POS = .38;
 
     //vuforia
@@ -319,19 +320,131 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
     }
 
-    public void turnAngle(double rawAngle){
+    public void turnAngle(double rawAngle) throws InterruptedException {
+        telemetry.addData("I have a turn now", "");
+        telemetry.update();
         double angle = rawAngle % 360;
-        if(angle == 0) return;
-        else if(angle > 0 && angle < 180) turnAngleCW(angle);
-        else if (angle < -180) turnAngleCW(angle+360);
-        else if(angle < 0 && angle > -180) turnAngleCCW(-angle);
-        else turnAngleCCW(360-angle);
+        if (angle == 0) return;
+        else if (angle > 0 && angle < 180) turnAngleCW(angle);
+        else if (angle < -180) turnAngleCW(angle + 360);
+        else if (angle < 0 && angle > -180) turnAngleCCW(-angle);
+        else turnAngleCCW(360 - angle);
     }
 
+    public void newTurnAngleCW(double angle) throws InterruptedException{
+        telemetry.addData("ang", angle);
+        telemetry.update();
+        double goal = (currentAngle()-angle);
+        while ((getAngleDiff(goal, currentAngle()) > 1 )&&opModeIsActive()) {
+            if(angle < 30) turn(.22);
+            else {
+                double offGoalBy = getAngleDiff(goal, currentAngle());
+                if (offGoalBy < 20) turn(.2);
+                else if (offGoalBy < 30) turn(.22);
+                else if (offGoalBy < 40) turn(.24);
+                else if (offGoalBy < 50) turn(.28);
+                else if (offGoalBy < 60) turn(.33);
+                else if (offGoalBy < 70) turn(.37);
+                else if (offGoalBy < 80) turn(.44);
+                else if (offGoalBy < 90) turn(.5);
+                else turn(.8);
+            }
+        }
+        StopDriving();
+    }
+
+    public void oldNewTurnAngleCW(double angle){
+        telemetry.addData("ang", angle);
+        telemetry.update();
+        double goal = (currentAngle()-angle);
+        while ((getAngleDiff(goal, currentAngle()) > 1 )&&opModeIsActive()) {
+            if(angle < 30) turn(.22);
+            else {
+                double offGoalBy = getAngleDiff(goal, currentAngle());
+                double power = Math.max((offGoalBy / angle), .18);
+                telemetry.addData("off goal by ", offGoalBy);
+                telemetry.addData("power", power);
+                telemetry.update();
+                turn(power);
+            }
+        }
+        StopDriving();
+    }
+
+    public void newTurnAngleCCW(double angle){
+        telemetry.addData("ang", angle);
+        telemetry.update();
+        double goal = (currentAngle()+angle);
+        while ((getAngleDiff(goal, currentAngle()) > 2 )&&opModeIsActive()) {
+            if(angle < 30) turn(-.22);
+            else {
+                double offGoalBy = getAngleDiff(goal, currentAngle());
+                if (offGoalBy < 20) turn(-.2);
+                else if (offGoalBy < 30) turn(-.22);
+                else if (offGoalBy < 40) turn(-.24);
+                else if (offGoalBy < 50) turn(-.28);
+                else if (offGoalBy < 60) turn(-.33);
+                else if (offGoalBy < 70) turn(-.37);
+                else if (offGoalBy < 80) turn(-.44);
+                else if (offGoalBy < 90) turn(-.5);
+                else turn(-.8);
+            }
+        }
+        StopDriving();
+    }
+    public void oldnewTurnAngleCCW(double angle){
+        telemetry.addData("ang", angle);
+        telemetry.update();
+        double goal = (currentAngle()+angle);
+        while ((getAngleDiff(goal, currentAngle()) > 2 )&&opModeIsActive()) {
+            if(angle < 30) turn(-.22);
+            else {
+                double offGoalBy = getAngleDiff(goal, currentAngle());
+                double power = Math.max((offGoalBy / angle), .18);
+                telemetry.addData("off goal by ", offGoalBy);
+                telemetry.addData("power", power);
+                telemetry.update();
+                turn(-power);
+            }
+        }
+        StopDriving();
+    }
+
+    public void specialTurnAngleCW(double angle) throws InterruptedException{
+        if(angle < 90) turnAngleCW(angle);
+        else {
+            double startingAngle = currentAngle();
+            double goal = (currentAngle() - angle);
+            while ((getAngleDiff(startingAngle, currentAngle()) < angle - 4) && opModeIsActive()) {
+                if (getAngleDiff(currentAngle(), goal) > 90) turn(.5);
+                else {
+                    turnAngleCW(90);
+                    return;
+                }
+            }
+            StopDriving();
+        }
+    }
+
+    public void specialTurnAngleCCW(double angle) throws InterruptedException{
+        if(angle < 90) turnAngleCCW(-angle);
+        else {
+            double startingAngle = currentAngle();
+            double goal = (currentAngle() + angle);
+            while ((getAngleDiff(startingAngle, currentAngle()) < angle - 4) && opModeIsActive()) {
+                if (getAngleDiff(currentAngle(), goal) > 90) turn(-.5);
+                else {
+                    turnAngleCCW(90);
+                    return;
+                }
+            }
+            StopDriving();
+        }
+    }
     public void turnAngleCW(double angle) {
         double startingAngle = currentAngle();
         while ((getAngleDiff(startingAngle, currentAngle()) < angle -4)&&opModeIsActive()) {
-            double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (180));
+            double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (angle*2));
             telemetry.addData("difference", difference);
             telemetry.update();
             if (difference > .15) turn(difference);
@@ -346,7 +459,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         while(opModeIsActive()) {
             double startingAngle = currentAngle();
             while (getAngleDiff(startingAngle, currentAngle()) < angle -4) {
-                double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (180));
+                double difference = ((angle - getAngleDiff(startingAngle, currentAngle())) / (angle*2));
                 telemetry.addData("difference", difference);
                 telemetry.update();
                 if (difference > .15) turn(-difference);
@@ -388,7 +501,8 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     //*******************************SEQUENCE MOTION FUNCTIONS******************************************
     public void jewelSequence(boolean teamBlue) throws InterruptedException {
         boolean jewelBlue;
-        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
+        if(teamBlue)jewelSideServo.setPosition(JEWEL_TURNMID_POS-.08);
+        else jewelSideServo.setPosition(JEWEL_TURNMID_POS);
         sleep(100);
         jewelServo.setPosition(JEWEL_MID_POS);
         sleep(500);
@@ -396,9 +510,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         //read color
         int red = 0;
         int blue = 0;
-        for (int i = 0; i < 50; i++) {
-            if (colorSensor.red()  > colorSensor.blue() && colorSensor.red() >.1) red++;
-            if (colorSensor.red() < colorSensor.blue()&& colorSensor.blue() >.1) blue++;
+        for (int i = 0; i < 55; i++) {
+            if (colorSensor.red()  > colorSensor.blue() && colorSensor.red() >.15) red++;
+            if (colorSensor.red() < colorSensor.blue()&& colorSensor.blue() >.15) blue++;
         }
         telemetry.addLine("read color");
 
@@ -417,35 +531,37 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         //knock off correct jewel
 
         if(jewelBlue){
-            if(teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()-.12);
-            else if(!teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()+.12);
+            if(teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()-.13);
+            else if(!teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()+.13);
         } else if (!jewelBlue){
-            if(teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()+.12);
-            else if(!teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()-.12);
+            if(teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()+.13);
+            else if(!teamBlue) jewelSideServo.setPosition(jewelSideServo.getPosition()-.13);
         }
-        sleep(200);
+        sleep(90);
 
         //turn back
+        jewelServo.setPosition(JEWEL_DOWNMID_POS);
+        sleep(50);
         jewelSideServo.setPosition(JEWEL_TURNMID_POS);
-        sleep(100);
+        sleep(50);
         jewelServo.setPosition(JEWEL_UP_POS);
-        sleep(600);
+        sleep(150);
     }
 
     public void placeGlyphSequence(){
         driveforTime(.3,200);
         flipOut();
-        sleep(800);
-        driveforTime(-.3,700); //200 to negate the above and then drives 500
-        sleep(200);
-        driveforTime(.3, 500);
-        sleep(200);
-        driveforTime(-.3, 600); //pushes in final time
-        sleep(200);
-        driveforTime(.3, 500); //leaves
-        sleep(200);
-        flipIn();
         sleep(100);
+        driveforTime(-.3,700); //200 to negate the above and then drives 500
+        sleep(50);
+        driveforTime(.3, 500);
+        sleep(50);
+        driveforTime(-.3, 600); //pushes in final time
+        sleep(50);
+        driveforTime(.3, 500); //leaves
+        sleep(50);
+        flipIn();
+        sleep(50);
 //        sleep(300);
 //        driveforTime(-.3, 800);
     }
@@ -453,25 +569,25 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     public void placeSpaciousGlyphSequence(){
         driveforTime(.6,200);
         flipOut();
-        sleep(800);
-        driveforTime(-.3,700); //200 to negate the above and then drives 500
-        sleep(200);
-        driveforTime(.3, 500);
-        sleep(200);
-        driveforTime(-.5, 600); //pushes in final time
-        sleep(200);
-        driveforTime(.5, 500); //leaves
-        sleep(200);
-        flipIn();
         sleep(100);
+        driveforTime(-.3,700); //200 to negate the above and then drives 500
+        sleep(50);
+        driveforTime(.3, 500);
+        sleep(50);
+        driveforTime(-.5, 600); //pushes in final time
+        sleep(50);
+        driveforTime(.5, 500); //leaves
+        sleep(50);
+        flipIn();
+        sleep(50);
     }
 
     public void servoStartSequence(){
         liftIn.setPosition(.9);             //Relic Blocker//Relic arm up
     }
 
-    public void turnToColumnSequence(RelicRecoveryVuMark column, int turn) throws InterruptedException {
-        turnAngle(currentAngle() - veryStartAngle);
+    public void turnToColumnSequence(RelicRecoveryVuMark column, int turn, int startOffset) throws InterruptedException {
+        turnAngle(currentAngle() - (veryStartAngle-startOffset));
         turnAngle(turn);
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
@@ -483,20 +599,20 @@ abstract class SupersBaseFunctions extends LinearOpMode {
             turnAngle(COLUMN_TURN_ANGLE);//fill w right value
         }
 
-        sleep(200);
+        sleep(50);
         driveforTime(-.5,400);
-        sleep(300);
+        sleep(50);
     }
 
-    public void turnToSecondColumnSequence(RelicRecoveryVuMark column, boolean square) throws InterruptedException {
-        nomDriveForTime(-.3, 700);
-        sleep(200);
-        nomDriveForTime(.3, 600);
+    public void turnToSecondColumnSequence(RelicRecoveryVuMark column, boolean square, int startOffset) throws InterruptedException {
+        driveforTime(-.3, 700);
+        sleep(50);
+        driveforTime(.3, 600);
         if(square){
             turnAngle(currentAngle() - (veryStartAngle-90));
             strafeforTime(.8,100);
         }
-        else turn(currentAngle()-veryStartAngle);
+        else turnAngle(currentAngle()-(veryStartAngle-startOffset));
 
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
@@ -505,27 +621,23 @@ abstract class SupersBaseFunctions extends LinearOpMode {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
         }
 
-        sleep(200);
+        sleep(50);
         driveforTime(-.5,400);
-        sleep(300);
+        sleep(50);
     }
 
-    public void returntoCenterSequence(RelicRecoveryVuMark column, boolean isSquare) throws InterruptedException {
-        sleep(300);
-
+    public void returntoCenterSequence(RelicRecoveryVuMark column, int startOffset) throws InterruptedException {
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
             turnAngle(COLUMN_TURN_ANGLE);
-            sleep(100);
+            sleep(50);
             strafeforTime(.9, 400);
         } else if (column == RelicRecoveryVuMark.LEFT) {
             turnAngle(COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
         }
-        if(isSquare) {
-            turnAngle(currentAngle() - (veryStartAngle - 90));
-        }
-        else turnAngle(currentAngle()-veryStartAngle);
+
+        else turnAngle(currentAngle()-(veryStartAngle-startOffset));
 
     }
 
@@ -548,43 +660,34 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void getNewGlyphRectangleSequence(int direction) throws InterruptedException {
+    public void getNewGlyphRectangleSequence(int direction, int startOffset, boolean teamBlue) throws InterruptedException {
         nom(-1);
-        sleep(100); //delays
+        sleep(50); //delays
         nom(1);
-        strafeforTime(direction*.8, 400); //strafes to set up
-        sleep(100);
-        turnAngle(currentAngle()-veryStartAngle); //resets angle every time
-        sleep(100);
+        sleep(50);
+        turnAngle((currentAngle()-(veryStartAngle-startOffset))); //resets angle every time
+        sleep(50);
+        strafeforTime(direction*.8, 675); //strafes to set up
+        sleep(50);
+        turnAngle((currentAngle()-(veryStartAngle-startOffset))); //resets angle every time
+        sleep(50);
         driveforTime(.6, 1200); //goes forward first time
-        sleep(100);
-        turnAngle(currentAngle()-(veryStartAngle-(45*direction))); //turns 45 degrees
-        sleep(100);
+        sleep(50);
+        turnAngle((currentAngle()-((veryStartAngle-startOffset)-(45*direction)))); //turns 45 degrees
+        sleep(50);
         driveforTime(.3, 300); //goes forward to get blocks
-        sleep(300);
+        sleep(50);
         driveforTime(-.3, 300); //goes backwards
-        sleep(100);
-        turnAngle(currentAngle()-(veryStartAngle-(45*direction))); //resets the 45 degree angle
-        sleep(100);
-        driveforTime(.6, 300); //goes forward
-        sleep(300);
-        driveforTime(-.6, 300); //backs up
-        sleep(100);
-        turnAngle(currentAngle()-veryStartAngle); //resets to straight (aligned w crypto)
-        sleep(100);
-        driveforTime(-.6, 1200); //goes backward
-//        sleep(100);
-//        turnAngle(currentAngle()-veryStartAngle);
-//        sleep(100);
-//        nomDriveForTime(.3, 2800); //goes forward to try again
-//        sleep(100);
-//        turnAngle(currentAngle()-veryStartAngle);
-//        sleep(100);
-//        nomDriveForTime(-.3, 1900); //drives back a final time
-        sleep(100);
-        turnAngle(currentAngle()-veryStartAngle); //resets to straight
-        sleep(100);
-        strafeforTime(direction*-.8, 600); //strafes to put in cryptobox
+        sleep(50);
+        turnAngle((currentAngle()-(veryStartAngle-startOffset))); //resets to straight (aligned w crypto)
+        sleep(50);
+        nom(0);
+        driveforTime(-.6, 1000); //goes backward
+        sleep(50);
+        turnAngle((currentAngle()-(veryStartAngle-startOffset))); //resets to straight
+        sleep(50);
+        if(teamBlue) strafeforTime(direction*-.8,450);
+        else strafeforTime(direction*-.8, 1000); //strafes to put in cryptobox
         nom(0);
     }
 
@@ -608,17 +711,15 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(300);
     }
 
-    public void turnToSecondColumnAbbySequence(RelicRecoveryVuMark column, boolean square) throws InterruptedException {
+    public void turnToSecondColumnAbbySequence(RelicRecoveryVuMark column, int startOffset) throws InterruptedException {
         //ON THE SECOND GLYPH IT WAS TOO CLOSE TO THE BALANCING STONE!!! 3/16/18 ON 9:13PM
 
         nomDriveForTime(-.3, 700);
         sleep(200);
         nomDriveForTime(.3, 600);
-        if(square){
-            turnAngle(currentAngle() - (veryStartAngle-90));
-            strafeforTime(.8,100);
-        }
-        else turn(currentAngle()-veryStartAngle);
+
+        turnAngle(currentAngle() - (veryStartAngle-startOffset));
+        strafeforTime(.8,100);
 
         //TURN TO THE CORRECT COLUMN
         if (column == RelicRecoveryVuMark.LEFT) {

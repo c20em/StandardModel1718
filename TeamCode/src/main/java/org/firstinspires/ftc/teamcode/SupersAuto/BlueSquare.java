@@ -33,26 +33,30 @@ public class BlueSquare extends SupersBaseFunctions {
             jewelSequence(true);
 
             //Drive to Cryptobox
-            driveforTime(0.5, 1050);
+            driveforTime(0.5, 1350);
 
             //Turn and drive to correct column
-            turnToColumnSequence(column, 90);
+            turnToColumnAbbySequence(column, 90);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
-            returntoCenterSequence(column, true);
+            returntoCenterSequence(column,90);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
             getNewGlyphSquareSequence();
             // ⚆ _ ⚆
 
+            strafeforTime(.3,300);
+
+
             //get into position for second placement
-            turnToSecondColumnSequence(column, true);
+            turnToSecondColumnAbbySequence(column, 90);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
-            nomDriveForTime(.4, 200);
+
+            driveforTime(.8,200);
 
             break;
         }

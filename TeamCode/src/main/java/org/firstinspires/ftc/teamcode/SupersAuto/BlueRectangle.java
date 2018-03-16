@@ -15,49 +15,47 @@ public class BlueRectangle extends SupersBaseFunctions {
     public void runOpMode() throws InterruptedException {
 
         declare();
-        initVuforia();
         initGyro();
         waitForStart();
-
+        initVuforia();
         setStartAngle();
         servoStartSequence();
 
         while(opModeIsActive()) {
 
             RelicRecoveryVuMark column = getPicto();
-
             //Run Jewel sequence
             jewelSequence(true);
 
-            veryStartAngle = (veryStartAngle + 180)%360;
-
             //Drive to Cryptobox
-            driveforTime(.6, 680);
-            sleep(100);
-            turnAngle(180);
-            sleep(50);
-            strafeforTime(-.8, 450);
+            driveforTime(.6, 800);
+            sleep(40);
+            specialTurnAngleCCW(currentAngle()-(veryStartAngle-180));
+            sleep(40);
+            driveforTime(.6,100);
+            sleep(40);
+            strafeforTime(-.8, 410);
 
             //Turn and drive to correct column
-            turnToColumnSequence(column,0);
+            turnToColumnSequence(column,0, 180);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
-            returntoCenterSequence(column, false);
+            returntoCenterSequence(column, 180);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
-            getNewGlyphRectangleSequence(-1);
+            getNewGlyphRectangleSequence(-1,180, true);
             // ⚆ _ ⚆
 
             //get into position for second placement
-            //turnToSecondColumnSequence(column, false);
+            turnToSecondColumnSequence(column, false,180);
 
             //SERVO flip out SEQUENCE
-            //placeSpaciousGlyphSequence();
+            placeSpaciousGlyphSequence();
 
             //move back out
-            //nomDriveForTime(.4, 200);
+            nomDriveForTime(.4, 200);
 
             break;
         }

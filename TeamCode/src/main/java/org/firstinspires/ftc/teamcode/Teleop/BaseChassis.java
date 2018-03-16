@@ -54,6 +54,7 @@ public class BaseChassis extends LinearOpMode {
     static final double ELBOW_DOWN = .78;
     static final double RELIC_HAND_CLOSE = .45;
     static final double RELIC_HAND_OPEN = .75;
+    static double relicTurn = 1;
 
     // Define class members
     double strafepower = 1;
@@ -124,9 +125,11 @@ public class BaseChassis extends LinearOpMode {
             telemetry.addData("y stick", gamepad1.left_stick_y);
             if (relicGang){
                 telemetry.addLine("Relic Engaged");
+                relicTurn = 2;
                 relic();
                 if(gamepad1.right_bumper) {
                     relicGang = false;
+                    relicTurn = 1;
                 }
             }else {
                 telemetry.addLine("Relic Disengaged");
@@ -164,7 +167,7 @@ public class BaseChassis extends LinearOpMode {
     public void moveRobot() {
         double drive = -gamepad1.left_stick_y;
         double diagonalDrive = -gamepad1.left_stick_x;
-        double turn = -gamepad1.right_stick_x/1.2;
+        double turn = -gamepad1.right_stick_x/1.2/relicTurn;
 
         if(drive > 0.1 && (previousDrive == controllerPos.DRIVE_FOWARD || previousDrive == controllerPos.ZERO)) {
             previousDrive = controllerPos.DRIVE_FOWARD;
@@ -356,9 +359,11 @@ public class BaseChassis extends LinearOpMode {
     }
 
     public void relic() {
-        if (Math.abs(gamepad2.left_stick_y) > .2) {
-            relicArm.setPower(Range.clip(gamepad2.left_stick_y, -1, 1));
-        }else{
+        if (gamepad2.left_stick_y > .2) {
+            relicArm.setPower(-Range.clip(gamepad2.left_stick_y, -1, 1));
+        } else if(gamepad2.left_stick_y < .2) {
+            relicArm.setPower(-Range.clip(gamepad2.left_stick_y, -1, 1) * .5);
+        } else{
             relicArm.setPower(0);
         }
 
