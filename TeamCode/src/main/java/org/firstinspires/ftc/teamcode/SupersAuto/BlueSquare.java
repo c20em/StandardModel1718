@@ -48,7 +48,7 @@ public class BlueSquare extends SupersBaseFunctions {
             // ⚆ _ ⚆
 
             //get into position for second placement
-            turnToSecondColumnSequence(column, true);
+            turnToSecondColumnAbbySequence(column, true, true);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();

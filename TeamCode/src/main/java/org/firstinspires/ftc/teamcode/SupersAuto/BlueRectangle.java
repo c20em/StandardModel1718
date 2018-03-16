@@ -51,13 +51,13 @@ public class BlueRectangle extends SupersBaseFunctions {
             // ⚆ _ ⚆
 
             //get into position for second placement
-            //turnToSecondColumnSequence(column, false);
+            turnToSecondColumnSequence(column, false);
 
             //SERVO flip out SEQUENCE
-            //placeSpaciousGlyphSequence();
+            placeSpaciousGlyphSequence();
 
             //move back out
-            //nomDriveForTime(.4, 200);
+            nomDriveForTime(.4, 200);
 
             break;
         }
