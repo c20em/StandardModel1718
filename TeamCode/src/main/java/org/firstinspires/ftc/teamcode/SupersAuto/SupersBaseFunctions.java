@@ -60,7 +60,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     static final double BOX_LEFT_UP = .61;
     static final double ELBOW_UP = .1;
     static final double JEWEL_TURNCW_POS = .80;
-    static final double JEWEL_TURNMID_POS = .73;
+    static final double JEWEL_TURNMID_POS = .68;
     static final double JEWEL_TURNCCW_POS = .38;
 
     //vuforia
@@ -220,8 +220,13 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
     public void nom (int nomDirection) {
         NomNomNom.setPower(nomPower * nomDirection);
-        pushBackServoLeft.setPower(-1);
-        pushBackServoRight.setPower(1);
+        //pushBackServoLeft.setPower(-1);
+        //pushBackServoRight.setPower(1);
+    }
+
+    public void pushBack(int power){
+        pushBackServoLeft.setPower(-power);
+        pushBackServoRight.setPower(power);
     }
 
     public void stopNom() {
@@ -567,17 +572,17 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void placeSpaciousGlyphSequence(){
-        driveforTime(.6,200);
+        driveforTime(.6,400);
         flipOut();
         sleep(100);
-        driveforTime(-.3,700); //200 to negate the above and then drives 500
+        driveforTime(-.3,850); //200 to negate the above and then drives 500
         sleep(50);
         driveforTime(.3, 500);
         sleep(50);
-        driveforTime(-.5, 600); //pushes in final time
-        sleep(50);
-        driveforTime(.5, 500); //leaves
-        sleep(50);
+//        driveforTime(-.5, 600); //pushes in final time
+//        sleep(50);
+//        driveforTime(.5, 500); //leaves
+//        sleep(50);
         flipIn();
         sleep(50);
     }
@@ -675,14 +680,16 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         sleep(50);
         turnAngle((currentAngle()-((veryStartAngle-startOffset)-(45*direction)))); //turns 45 degrees
         sleep(50);
-        driveforTime(.3, 300); //goes forward to get blocks
+        driveforTime(.3, 500); //goes forward to get blocks
         sleep(50);
-        driveforTime(-.3, 300); //goes backwards
+        driveforTime(-.3, 500); //goes backwards
         sleep(50);
         turnAngle((currentAngle()-(veryStartAngle-startOffset))); //resets to straight (aligned w crypto)
         sleep(50);
+        driveforTime(-.6, 500); //goes backward
         nom(0);
-        driveforTime(-.6, 1000); //goes backward
+        pushBack(1);
+        driveforTime(-.6, 500); //goes backward
         sleep(50);
         turnAngle((currentAngle()-(veryStartAngle-startOffset))); //resets to straight
         sleep(50);
@@ -728,7 +735,7 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         } else if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
             turnAngle(COLUMN_TURN_ANGLE);//fill w center value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            strafeforTime(.6,100);
+            strafeforTime(-1,400);
             turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
         }
 

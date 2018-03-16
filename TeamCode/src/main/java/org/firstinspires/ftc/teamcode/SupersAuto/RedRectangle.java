@@ -53,7 +53,7 @@ public class RedRectangle extends SupersBaseFunctions {
             placeSpaciousGlyphSequence();
 
             //move back out
-            driveforTime(.4, 200);
+            driveforTime(.4, 100);
 
             break;
         }
