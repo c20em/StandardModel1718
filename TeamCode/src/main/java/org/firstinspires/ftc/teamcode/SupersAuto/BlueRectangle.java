@@ -34,7 +34,7 @@ public class BlueRectangle extends SupersBaseFunctions {
             sleep(40);
             driveforTime(.6,100);
             sleep(40);
-            strafeforTime(-.8, 410);
+            strafeforTime(-.9, 450);
 
             //Turn and drive to correct column
             turnToColumnSequence(column,0, 180);
@@ -42,15 +42,22 @@ public class BlueRectangle extends SupersBaseFunctions {
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
+            nom(1);
             returntoCenterSequence(column, 180);
+            nom(1);
 
             //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
             getNewGlyphRectangleSequence(-1,180, true);
             // ⚆ _ ⚆
+            nom(1);
 
             //get into position for second placement
             turnToSecondColumnSequence(column, false,180);
-
+            pushBack(1);
+            nom(-1);
+            sleep(200);
+            nom(0);
+            pushBack(0);
             //SERVO flip out SEQUENCE
             placeSpaciousGlyphSequence();
 

@@ -36,7 +36,7 @@ public class RedSquare extends SupersBaseFunctions {
             driveforTime(-0.5, 1000);
 
             //Turn and drive to correct column
-            turnToColumnAbbySequence(column, 90);
+            turnToColumnAbbySequence(column, 90, false);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
@@ -56,11 +56,7 @@ public class RedSquare extends SupersBaseFunctions {
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
 
-            driveforTime(.8,200);
-
-//
-//            //move back out
-//            nomDriveForTime(.4, 200);
+            driveforTime(.6,100);
 
             break;
         }

@@ -8,8 +8,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by student on 2/16/18.
  */
 
-@Autonomous(name="Blue Square", group="Autonomous")
-public class BlueSquare extends SupersBaseFunctions {
+@Autonomous(name="5 Blue Square", group="Autonomous")
+public class FIVEBlueSquare extends SupersBaseFunctions {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -33,10 +33,10 @@ public class BlueSquare extends SupersBaseFunctions {
             jewelSequence(true);
 
             //Drive to Cryptobox
-            driveforTime(0.5, 1280);
+            driveforTime(0.5, 1000);
 
             //Turn and drive to correct column
-            turnToColumnAbbySequence(column, 90, false);
+            turnToColumnAbbySequence(column, 90, true);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();
@@ -52,6 +52,20 @@ public class BlueSquare extends SupersBaseFunctions {
 
             //get into position for second placement
             turnToSecondColumnAbbySequence(column, 90);
+
+            //SERVO flip out SEQUENCE
+            placeGlyphSequence();
+
+            returntoCenterSequence(column,90);
+
+            //GO IN FOR SECOND GLYPH (☞ﾟ∀ﾟ)☞
+            getNewGlyphSquareSequence();
+            // ⚆ _ ⚆
+
+            strafeforTime(.3,300);
+
+            //get into position for second placement
+            turnToThirdColumnAbbySequence(column, 90);
 
             //SERVO flip out SEQUENCE
             placeGlyphSequence();

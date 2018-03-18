@@ -505,9 +505,9 @@ abstract class SupersBaseFunctions extends LinearOpMode {
 
     //*******************************SEQUENCE MOTION FUNCTIONS******************************************
     public void jewelSequence(boolean teamBlue) throws InterruptedException {
+        flipIn();
         boolean jewelBlue;
-        if(teamBlue)jewelSideServo.setPosition(JEWEL_TURNMID_POS-.08);
-        else jewelSideServo.setPosition(JEWEL_TURNMID_POS);
+        jewelSideServo.setPosition(JEWEL_TURNMID_POS);
         sleep(100);
         jewelServo.setPosition(JEWEL_MID_POS);
         sleep(500);
@@ -595,10 +595,10 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         turnAngle(currentAngle() - (veryStartAngle-startOffset));
         turnAngle(turn);
         //TURN TO THE CORRECT COLUMN
-        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+        if (column == RelicRecoveryVuMark.CENTER) {
             strafeforTime(-.9, 400);
             turnAngle(-COLUMN_TURN_ANGLE);
-        } else if (column == RelicRecoveryVuMark.LEFT) {
+        } else if (column == RelicRecoveryVuMark.LEFT|| column == RelicRecoveryVuMark.UNKNOWN) {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
             turnAngle(COLUMN_TURN_ANGLE);//fill w right value
@@ -632,11 +632,11 @@ abstract class SupersBaseFunctions extends LinearOpMode {
     }
 
     public void returntoCenterSequence(RelicRecoveryVuMark column, int startOffset) throws InterruptedException {
-        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+        if (column == RelicRecoveryVuMark.CENTER) {
             turnAngle(COLUMN_TURN_ANGLE);
             sleep(50);
-            strafeforTime(.9, 400);
-        } else if (column == RelicRecoveryVuMark.LEFT) {
+            strafeforTime(.9, 350);
+        } else if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.UNKNOWN) {
             turnAngle(COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
@@ -698,16 +698,18 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         nom(0);
     }
 
-    public void turnToColumnAbbySequence(RelicRecoveryVuMark column, int turn) throws InterruptedException {
+    public void turnToColumnAbbySequence(RelicRecoveryVuMark column, int turn, boolean four) throws InterruptedException {
         //IT NEEDS TO STRAFE LESS
         //ON THE FIRST GLYPH IT PACED IT TOO SHORT
-        turnAngle(currentAngle() - veryStartAngle);
-        turnAngle(turn);
+        if(!four){
+            turnAngle(currentAngle() - veryStartAngle);
+            turnAngle(turn);
+        }
         //TURN TO THE CORRECT COLUMN
-        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+        if (column == RelicRecoveryVuMark.CENTER) {
             strafeforTime(-.9, 350);
             turnAngle(-COLUMN_TURN_ANGLE-6);
-        } else if (column == RelicRecoveryVuMark.LEFT) {
+        } else if (column == RelicRecoveryVuMark.LEFT || column == RelicRecoveryVuMark.UNKNOWN) {
             turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
             turnAngle(COLUMN_TURN_ANGLE);//fill w right value
@@ -729,16 +731,58 @@ abstract class SupersBaseFunctions extends LinearOpMode {
         strafeforTime(-1,400);
         sleep(50);
         //TURN TO THE CORRECT COLUMN
-        if (column == RelicRecoveryVuMark.LEFT) {
-            turnAngle(COLUMN_TURN_ANGLE);//fill w left value
-        } else if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            turnAngle(COLUMN_TURN_ANGLE);//fill w center value
+        if (column == RelicRecoveryVuMark.LEFT  || column == RelicRecoveryVuMark.UNKNOWN) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w right value
+        } else if (column == RelicRecoveryVuMark.CENTER) {
+            turnAngle(-COLUMN_TURN_ANGLE);//fill w left value
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            turnAngle(-COLUMN_TURN_ANGLE);//fill w right value
+            turnAngle(-COLUMN_TURN_ANGLE+5);//fill w left value
         }
 
         sleep(200);
         driveforTime(-.5,400);
+        sleep(300);
+    }
+
+    public void turnToThirdColumnAbbySequence(RelicRecoveryVuMark column, int startOffset) throws InterruptedException {
+
+        nomDriveForTime(-.3, 700);
+        sleep(200);
+        nomDriveForTime(.3, 600);
+
+        turnAngle(currentAngle() - (veryStartAngle-startOffset));
+        strafeforTime(-1,400);
+        sleep(50);
+        //TURN TO THE CORRECT COLUMN
+        if (column == RelicRecoveryVuMark.LEFT  || column == RelicRecoveryVuMark.UNKNOWN) {
+            strafeforTime(-.9, 350);
+            turnAngle(-COLUMN_TURN_ANGLE-6);
+        } else if (column == RelicRecoveryVuMark.CENTER) {
+            turnAngle(COLUMN_TURN_ANGLE);//fill w right value
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            strafeforTime(-.9, 350);
+            turnAngle(-COLUMN_TURN_ANGLE-6);        }
+
+        sleep(200);
+        driveforTime(-.5,400);
+        sleep(300);
+    }
+
+    public void getExtraFirstGylphSequence(int startOffset) throws InterruptedException {
+        turnAngle(currentAngle() - (veryStartAngle-startOffset));
+        nom(1);
+        sleep(200);
+        nom(-1);
+        sleep(200);
+        nomDriveForTime(.7, 1000);
+        sleep(100);
+        nomDriveForTime(-.3, 300);
+        sleep(100);
+        nomDriveForTime(.3, 300);
+        sleep(100);
+        nomDriveForTime(-.7, 1000);
+        sleep(100);
+        nom(1);
         sleep(300);
     }
 
